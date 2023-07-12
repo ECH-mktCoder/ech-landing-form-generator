@@ -45,7 +45,6 @@ Below attributes values must be corresponding to each other, otherwise no form w
 
 
 [^1]: attribute is required
-[^2]: Multiple Strings: can has multiple values, use comma to separate them
 
 
 ### Remarks
