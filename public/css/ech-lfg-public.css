@@ -1,0 +1,186 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+ .code_error {
+    color: red;
+ }
+
+
+
+ 
+/***************** MAIN FORM *****************/
+
+.ech_lfg_form ::placeholder, select, select option, select option:checked {
+    font-family: 'YuanTi', sans-serif;
+    font-size: 17px;
+    line-height: 18px;
+}
+
+.lfg_formMsg {
+    color: #0170B9;
+    text-align: center;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.2em;
+}
+
+.hidden_checkbox { display: none; }
+.form_row {
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    align-items: flex-end;
+}
+.form_row > div {
+    margin: 5px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.checkbox_label input[type=checkbox], .radio_label input[type=radio] {
+    margin-right: 5px; 
+}
+.radio_label {
+    margin-right: 15px; 
+}
+.form_row div p {
+    margin-bottom: 0px;
+}
+.form_row p.redWord, .formMsg {
+    color: red;
+}
+
+
+input[type=text], select, input[type=email] {
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+}
+
+textarea {
+    padding-left: 20px;
+}
+
+small {
+    display: block;
+    font-family: 'YuanTi', sans-serif;
+    font-size: 13px;
+    color: #727171;
+}
+
+.ech_lfg_form #submitBtn {
+    background: #0170B9;
+    color: #fff;
+    font-family: 'YuanTi', sans-serif;
+    width: 100%;
+    font-size: 17px;
+    padding: 10px 0px;
+}
+#submitBtn:hover { background: #629ac7; }
+
+.ui-datepicker td span, .ui-datepicker td a {
+    font-size: inherit;
+}
+
+
+/*** checkbox dropdown list ***/
+.lfg_checkbox_dropdown {
+    width: 100%;
+    position: relative;
+    margin: 0 auto;
+    user-select: none;
+    border: 1px solid #eaeaea;
+    border-radius: 2px;
+    background: #fafafa;
+    padding: .2em .75em;
+    font-family: 'YuanTi', sans-serif;
+    font-size: 17px;
+}
+
+/* Display CSS arrow to the right of the dropdown text */
+.lfg_checkbox_dropdown:after {
+    content:'';
+    height: 0;
+    position: absolute;
+    width: 0;
+    border: 6px solid transparent;
+    border-top-color: #000;
+    top: 50%;
+    right: 10px;
+    margin-top: -3px;
+}
+
+/* Reverse the CSS arrow when the dropdown is active */
+.lfg_checkbox_dropdown.lfg_is_active:after {
+    border-bottom-color: #000;
+    border-top-color: #fff;
+    margin-top: -9px;
+}
+
+.lfg_checkbox_dropdown_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 100%; /* align the dropdown right below the dropdown text */
+    border: inherit;
+    border-top: none;
+    left: -1px; /* align the dropdown to the left */
+    right: -1px; /* align the dropdown to the right */
+    opacity: 0; /* hide the dropdown */
+    background: #fff;
+    transition: opacity 0.4s ease-in-out;
+    height: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+    pointer-events: none; /* avoid mouse click events inside the dropdown */
+    z-index: 10;
+}
+.lfg_is_active .lfg_checkbox_dropdown_list {
+    opacity: 1; /* display the dropdown */
+    pointer-events: auto; /* make sure that the user still can select checkboxes */
+}
+
+.lfg_checkbox_dropdown_list li label {
+    display: block;
+    border-bottom: 1px solid silver;
+    padding: 10px;
+   
+    transition: all 0.2s ease-out;
+}
+
+.lfg_checkbox_dropdown_list li label:hover {
+    background-color: #fafafa;
+    color: #727171;
+}
+
+/*** (END) checkbox dropdown list ***/
+
+
+
+
+
+
+
+
+@media(max-width: 768px) {
+    .form_row {
+        flex-wrap: wrap;
+    }
+    #submitBtn { width: 100%; }
+    .formMsg { font-size: 15px; line-height: 23px; }
+}
+
+
+@media(max-width: 600px) {
+    .radio_label {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+        align-items: center;
+    }
+}
+
+/***************** (END)MAIN FORM *****************/
