@@ -215,6 +215,9 @@
 					var wati_booking_item = itemsTEXT.join(", ");
 
 					var wati_booking_location = jQuery("#ech_lfg_form input[name='shop']:checked").data("shop-text-value");
+					if (wati_booking_location == null || wati_booking_location == "") {
+						wati_booking_location = jQuery("#ech_lfg_form #shop option:selected").text();
+					}
 
 					// Wati Send
 					lfg_watiSendMsg(_wati_msg, _name, _phone, _email, _booking_date, _booking_time, wati_booking_item, wati_booking_location, _website_url);
@@ -254,7 +257,8 @@
 			'website_url': _website_url,
 			'epayRefCode': _epayRefCode
 		};
-		
+		//console.log(watiData);
+
 		jQuery.post(ajaxurl, watiData, function(wati_msg) {
 			var watiObj = JSON.parse(wati_msg);
 			//console.log(watiObj);
