@@ -23,7 +23,7 @@ Attribute | Description
 `has_gender` (INT) | Has Gender field. 0 = false, 1 = true. Default is 0.
 `has_age` (INT) | Has Age field. 0 = false, 1 = true. Default is 0.
 `age_option` (Strings) | "Age" options. Use comma to separate. Eg. `"Under 18, 19 - 23 years old"` 
-`age_code` (Strings)(*)[^1] | Age MSP token. Use comma to separate.
+`age_code` (Strings)(*) | Age MSP token. Use comma to separate.
 `booking_date_required` (INT) | 0 = false, 1 = true. Default is 1.
 `item` (Strings)(*)[^1] | Item checkbox. Use comma to separate.
 `item_code` (Strings)(*)[^1] | Item MSP token. Use comma to separate.
