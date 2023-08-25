@@ -6,9 +6,9 @@
 		/*********** Checkbox limitation ***********/
 		var limit = jQuery('.ech_lfg_form').data("limited-no");
 		jQuery('.ech_lfg_form input.limited_checkbox').on('change', function(evt) {
-		   if(jQuery(".ech_lfg_form input.limited_checkbox[name='item']:checked").length > limit) {
-			   this.checked = false;
-		   }
+			if(jQuery(".ech_lfg_form input.limited_checkbox[name='item']:checked").length > limit) {
+				this.checked = false;
+			}
 		});
 		/*********** (END) Checkbox limitation ***********/
 	
@@ -60,6 +60,15 @@
 		} 
 		/*********** (END) Checkbox dropdown list ***********/
 		
+		/*********** Button Click send to FB Capi ***********/
+		jQuery(".fbCapiBtn,[data-btn='whatsapp'],.f_wtsapp_btn a").on('click', function(){
+			let webDomain = window.location.host;
+			// there is global trigger code in Drrborn web function.php 
+			if(webDomain != "www.drreborn.com"){
+				FBCapiBtnClick();
+			}
+		});
+		/*********** (END) Button Click send to FB Capi ***********/
 	
 		/*********** Form Submit ***********/
 		jQuery('.ech_lfg_form').on("submit", function(e){
@@ -75,6 +84,8 @@
 			var brand = jQuery(this).data("brand");
 			var has_textarea = jQuery(this).data("has-textarea");
 			var has_select_dr = jQuery(this).data("has-select-dr");
+			var has_gender = jQuery(this).data("has-gender");
+			var has_age = jQuery(this).data("has-age");
 			var has_hdyhau = jQuery(this).data("has-hdyhau");
 			var has_wati_send = jQuery(this).data("wati-send");
 			
@@ -98,7 +109,7 @@
 				_tel_prefix = jQuery(this).find("select[name='telPrefix']").val(),
 				_tel = jQuery(this).find("input[name='tel']").val(),
 				_email = jQuery(this).find("input[name='email']").val(),
-				_age_group = jQuery(this).find("input[name='age']").val(),
+				_age_group = jQuery(this).find("select[name='age']").val(),
 				_booking_date = jQuery(this).find(".lfg_datepicker").val(),
 				_booking_time = jQuery(this).find(".lfg_timepicker").val(),
 				_remarks = "";
@@ -108,12 +119,19 @@
 			} else {
 				var _shop_area_code = jQuery(this).find('select[name=shop]').val();
 			}
-	
-			
-			if(has_textarea == 1) {
-				_remarks += jQuery(this).find("textarea[name='remarks']").val();
+
+			if(has_gender == 1) {
+				_remarks += "性別: " + jQuery(this).find("select[name='gender']").val();
 			}
-	
+
+			if(has_age == 1) {
+				_remarks += " | 年齡: " + jQuery(this).find("select[name='age'] option:selected").text();
+			}
+
+			if(has_textarea == 1) {
+				_remarks += " | " +jQuery(this).find("textarea[name='remarks']").val();
+			}
+
 			if(has_hdyhau == 1) {
 				_remarks += " | 途徑得知: " + jQuery(this).find("select[name='select_hdyhau']").val();
 			}
@@ -196,17 +214,19 @@
 	
 		jQuery.post(ajaxurl, data, function(msg) {
 			var jsonObj = JSON.parse(msg);
-			//console.log(jsonObj);
+			// console.log(jsonObj);
 			
 			if (jsonObj.result == 0) {
 				var origin   = window.location.origin;
 
+				var _phone = _tel_prefix + _tel;
 				// check if wati pay is enabled
 				var wati_send = jQuery("#ech_lfg_form").data("wati-send");				
 				if (wati_send == 1) {
-					var _phone = _tel_prefix + _tel;
 					var _wati_msg = jQuery("#ech_lfg_form").data("wati-msg");
-					
+					if (wati_booking_location == null || wati_booking_location == "") {
+						wati_booking_location = jQuery("#ech_lfg_form #shop option:selected").text();
+					}
 					
 					var itemsTEXT = [];
 					jQuery.each(jQuery("#ech_lfg_form input[name='item']:checked"), function(){
@@ -223,6 +243,10 @@
 					lfg_watiSendMsg(_wati_msg, _name, _phone, _email, _booking_date, _booking_time, wati_booking_item, wati_booking_location, _website_url);
 				} // if wati enabled 
 
+				var fbcapi_send = jQuery("#ech_lfg_form").data("fbcapi-send");				
+				if(fbcapi_send){
+					lfg_FBCapiSend(_phone, _email,_website_url,_user_ip);
+				}
 				// redirect to landing thank you page
 				if (tks_para != null) {
 					window.location.replace(origin+'/thanks?prod='+tks_para);
@@ -303,6 +327,47 @@
 			console.log("post error - xhr: " + JSON.stringify(xhr) + " status: " + status + " error: " + error)
 		});
 	} // lfg_watiAddContact
+
+	function lfg_FBCapiSend(_phone, _email,_website_url,_user_ip) {
+
+		var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
+		var fb_data = {
+			'action': 'lfg_FBCapi',
+			'website_url': _website_url,
+			'user_ip':_user_ip,
+			'user_agent':navigator.userAgent,
+			'user_email':_email,
+			'user_phone':_phone,
+			'user_fn':jQuery("#first_name").val(),
+			'user_ln':jQuery("#last_name").val()
+		};
+		
+		jQuery.post(ajaxurl, fb_data, function(rs) {
+			let result = JSON.parse(rs);
+			console.log('lead: '+result.lead.events_received);
+			console.log('purchase: '+result.purchase.events_received);
+		});
+
+	} // lfg_FBCapiSend
+
+	function FBCapiBtnClick() {
+
+		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
+		var ajaxurl = "/wp-admin/admin-ajax.php";
+
+		var fb_data = {
+			'action': 'FB_capi_wtsapp_btn_click',
+			'website_url': window.location.href,
+			'user_agent':navigator.userAgent,
+		};
+		
+		jQuery.post(ajaxurl, fb_data, function(rs) {
+			let result = JSON.parse(rs);
+			console.log('wts: '+result.wts.events_received);
+			console.log('purchase: '+result.purchase.events_received);
+		});
+
+	} // FBCapiBtnClick
 
 })( jQuery );
 

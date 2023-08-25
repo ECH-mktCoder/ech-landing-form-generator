@@ -18,7 +18,13 @@ Attribute | Description
 `default_r_code` (String)(*)[^1] | Default tcode MSP token
 `r` (Strings)[^2] | Tcode eg.`"t575, t127"`. If there are more than one tcodes using the same tcode token, use `|` to separate them. Eg. `"t575,t575g|t127,t127fb"`. All case insensitive.
 `r_code` (Strings) | Tcode token. Eg. `"TCODE1234, TCOED5678"`
+`last_name_required` (INT) | 0 = false, 1 = true. Default is 1.
 `email_required` (INT) | 0 = false, 1 = true. Default is 1.
+`has_gender` (INT) | Has Gender field. 0 = false, 1 = true. Default is 0.
+`has_age` (INT) | Has Age field. 0 = false, 1 = true. Default is 0.
+`age_option` (Strings) | "Age" options. Use comma to separate. Eg. `"Under 18, 19 - 23 years old"` 
+`age_code` (Strings)(*)[^1] | Age MSP token. Use comma to separate.
+`booking_date_required` (INT) | 0 = false, 1 = true. Default is 1.
 `item` (Strings)(*)[^1] | Item checkbox. Use comma to separate.
 `item_code` (Strings)(*)[^1] | Item MSP token. Use comma to separate.
 `item_label` (String) | Item label. Default is "*查詢項目"
@@ -31,10 +37,12 @@ Attribute | Description
 `textarea_label` (String) | Textarea placeholder. Default is "其他專業諮詢" 
 `has_hdyhau` (INT) | Has "How did you hear about us" field. 0 = false, 1 = true. Default is 0. 
 `hdyhau_item` (Strings) | "How did you hear about us" items. Use comma to separate. Eg. `"Facebook, Google"` 
+`submit_label` (String) | Submit label. Default is "提交" 
 `brand` (String) | This will override the global setting "brand name" value which is set in the dashboard. 
 `tks_para` (String) | URL parameter needs to pass to thank you page, usually product/treatment name. It is used for traffic tracking. Eg. `https://xxx.com/thanks?prod=TKS_PARA_VALUE`
 `wati_send` (INT) | Enable or disable the WATI auto send Whatsapp msg function. 0 = disable, 1 = enable. Default is 0.
 `wati_msg` (String) | Insert wati msg template name (provided by marketers)
+`fbcapi_send` (INT) | Enable or disable the FB Capi . 0 = disable, 1 = enable. Default is 0.
 
 
 

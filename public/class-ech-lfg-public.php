@@ -94,7 +94,13 @@ class Ech_Lfg_Public
 			'default_r_code' => null,			// default r token
 			'r' => null,						// tcode	
 			'r_code' => null,					// tcode token
+			'last_name_required' => '1',			// last_name_required. 0 = false, 1 = true
+			'has_gender' => '0',				// has gender field. 0 = false, 1 = true
+			'has_age' => '0',				// has age field. 0 = false, 1 = true
+			'age_option' => null,				// age option
+			'age_code' => null,				// age MSP token
 			'email_required' => '1',			// email_required. 0 = false, 1 = true
+			'booking_date_required' => '1',			// booking_date_required. 0 = false, 1 = true
 			'item' => null,						// item checkbox
 			'item_code' => null,				// item MSP token
 			'item_label' => '*查詢項目',		 // item label
@@ -110,11 +116,14 @@ class Ech_Lfg_Public
 			'textarea_label' => '其他專業諮詢',	 // textarea label
 			'has_hdyhau' => '0',				// has "How did you hear about us" field. 0 = false, 1 = true
 			'hdyhau_item' => null,				// "How did you hear about us" items
+			'submit_label'=> '提交', //submit button label
 			'brand' => $getBrandName,			// for MSP, website name value
 			'tks_para' => null,					// parameters need to pass to thank you page
 			// Wati data
 			'wati_send' => 0,
-			'wati_msg' => null
+			'wati_msg' => null,
+			//FB Capi
+			'fbcapi_send'=>'0'
 
 		), $atts);
 
@@ -162,7 +171,7 @@ class Ech_Lfg_Public
 
 		$paraArr['item'] = array_map('trim', str_getcsv($paraArr['item'], ','));
 		$paraArr['item_code'] = array_map('trim', str_getcsv($paraArr['item_code'], ','));
-
+		
 		$paraArr['shop'] = array_map('trim', str_getcsv($paraArr['shop'], ','));
 		$paraArr['shop_code'] = array_map('trim', str_getcsv($paraArr['shop_code'], ','));
 
@@ -180,14 +189,22 @@ class Ech_Lfg_Public
 		if (count($paraArr['r_code']) != count($paraArr['r'])) {
 			return '<div class="code_error">shortcode error - r_code and r count array value is not the same. They must be corresponding to each other.</div>';
 		}
+
 		if (count($paraArr['item']) != count($paraArr['item_code'])) {
 			return '<div class="code_error">shortcode error - item and item_code must be corresponding to each other</div>';
 		}
+
 		if (count($paraArr['shop']) != count($paraArr['shop_code'])) {
 			return '<div class="code_error">shortcode error - shop and shop_code must be corresponding to each other</div>';
 		}
 		if (count($paraArr['dr']) != count($paraArr['dr_code'])) {
 			return '<div class="code_error">shortcode error - dr and dr_code must be corresponding to each other</div>';
+		}
+
+		$has_gender = htmlspecialchars(str_replace(' ', '', $paraArr['has_gender']));
+		$has_age = htmlspecialchars(str_replace(' ', '', $paraArr['has_age']));
+		if ($has_age == "1" && empty($paraArr['age_option'])) {
+			return '<div class="code_error">shortcode error - at least one or more age_options</div>';
 		}
 
 		$has_hdyhau = htmlspecialchars(str_replace(' ', '', $paraArr['has_hdyhau']));
@@ -211,11 +228,25 @@ class Ech_Lfg_Public
 			$tks_para = $get_tks_para;
 		}
 
+		$last_name_required = htmlspecialchars(str_replace(' ', '', $paraArr['last_name_required']));
+		if ($last_name_required == "1") {
+			$last_name_required_bool = true;
+		} else {
+			$last_name_required_bool = false;
+		}
+
 		$email_required = htmlspecialchars(str_replace(' ', '', $paraArr['email_required']));
 		if ($email_required == "1") {
 			$email_required_bool = true;
 		} else {
 			$email_required_bool = false;
+		}
+
+		$booking_date_required = htmlspecialchars(str_replace(' ', '', $paraArr['booking_date_required']));
+		if ($booking_date_required == "1") {
+			$booking_date_required_bool = true;
+		} else {
+			$booking_date_required_bool = false;
 		}
 
 		$item_limited_num = htmlspecialchars(str_replace(' ', '', $paraArr['item_limited_num']));
@@ -229,6 +260,7 @@ class Ech_Lfg_Public
 		$brand = htmlspecialchars(str_replace(' ', '', $paraArr['brand']));
 		$item_label = htmlspecialchars(str_replace(' ', '', $paraArr['item_label']));
 		$shop_label = htmlspecialchars(str_replace(' ', '', $paraArr['shop_label']));
+		$submit_label = htmlspecialchars(str_replace(' ', '', $paraArr['submit_label']));
 
 		$has_textarea = htmlspecialchars(str_replace(' ', '', $paraArr['has_textarea']));
 		if ($has_textarea == "1") {
@@ -237,6 +269,23 @@ class Ech_Lfg_Public
 			$has_textarea_bool = false;
 		}
 		$textarea_label = htmlspecialchars(str_replace(' ', '', $paraArr['textarea_label']));
+
+		if ($has_gender == "1") {
+			$has_gender_bool = true;
+		} else {
+			$has_gender_bool = false;
+		}
+
+		if ($has_age == "1") {
+			$has_age_bool = true;
+		} else {
+			$has_age_bool = false;
+		}
+		$paraArr['age_option'] = array_map('trim', str_getcsv($paraArr['age_option'], ','));
+		$paraArr['age_code'] = array_map('trim', str_getcsv($paraArr['age_code'], ','));
+		if (count($paraArr['age_option']) != count($paraArr['age_code'])) {
+			return '<div class="code_error">shortcode error - age_option and age_code must be corresponding to each other</div>';
+		}
 
 		if ($has_hdyhau == "1") {
 			$has_hdyhau_bool = true;
@@ -256,12 +305,20 @@ class Ech_Lfg_Public
 				return '<div class="code_error">Wati error - Wati Key or Wati API are empty. Please setup in dashboard. </div>';
 			}
 		}
+		// FB Capi 
+		$fbcapi_send = htmlspecialchars(str_replace(' ', '', $paraArr['fbcapi_send']));
+		if($fbcapi_send){
+			$get_pixelId = get_option( 'ech_lfg_pixel_id' );
+			$get_fbAccessToken = get_option( 'ech_lfg_fb_access_token' );
 
-
+			if ( empty($get_pixelId) || empty($get_fbAccessToken) ) {
+				return '<div class="code_error">FB Capi error - Pixel id or FB Access Token are empty. Please setup in dashboard. </div>';
+			}
+		}
 		$ip = $_SERVER['REMOTE_ADDR'];
-		if ($ip = "::1") {
-			$ip = "127.0.0.1";
-		} // for locolhost xampp
+		// if ($ip = "::1") {
+		// 	$ip = "127.0.0.1";
+		// } // for locolhost xampp
 
 
 
@@ -369,19 +426,60 @@ class Ech_Lfg_Public
 		// *********** (END) Check if apply reCAPTCHA v3 ***************/
 
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" >
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'">
 			<div class="lfg_formMsg"></div>
 			<div class="form_row">
 				<input type="hidden" name="booking_time" value="">
 			</div>
-		<div class="form_row customer_info">
-			<div data-ech-field="last_name">
-				<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40" required >
-			</div>
+			';
+			$output .='
+			<div class="form_row customer_info">
+			';
+				if ($last_name_required_bool) {
+					$output .='
+					<div data-ech-field="last_name">
+						<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40" required >
+					</div>
+					';
+				} else {
+					$output .='
+					<div data-ech-field="last_name" style="display:none;">
+						<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40">
+					</div>
+					';
+				}
+			$output .= '
 			<div data-ech-field="first_name">
 				<input type="text" name="first_name" id="first_name" class="form-control" placeholder="*名字" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}" size="40" required >
 			</div>
-			<div data-ech-field="telPrefix">
+			';
+		//**** Gender
+		if ($has_gender_bool) {
+			$output .= '<div data-ech-field="gender">';
+			$output .= '<select  class="form-control" name="gender" id="gender" style="width: 100%;" >';
+			$output .= '<option disabled="" selected="" value="">*性別</option>';
+			$output .= '<option value="male">男性</option>';
+			$output .= '<option value="female">女性</option>';
+			$output .= '</select>';
+			$output .= '</div>';
+		}
+		//**** (END) Gender
+
+		//**** Age
+		if ($has_age_bool) {
+			$output .= '<div data-ech-field="age">';
+			$output .= '<select  class="form-control" name="age" id="age" style="width: 100%;" >';
+			$output .= '<option disabled="" selected="" value="">*年齡</option>';
+			for ($i = 0; $i < count($paraArr['age_option']); $i++) {
+				$output .= '<option value="' . $paraArr['age_code'][$i] . '">' . $paraArr['age_option'][$i] . '</option>';
+			}
+			$output .= '</select>';
+			$output .= '</div>';
+		}
+		//**** (END) Age
+
+		//**** Tel Prefix
+		$output .= '<div data-ech-field="telPrefix">
 				<select  class="form-control" name="telPrefix" id="tel_prefix" style="width: 100%;" required >
 					<option disabled="" selected="" value="">*請選擇</option>
 					<option value="+852">+852</option>
@@ -389,11 +487,16 @@ class Ech_Lfg_Public
 					<option value="+86">+86</option> 
 				</select>
 			</div>
-			<div data-ech-field="tel">
+			';
+		//**** (END) Tel Prefix
+
+		//**** Tel
+		$output .= '<div data-ech-field="tel">
 				<input type="text" name="tel" placeholder="*電話"  class="form-control" size="30" id="tel" pattern="[0-9]{8,11}" required >
 			</div>
 			';
-
+		//**** (END) Tel
+		
 		//**** Email
 		$output .= '<div data-ech-field="email">';
 		if ($email_required_bool) {
@@ -405,7 +508,6 @@ class Ech_Lfg_Public
 		//**** (END) Email
 
 		$output .= '</div> <!-- form_row -->';
-
 
 
 		$output .= '<div class="form_row">';
@@ -423,17 +525,26 @@ class Ech_Lfg_Public
 		}
 		//******* (END) Choose doctor if any
 
-		$output .= '
-		<div data-ech-field="booking_date">
-			<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40" required>
-		</div>
-		<div data-ech-field="booking_time">
-				<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40" required="">
-		</div>';
+		// Booking Date and Time
+		if ($booking_date_required_bool) {
+			$output .= '
+			<div data-ech-field="booking_date">
+				<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40" required>
+			</div>
+			<div data-ech-field="booking_time">
+					<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40" required="">
+			</div>';
+		}else{
+			$output .= '
+			<div data-ech-field="booking_date" style="display:none">
+				<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40">
+			</div>
+			<div data-ech-field="booking_time" style="display:none">
+					<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40">
+			</div>';
+		}
 
 		$output .= '</div><!-- form_row -->';
-
-
 
 		//**** Location Options
 		$output .= '
@@ -555,8 +666,8 @@ class Ech_Lfg_Public
 				</div>
 			</div><!-- form_row -->
 		
-			<div class="form_row">
-				<button type="submit" value="提交" id= "submitBtn" >提交</button>
+			<div class="form_row" data-ech-btn="submit">
+				<button type="submit" value="提交" id= "submitBtn" >' . $submit_label . '</button>
 			</div><!-- form_row -->
 		</form>
 		';

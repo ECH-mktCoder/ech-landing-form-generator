@@ -117,6 +117,8 @@ class Ech_Lfg_Admin {
 		register_setting( 'lfg_gen_settings', 'ech_lfg_submitBtn_text_hoverColor');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_wati_key');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_wati_api_domain');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_pixel_id');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_fb_access_token');
 	}
 
 	public function reg_lfg_recaptcha_settings() {

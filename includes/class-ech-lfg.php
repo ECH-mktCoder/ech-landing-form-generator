@@ -122,6 +122,7 @@ class Ech_Lfg {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-wati-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-fb-capi-public.php';
 
 		$this->loader = new Ech_Lfg_Loader();
 
@@ -177,6 +178,7 @@ class Ech_Lfg {
 
 		$plugin_public = new Ech_Lfg_Public( $this->get_plugin_name(), $this->get_version() );
 		$lfg_wati_public = new Ech_Lfg_Wati_Public( $this->get_plugin_name(), $this->get_version() );
+		$lfg_fb_capi_public = new Ech_Lfg_Fb_Capi_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -184,18 +186,26 @@ class Ech_Lfg {
 		// ^^^ register lfg_formToMSP function
 		$this->loader->add_action( 'wp_ajax_lfg_formToMSP', $plugin_public, 'lfg_formToMSP' );
 		$this->loader->add_action( 'wp_ajax_nopriv_lfg_formToMSP', $plugin_public, 'lfg_formToMSP' );
-
+		
 		// ^^^ register lfg_recaptVerify function
 		$this->loader->add_action( 'wp_ajax_lfg_recaptVerify', $plugin_public, 'lfg_recaptVerify' );
 		$this->loader->add_action( 'wp_ajax_nopriv_lfg_recaptVerify', $plugin_public, 'lfg_recaptVerify' );
-
-
+		
+		
 		// ^^^ register Wati functions
 		$this->loader->add_action( 'wp_ajax_lfg_WatiSendMsg', $lfg_wati_public, 'lfg_WatiSendMsg' );
 		$this->loader->add_action( 'wp_ajax_nopriv_lfg_WatiSendMsg', $lfg_wati_public, 'lfg_WatiSendMsg' );
-
+		
 		$this->loader->add_action( 'wp_ajax_lfg_WatiAddContact', $lfg_wati_public, 'lfg_WatiAddContact' );
 		$this->loader->add_action( 'wp_ajax_nopriv_lfg_WatiAddContact', $lfg_wati_public, 'lfg_WatiAddContact' );
+		
+		// ^^^ register FB Lead CAPI
+		$this->loader->add_action( 'wp_ajax_lfg_FBCapi', $lfg_fb_capi_public, 'lfg_FBCapi' );
+		$this->loader->add_action( 'wp_ajax_nopriv_lfg_FBCapi', $lfg_fb_capi_public, 'lfg_FBCapi' );
+		
+		// ^^^ register FB Whatsapp Click CAPI
+		$this->loader->add_action( 'wp_ajax_FB_capi_wtsapp_btn_click', $lfg_fb_capi_public, 'FB_capi_wtsapp_btn_click' );
+		$this->loader->add_action( 'wp_ajax_nopriv_FB_capi_wtsapp_btn_click', $lfg_fb_capi_public, 'FB_capi_wtsapp_btn_click' );
 
 		// ^^^ Add shortcodes
 		$this->loader->add_shortcode( 'ech_lfg', $plugin_public, 'display_ech_lfg');

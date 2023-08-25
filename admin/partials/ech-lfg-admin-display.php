@@ -92,6 +92,16 @@
                 <input type="text" name="ech_lfg_wati_api_domain" value="<?= htmlspecialchars(get_option( 'ech_lfg_wati_api_domain' ))?>" id="" />
             </div>
 
+            <h2>FB Capi Settings</h2>
+            <div class="form_row">
+                <label>Pixel id: </label>
+                <input type="text" name="ech_lfg_pixel_id" value="<?= htmlspecialchars(get_option( 'ech_lfg_pixel_id' ))?>" id="" />
+            </div>
+
+            <div class="form_row">
+                <label>FB Access Token: </label>
+                <input type="text" name="ech_lfg_fb_access_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_fb_access_token' ))?>" id="" />
+            </div>
 
 
             <div class="form_row">
