@@ -37,6 +37,8 @@ class Ech_Lfg_Fb_Capi_Public
 
   public function lfg_FBCapi() {
 
+		$event_id1 = $_POST['event_id1'];
+		$event_id2 = $_POST['event_id2'];
 		$current_page = $_POST['website_url'];
 		$user_ip = $_POST['user_ip'];
 		$user_agent = $_POST['user_agent'];
@@ -48,6 +50,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$param_data1 = '{
 										"data": [
 												{
+														"event_id": "'.$event_id1.'",
 														"event_name": "Lead",
 														"event_time": '.time().',
 														"action_source": "website",
@@ -67,6 +70,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$param_data2 = '{
 				"data": [
 						{
+								"event_id": "'.$event_id2.'",
 								"event_name": "Purchase",
 								"event_time": '.time().',
 								"action_source": "website",
@@ -109,6 +113,8 @@ class Ech_Lfg_Fb_Capi_Public
 
 	public function FB_capi_wtsapp_btn_click() {
 
+		$event_id1 = $_POST['event_id1'];
+		$event_id2 = $_POST['event_id2'];
 		$current_page = $_POST['website_url'];
 		// $user_ip = $_POST['user_ip'];
 		$user_ip = $_SERVER['REMOTE_ADDR'];
@@ -116,7 +122,8 @@ class Ech_Lfg_Fb_Capi_Public
 		$param_data1 = '{
 				"data": [
 						{
-								"event_name": "Whatsapp_button",
+								"event_id": "'.$event_id.'",
+								"event_name": "Contact",
 								"event_time": '.time().',
 								"action_source": "website",
 								"event_source_url": "'.$current_page.'",
@@ -131,6 +138,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$param_data2 = '{
 				"data": [
 						{
+								"event_id": "'.$event_id2.'",
 								"event_name": "Purchase",
 								"event_time": '.time().',
 								"action_source": "website",
@@ -151,7 +159,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$purchase	= $this->fb_curl($param_data2);
 
 		$result_ary = array(
-			'wts' => json_decode($wts),
+			'contact' => json_decode($wts),
 			'purchase' => json_decode($purchase)
 		);
 		$result = json_encode($result_ary);

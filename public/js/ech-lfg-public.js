@@ -37,17 +37,18 @@
 			
 			
 			jQuery('.ech_lfg_form input.limited_checkbox').on('change', function(evt) {
+				let thisForm = jQuery(this).parents(".ech_lfg_form");
 				var tempArr = [];
-				jQuery(".ech_lfg_form input.limited_checkbox[name='item']:checked").each(function(){
+				jQuery(thisForm).find("input.limited_checkbox[name='item']:checked").each(function(){
 					var itemText = jQuery(this).parent().text();
 					tempArr[tempArr.length] = itemText;
 				});
 				//console.log(tempArr);
 				if(tempArr.length == 0) {
-					var item_label = jQuery("#ech_lfg_form").data("item-label");
-					jQuery(".lfg_dropdown_title").html(item_label);
+					var item_label = jQuery(thisForm).data("item-label");
+					jQuery(thisForm).find(".lfg_dropdown_title").html(item_label);
 				} else {
-					jQuery(".lfg_dropdown_title").html(tempArr.join());
+					jQuery(thisForm).find(".lfg_dropdown_title").html(tempArr.join());
 				}
 				
 	
@@ -137,7 +138,7 @@
 			}
 
 			if(has_wati_send == 1) {
-				_remarks += " | ePay Ref Code: " + jQuery("#ech_lfg_form").data("epay-refcode");
+				_remarks += " | ePay Ref Code: " + jQuery(this).data("epay-refcode");
 			}
 	
 	
@@ -159,6 +160,7 @@
 
 					// if apply reCAPTCHA
 					var applyRecapt = jQuery(this).data("apply-recapt");
+					var thisForm = jQuery(this);
 					if ( applyRecapt == "1") {
 						var recaptSiteKey = jQuery(this).data("recapt-site-key");
 						var recaptScore = jQuery(this).data("recapt-score");
@@ -172,7 +174,7 @@
 									var recaptObj = JSON.parse(recapt_msg);
 									if(recaptObj.success && recaptObj.score >= recaptScore) {
 										// if recapt success then send to MSP
-										lfg_dataSendToMSP(_token, _source, _name, _user_ip, _website_name, _website_url, items, _tel_prefix, _tel, _email, _age_group, _shop_area_code, _booking_date, _booking_time, _remarks, ajaxurl, tks_para);
+										lfg_dataSendToMSP(thisForm, _token, _source, _name, _user_ip, _website_name, _website_url, items, _tel_prefix, _tel, _email, _age_group, _shop_area_code, _booking_date, _booking_time, _remarks, ajaxurl, tks_para);
 									}
 								});
 							}); // grecaptcha.execute.then
@@ -180,9 +182,7 @@
 							
 					} else {
 						// if recapt is disabled, send to msp
-						lfg_dataSendToMSP(_token, _source, _name, _user_ip, _website_name, _website_url, items, _tel_prefix, _tel, _email, _age_group, _shop_area_code, _booking_date, _booking_time, _remarks, ajaxurl, tks_para);
-
-						
+						lfg_dataSendToMSP(thisForm, _token, _source, _name, _user_ip, _website_name, _website_url, items, _tel_prefix, _tel, _email, _age_group, _shop_area_code, _booking_date, _booking_time, _remarks, ajaxurl, tks_para);
 					}
 
 				} // checked_item_count
@@ -193,7 +193,7 @@
 
 
 
-	function lfg_dataSendToMSP(_token, _source, _name, _user_ip, _website_name, _website_url, items, _tel_prefix, _tel, _email, _age_group, _shop_area_code, _booking_date, _booking_time, _remarks, ajaxurl, tks_para) {
+	function lfg_dataSendToMSP(thisForm, _token, _source, _name, _user_ip, _website_name, _website_url, items, _tel_prefix, _tel, _email, _age_group, _shop_area_code, _booking_date, _booking_time, _remarks, ajaxurl, tks_para) {
 		var data = {'action': 'lfg_formToMSP',
 					'token': _token, 
 					'source': _source, 
@@ -221,31 +221,29 @@
 
 				var _phone = _tel_prefix + _tel;
 				// check if wati pay is enabled
-				var wati_send = jQuery("#ech_lfg_form").data("wati-send");				
+				var wati_send = jQuery(thisForm).data("wati-send");								
 				if (wati_send == 1) {
-					var _wati_msg = jQuery("#ech_lfg_form").data("wati-msg");
-					if (wati_booking_location == null || wati_booking_location == "") {
-						wati_booking_location = jQuery("#ech_lfg_form #shop option:selected").text();
-					}
+					console.log('wati enabled');
+					var _wati_msg = jQuery(thisForm).data("wati-msg");
 					
 					var itemsTEXT = [];
-					jQuery.each(jQuery("#ech_lfg_form input[name='item']:checked"), function(){
+					jQuery.each(jQuery(thisForm).find("input[name='item']:checked"), function(){
 						itemsTEXT.push(jQuery(this).data('text-value'));
 					});
 					var wati_booking_item = itemsTEXT.join(", ");
 
-					var wati_booking_location = jQuery("#ech_lfg_form input[name='shop']:checked").data("shop-text-value");
+					var wati_booking_location = jQuery(thisForm).find("input[name='shop']:checked").data("shop-text-value");
 					if (wati_booking_location == null || wati_booking_location == "") {
-						wati_booking_location = jQuery("#ech_lfg_form #shop option:selected").text();
+						wati_booking_location = jQuery(thisForm).find("select[name='shop'] option:selected").text();
 					}
 
 					// Wati Send
-					lfg_watiSendMsg(_wati_msg, _name, _phone, _email, _booking_date, _booking_time, wati_booking_item, wati_booking_location, _website_url);
+					lfg_watiSendMsg(thisForm, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, wati_booking_item, wati_booking_location, _website_url);
 				} // if wati enabled 
 
-				var fbcapi_send = jQuery("#ech_lfg_form").data("fbcapi-send");				
+				var fbcapi_send = jQuery(thisForm).data("fbcapi-send");				
 				if(fbcapi_send){
-					lfg_FBCapiSend(_phone, _email,_website_url,_user_ip);
+					lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip);
 				}
 				// redirect to landing thank you page
 				if (tks_para != null) {
@@ -253,7 +251,6 @@
 				} else {
 					window.location.replace(origin+'/thanks');
 				}
-				
 
 			} else {
 				alert("無法提交閣下資料, 請重試");
@@ -264,10 +261,10 @@
 	}
 
 
-	function lfg_watiSendMsg(_watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url) {
+	function lfg_watiSendMsg(thisForm, _watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url) {
 
-		var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
-		var _epayRefCode = jQuery("#ech_lfg_form").data("epay-refcode");
+		var ajaxurl = jQuery(thisForm).data("ajaxurl");
+		var _epayRefCode = jQuery(thisForm).data("epay-refcode");
 		var watiData = {
 			'action': 'lfg_WatiSendMsg',
 			'wati_msg': _watiMsg,
@@ -285,7 +282,7 @@
 
 		jQuery.post(ajaxurl, watiData, function(wati_msg) {
 			var watiObj = JSON.parse(wati_msg);
-			//console.log(watiObj);
+			// console.log(watiObj);
 			if (watiObj.result) {
 				console.log('wtsapp msg sent');
 			} else {
@@ -300,8 +297,8 @@
 
 
 
-	function lfg_watiAddContact(_name, _phone, _email, _website_url, _source) {
-		var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
+	function lfg_watiAddContact(thisForm, _name, _phone, _email, _website_url, _source) {
+		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		var watiContactData = {
 			'action': 'lfg_WatiAddContact',
 			'name': _name, 
@@ -328,9 +325,11 @@
 		});
 	} // lfg_watiAddContact
 
-	function lfg_FBCapiSend(_phone, _email,_website_url,_user_ip) {
+	function lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip) {
 
-		var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
+		var ajaxurl = jQuery(thisForm).data("ajaxurl");
+		const event_id1 = 'Lead_' + new Date().getTime();
+		const event_id2 = 'Purchase' + new Date().getTime();
 		var fb_data = {
 			'action': 'lfg_FBCapi',
 			'website_url': _website_url,
@@ -338,10 +337,13 @@
 			'user_agent':navigator.userAgent,
 			'user_email':_email,
 			'user_phone':_phone,
-			'user_fn':jQuery("#first_name").val(),
-			'user_ln':jQuery("#last_name").val()
+			'user_fn':jQuery(thisForm).find("input[name='first_name']").val(),
+			'user_ln':jQuery(thisForm).find("input[name='last_name']").val(),
+			'event_id1': event_id1,
+			'event_id2': event_id2
 		};
-		
+		fbq('track', 'Lead', {}, {eventID: event_id1});
+		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: event_id2});
 		jQuery.post(ajaxurl, fb_data, function(rs) {
 			let result = JSON.parse(rs);
 			console.log('lead: '+result.lead.events_received);
@@ -352,18 +354,23 @@
 
 	function FBCapiBtnClick() {
 
+		const event_id1 = 'Contact_' + new Date().getTime();
+		const event_id2 = 'Purchase' + new Date().getTime();
 		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
 		var ajaxurl = "/wp-admin/admin-ajax.php";
-
 		var fb_data = {
 			'action': 'FB_capi_wtsapp_btn_click',
 			'website_url': window.location.href,
 			'user_agent':navigator.userAgent,
+			'event_id1': event_id1,
+			'event_id2': event_id2
 		};
-		
+		fbq('track', 'Contact', {}, {eventID: event_id1});
+		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: event_id2});
+
 		jQuery.post(ajaxurl, fb_data, function(rs) {
 			let result = JSON.parse(rs);
-			console.log('wts: '+result.wts.events_received);
+			console.log('contact: '+result.contact.events_received);
 			console.log('purchase: '+result.purchase.events_received);
 		});
 
