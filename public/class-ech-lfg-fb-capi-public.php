@@ -122,7 +122,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$param_data1 = '{
 				"data": [
 						{
-								"event_id": "'.$event_id.'",
+								"event_id": "'.$event_id1.'",
 								"event_name": "Contact",
 								"event_time": '.time().',
 								"action_source": "website",
