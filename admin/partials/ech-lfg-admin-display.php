@@ -103,6 +103,16 @@
                 <input type="text" name="ech_lfg_fb_access_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_fb_access_token' ))?>" id="" />
             </div>
 
+            <h2>Form Note Settings</h2>
+            <div class="form_row">
+                <label>Phone: </label>
+                <input type="text" name="ech_lfg_note_phone" value="<?= htmlspecialchars(get_option( 'ech_lfg_note_phone' ))?>" id="" />
+            </div>
+
+            <div class="form_row">
+                <label>Whatsapp Link: </label>
+                <input type="text" name="ech_lfg_note_whatapps_link" value="<?= htmlspecialchars(get_option( 'ech_lfg_note_whatapps_link' ))?>" id="" />
+            </div>
 
             <div class="form_row">
                 <button type="submit"> Save </button>

@@ -123,7 +123,8 @@ class Ech_Lfg_Public
 			'wati_send' => 0,
 			'wati_msg' => null,
 			//FB Capi
-			'fbcapi_send'=>'0'
+			'fbcapi_send'=>'0', 		  // fbcapi_required. 0 = false, 1 = true
+			'note_required' => '0'		//note_required. 0 = false, 1 = true
 
 		), $atts);
 
@@ -315,6 +316,15 @@ class Ech_Lfg_Public
 				return '<div class="code_error">FB Capi error - Pixel id or FB Access Token are empty. Please setup in dashboard. </div>';
 			}
 		}
+		$note_required = htmlspecialchars(str_replace(' ', '', $paraArr['note_required']));
+		if($note_required){
+			$note_phone = get_option( 'ech_lfg_note_phone' );
+			$note_whatapps_link = get_option( 'ech_lfg_note_whatapps_link' );
+
+			if ( empty($note_phone) || empty($note_whatapps_link) ) {
+				return '<div class="code_error">Note error - Note Phone or Whatsapp Link are empty. Please setup in dashboard. </div>';
+			}
+		}
 		$ip = $_SERVER['REMOTE_ADDR'];
 		// if ($ip = "::1") {
 		// 	$ip = "127.0.0.1";
@@ -426,7 +436,7 @@ class Ech_Lfg_Public
 		// *********** (END) Check if apply reCAPTCHA v3 ***************/
 
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'">
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'">
 			<div class="lfg_formMsg"></div>
 			<div class="form_row">
 				<input type="hidden" name="booking_time" value="">
@@ -662,11 +672,15 @@ class Ech_Lfg_Public
 
 					<p class="redWord">本中心將與您聯絡確認詳情，方為確實是次預約。</p>
 					<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a href="https://echealthcare.com/zh/privacy-policy"   target="_blank">私隱政策聲明</a>。</label>
-					<small> *必需填寫</small>
+					<small> *必需填寫</small>';
+		if($note_required){
+			$output .= '<p data-ech-field="note">'.$this->form_echolang(['For same day reservation, please <a href="tel:tel:'.$note_phone.'">call</a> or message us on <a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>.','當天預約請<a href="tel:'.$note_phone.'">致電</a>或透過<a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>聯繫我們。','当天预约请<a href="tel:'.$note_phone.'">致电</a>或透过<a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>联系我们。']).'</p>';
+		}
+		$output .= ' 
 				</div>
-			</div><!-- form_row -->
+			</div><!-- form_row -->';
 		
-			<div class="form_row" data-ech-btn="submit">
+		$output .= '<div class="form_row" data-ech-btn="submit">
 				<button type="submit" value="提交" id= "submitBtn" >' . $submit_label . '</button>
 			</div><!-- form_row -->
 		</form>
@@ -754,6 +768,27 @@ class Ech_Lfg_Public
 		return $rs;
 	}
 
+	public function form_echolang($stringArr) {
+		global $TRP_LANGUAGE;
+
+		switch ($TRP_LANGUAGE) {
+			case 'zh_HK':
+				$langString = $stringArr[1];
+				break;
+			case 'zh_CN':
+				$langString = $stringArr[2];
+				break;
+			default:
+				$langString = $stringArr[0];
+		}
+
+		if(empty($langString) || $langString == '' || $langString == null) {
+			$langString = $stringArr[1]; //zh_HK
+		}
+
+		return $langString;
+
+	}
 
 
 	
