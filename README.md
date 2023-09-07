@@ -28,6 +28,7 @@ Attribute | Description
 `item` (Strings)(*)[^1] | Item checkbox. Use comma to separate.
 `item_code` (Strings)(*)[^1] | Item MSP token. Use comma to separate.
 `item_label` (String) | Item label. Default is "*查詢項目"
+`item_required` (INT) | 0 = false, 1 = true. Default is 1.
 `is_item_limited` (INT) | Are the items limited. 0 = false, 1 = true. Default is 0
 `item_limited_num` (INT) | No. of options can the user choose. Default is 1
 `shop` (trings)(*)[^1] | Shop options. Use comma to separate.
