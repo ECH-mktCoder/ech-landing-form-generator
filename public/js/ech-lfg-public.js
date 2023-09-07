@@ -61,20 +61,26 @@
 		} 
 		/*********** (END) Checkbox dropdown list ***********/
 		
-		/*********** Button Click send to FB Capi ***********/
+		/*********** Whatsapp Button Click send to FB Capi ***********/
 		jQuery(".fbCapiBtn,[data-btn='whatsapp'],.f_wtsapp_btn a").on('click', function(){
 			let webDomain = window.location.host;
 			// there is global trigger code in Drrborn web function.php 
 			if(webDomain != "www.drreborn.com"){
-				FBCapiBtnClick();
+				FBCapiWtsBtnClick();
 			}
 		});
-		/*********** (END) Button Click send to FB Capi ***********/
+		/*********** (END) Whatsapp Button Click send to FB Capi ***********/
 	
+		/*********** Phone Click send to FB Capi ***********/
+		jQuery("[data-btn='phone'],.f_phone_btn a").on('click', function(){
+				FBCapiPhoneBtnClick();
+		});
+		/*********** (END) Phone Click send to FB Capi ***********/
+
 		/*********** Form Submit ***********/
 		jQuery('.ech_lfg_form').on("submit", function(e){
 			e.preventDefault();
-	
+			currentTime('submit');
 			var r = jQuery(this).data("r");
 			var c_token = jQuery(this).data("c-token");
 			var ip = jQuery(this).data("ip");
@@ -89,7 +95,7 @@
 			var has_age = jQuery(this).data("has-age");
 			var has_hdyhau = jQuery(this).data("has-hdyhau");
 			var has_wati_send = jQuery(this).data("wati-send");
-			
+			var item_required = jQuery(this).data("item-required");
 	
 			var items = [];
 			jQuery.each(jQuery(this).find("input[name='item']:checked"), function(){
@@ -150,7 +156,7 @@
 				return false;
 			} else {
 				var checked_item_count = jQuery(this).find("input[name='item']:checked").length;
-				if( checked_item_count == 0) {
+				if( checked_item_count == 0 && item_required == 1) {
 					jQuery(this).find(".lfg_formMsg").html("請選擇咨詢項目");
 					return false;
 				} else {
@@ -211,11 +217,11 @@
 					'booking_time': _booking_time,
 					'remarks': _remarks
 				};
-	
+		currentTime('post to msp');
 		jQuery.post(ajaxurl, data, function(msg) {
+			currentTime('Msp response');
 			var jsonObj = JSON.parse(msg);
 			// console.log(jsonObj);
-			
 			if (jsonObj.result == 0) {
 				var origin   = window.location.origin;
 
@@ -352,7 +358,7 @@
 
 	} // lfg_FBCapiSend
 
-	function FBCapiBtnClick() {
+	function FBCapiWtsBtnClick() {
 
 		const event_id1 = 'Contact_' + new Date().getTime();
 		const event_id2 = 'Purchase' + new Date().getTime();
@@ -374,8 +380,33 @@
 			console.log('purchase: '+result.purchase.events_received);
 		});
 
-	} // FBCapiBtnClick
+	} // FBCapiWtsBtnClick
 
+	function FBCapiPhoneBtnClick() {
+
+		const event_id1 = 'Phone_' + new Date().getTime();
+		const event_id2 = 'Purchase' + new Date().getTime();
+		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
+		var ajaxurl = "/wp-admin/admin-ajax.php";
+		var fb_data = {
+			'action': 'FB_capi_phone_btn_click',
+			'website_url': window.location.href,
+			'user_agent':navigator.userAgent,
+			'event_id1': event_id1,
+			'event_id2': event_id2
+		};
+		fbq('track', 'Phone', {}, {eventID: event_id1});
+		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: event_id2});
+
+		jQuery.post(ajaxurl, fb_data, function(rs) {
+			let result = JSON.parse(rs);
+			console.log('phone: '+result.phone.events_received);
+			console.log('purchase: '+result.purchase.events_received);
+		});
+
+	} // FBCapiPhoneBtnClick
+
+	
 })( jQuery );
 
 
@@ -386,3 +417,18 @@ function nosunday(date) {
     return [(day > 0), ''];	
 }
 	
+function currentTime(action) {
+	// Get the current time
+	let currentTime = new Date();
+	// Extract hours, minutes, and seconds
+	let hours = currentTime.getHours();
+	let minutes = currentTime.getMinutes();
+	let seconds = currentTime.getSeconds();
+	// Formatting to ensure leading zeros for single-digit values
+	hours = (hours < 10 ? "0" : "") + hours;
+	minutes = (minutes < 10 ? "0" : "") + minutes;
+	seconds = (seconds < 10 ? "0" : "") + seconds;
+	// Concatenate hours, minutes, and seconds and log to the console
+	let timeString = hours + ":" + minutes + ":" + seconds;
+	console.log(action+" time:", timeString);
+}

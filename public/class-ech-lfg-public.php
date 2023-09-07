@@ -104,6 +104,7 @@ class Ech_Lfg_Public
 			'item' => null,						// item checkbox
 			'item_code' => null,				// item MSP token
 			'item_label' => '*查詢項目',		 // item label
+			'item_required' => '1',		 // item_required. 0 = false, 1 = true
 			'is_item_limited' => '0',			// are the items limited. 0 = false, 1 = true
 			'item_limited_num' => '1',			// No. of options can the user choose
 			'has_select_dr' => '0',				// has Select Doctor field. 0 = false, 1 = true
@@ -257,6 +258,7 @@ class Ech_Lfg_Public
 		} else {
 			$limited_bool = false;
 		}
+		$item_required = htmlspecialchars(str_replace(' ', '', $paraArr['item_required']));
 
 		$brand = htmlspecialchars(str_replace(' ', '', $paraArr['brand']));
 		$item_label = htmlspecialchars(str_replace(' ', '', $paraArr['item_label']));
@@ -436,7 +438,7 @@ class Ech_Lfg_Public
 		// *********** (END) Check if apply reCAPTCHA v3 ***************/
 
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'">
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'">
 			<div class="lfg_formMsg"></div>
 			<div class="form_row">
 				<input type="hidden" name="booking_time" value="">
