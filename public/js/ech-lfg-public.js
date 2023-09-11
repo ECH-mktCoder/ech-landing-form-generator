@@ -395,7 +395,7 @@
 			'event_id1': event_id1,
 			'event_id2': event_id2
 		};
-		fbq('track', 'Phone', {}, {eventID: event_id1});
+		fbq('track', 'Phone_call', {}, {eventID: event_id1});
 		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: event_id2});
 
 		jQuery.post(ajaxurl, fb_data, function(rs) {
