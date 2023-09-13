@@ -37,8 +37,7 @@ class Ech_Lfg_Fb_Capi_Public
 
   public function lfg_FBCapi() {
 
-		$event_id1 = $_POST['event_id1'];
-		$event_id2 = $_POST['event_id2'];
+		$event_id = $_POST['event_id'];
 		$current_page = $_POST['website_url'];
 		$user_ip = $_POST['user_ip'];
 		$user_agent = $_POST['user_agent'];
@@ -50,7 +49,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$param_data1 = '{
 										"data": [
 												{
-														"event_id": "'.$event_id1.'",
+														"event_id": "Lead'.$event_id.'",
 														"event_name": "Lead",
 														"event_time": '.time().',
 														"action_source": "website",
@@ -70,7 +69,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$param_data2 = '{
 				"data": [
 						{
-								"event_id": "'.$event_id2.'",
+								"event_id": "Purchase'.$event_id.'",
 								"event_name": "Purchase",
 								"event_time": '.time().',
 								"action_source": "website",
@@ -109,122 +108,6 @@ class Ech_Lfg_Fb_Capi_Public
 		}  
 		
 		wp_die();
-	}
-
-	public function FB_capi_wtsapp_btn_click() {
-
-		$event_id1 = $_POST['event_id1'];
-		$event_id2 = $_POST['event_id2'];
-		$current_page = $_POST['website_url'];
-		// $user_ip = $_POST['user_ip'];
-		$user_ip = $_SERVER['REMOTE_ADDR'];
-		$user_agent = $_POST['user_agent'];
-		$param_data1 = '{
-				"data": [
-						{
-								"event_id": "'.$event_id1.'",
-								"event_name": "Contact",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'"
-								}
-						}
-				]
-		}'; //param_data1
-
-		$param_data2 = '{
-				"data": [
-						{
-								"event_id": "'.$event_id2.'",
-								"event_name": "Purchase",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"custom_data":{
-                    "content_name": "whatsapp",
-                    "currency": "HKD",
-                    "value": "0"
-                },
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'"
-								}
-						}
-				]
-		}'; //param_data2
-		$contact	= $this->fb_curl($param_data1);
-		$purchase	= $this->fb_curl($param_data2);
-
-		$result_ary = array(
-			'contact' => json_decode($contact),
-			'purchase' => json_decode($purchase)
-		);
-		$result = json_encode($result_ary);
-		echo $result;
-
-		wp_die();
-	
-	}
-
-	public function FB_capi_phone_btn_click() {
-
-		$event_id1 = $_POST['event_id1'];
-		$event_id2 = $_POST['event_id2'];
-		$current_page = $_POST['website_url'];
-		// $user_ip = $_POST['user_ip'];
-		$user_ip = $_SERVER['REMOTE_ADDR'];
-		$user_agent = $_POST['user_agent'];
-		$param_data1 = '{
-				"data": [
-						{
-								"event_id": "'.$event_id1.'",
-								"event_name": "Phone_call",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'"
-								}
-						}
-				]
-		}'; //param_data1
-
-		$param_data2 = '{
-				"data": [
-						{
-								"event_id": "'.$event_id2.'",
-								"event_name": "Purchase",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"custom_data":{
-                    "content_name": "phone_call",
-                    "currency": "HKD",
-                    "value": "0"
-                },
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'"
-								}
-						}
-				]
-		}'; //param_data2
-		$phone	= $this->fb_curl($param_data1);
-		$purchase	= $this->fb_curl($param_data2);
-
-		$result_ary = array(
-			'phone' => json_decode($phone),
-			'purchase' => json_decode($purchase)
-		);
-		$result = json_encode($result_ary);
-		echo $result;
-
-		wp_die();
-	
 	}
 
 	private function fb_curl($param_data) {

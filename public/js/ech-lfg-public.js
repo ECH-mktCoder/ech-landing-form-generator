@@ -60,22 +60,6 @@
 	
 		} 
 		/*********** (END) Checkbox dropdown list ***********/
-		
-		/*********** Whatsapp Button Click send to FB Capi ***********/
-		jQuery(".fbCapiBtn,[data-btn='whatsapp'],.f_wtsapp_btn a").on('click', function(){
-			let webDomain = window.location.host;
-			// there is global trigger code in Drrborn web function.php 
-			if(webDomain != "www.drreborn.com"){
-				FBCapiWtsBtnClick();
-			}
-		});
-		/*********** (END) Whatsapp Button Click send to FB Capi ***********/
-	
-		/*********** Phone Click send to FB Capi ***********/
-		jQuery("[data-btn='phone'],.f_phone_btn a").on('click', function(){
-				FBCapiPhoneBtnClick();
-		});
-		/*********** (END) Phone Click send to FB Capi ***********/
 
 		/*********** Form Submit ***********/
 		jQuery('.ech_lfg_form').on("submit", function(e){
@@ -334,8 +318,7 @@
 	function lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip) {
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
-		const event_id1 = 'Lead_' + new Date().getTime();
-		const event_id2 = 'Purchase' + new Date().getTime();
+		const event_id = 'Lead_' + new Date().getTime();
 		var fb_data = {
 			'action': 'lfg_FBCapi',
 			'website_url': _website_url,
@@ -345,66 +328,23 @@
 			'user_phone':_phone,
 			'user_fn':jQuery(thisForm).find("input[name='first_name']").val(),
 			'user_ln':jQuery(thisForm).find("input[name='last_name']").val(),
-			'event_id1': event_id1,
-			'event_id2': event_id2
+			'event_id': event_id
 		};
-		fbq('track', 'Lead', {}, {eventID: event_id1});
-		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: event_id2});
+		fbq('track', 'Lead', {}, {eventID: 'Lead' + event_id});
+		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: 'Purchase' + event_id});
 		jQuery.post(ajaxurl, fb_data, function(rs) {
 			let result = JSON.parse(rs);
-			console.log('lead: '+result.lead.events_received);
-			console.log('purchase: '+result.purchase.events_received);
+			Object.keys(result).forEach(eventName => {
+				const event = result[eventName];
+				if (event.hasOwnProperty('events_received')) {
+						console.log(eventName + ': ' + event.events_received);
+				}else{
+					console(event);
+				}
+			});
 		});
 
 	} // lfg_FBCapiSend
-
-	function FBCapiWtsBtnClick() {
-
-		const event_id1 = 'Contact_' + new Date().getTime();
-		const event_id2 = 'Purchase' + new Date().getTime();
-		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
-		var ajaxurl = "/wp-admin/admin-ajax.php";
-		var fb_data = {
-			'action': 'FB_capi_wtsapp_btn_click',
-			'website_url': window.location.href,
-			'user_agent':navigator.userAgent,
-			'event_id1': event_id1,
-			'event_id2': event_id2
-		};
-		fbq('track', 'Contact', {}, {eventID: event_id1});
-		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: event_id2});
-
-		jQuery.post(ajaxurl, fb_data, function(rs) {
-			let result = JSON.parse(rs);
-			console.log('contact: '+result.contact.events_received);
-			console.log('purchase: '+result.purchase.events_received);
-		});
-
-	} // FBCapiWtsBtnClick
-
-	function FBCapiPhoneBtnClick() {
-
-		const event_id1 = 'Phone_' + new Date().getTime();
-		const event_id2 = 'Purchase' + new Date().getTime();
-		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
-		var ajaxurl = "/wp-admin/admin-ajax.php";
-		var fb_data = {
-			'action': 'FB_capi_phone_btn_click',
-			'website_url': window.location.href,
-			'user_agent':navigator.userAgent,
-			'event_id1': event_id1,
-			'event_id2': event_id2
-		};
-		fbq('track', 'Phone_call', {}, {eventID: event_id1});
-		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: event_id2});
-
-		jQuery.post(ajaxurl, fb_data, function(rs) {
-			let result = JSON.parse(rs);
-			console.log('phone: '+result.phone.events_received);
-			console.log('purchase: '+result.purchase.events_received);
-		});
-
-	} // FBCapiPhoneBtnClick
 
 	
 })( jQuery );

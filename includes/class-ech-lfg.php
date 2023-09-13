@@ -202,14 +202,6 @@ class Ech_Lfg {
 		// ^^^ register FB Lead CAPI
 		$this->loader->add_action( 'wp_ajax_lfg_FBCapi', $lfg_fb_capi_public, 'lfg_FBCapi' );
 		$this->loader->add_action( 'wp_ajax_nopriv_lfg_FBCapi', $lfg_fb_capi_public, 'lfg_FBCapi' );
-		
-		// ^^^ register FB Whatsapp Click CAPI
-		$this->loader->add_action( 'wp_ajax_FB_capi_wtsapp_btn_click', $lfg_fb_capi_public, 'FB_capi_wtsapp_btn_click' );
-		$this->loader->add_action( 'wp_ajax_nopriv_FB_capi_wtsapp_btn_click', $lfg_fb_capi_public, 'FB_capi_wtsapp_btn_click' );
-
-		// ^^^ register FB Phone Click CAPI
-		$this->loader->add_action( 'wp_ajax_FB_capi_phone_btn_click', $lfg_fb_capi_public, 'FB_capi_phone_btn_click' );
-		$this->loader->add_action( 'wp_ajax_nopriv_FB_capi_phone_btn_click', $lfg_fb_capi_public, 'FB_capi_phone_btn_click' );
 
 		// ^^^ Add shortcodes
 		$this->loader->add_shortcode( 'ech_lfg', $plugin_public, 'display_ech_lfg');
