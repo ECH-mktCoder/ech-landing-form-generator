@@ -46,7 +46,7 @@ Attribute | Description
 `wati_send` (INT) | Enable or disable the WATI auto send Whatsapp msg function. 0 = disable, 1 = enable. Default is 0.
 `wati_msg` (String) | Insert wati msg template name (provided by marketers)
 `fbcapi_send` (INT) | Enable or disable the FB Capi . 0 = disable, 1 = enable. Default is 0.
-`note_required` (INT) | Enable or disable to show `"For same day reservation, please call or message us on WhatsApp."` 0 = disable, 1 = enable. Default is 0.
+`note_required` (INT) | Enable or disable to show `For same day reservation, please call or message us on WhatsApp.` 0 = disable, 1 = enable. Default is 0.
 
 
 Below attributes values must be corresponding to each other, otherwise no form will be generated:
