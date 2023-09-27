@@ -16,7 +16,7 @@ Attribute | Description
 ----------|-------------
 `default_r` (String) | Default tcode, default is t200
 `default_r_code` (String)(*)[^1] | Default tcode MSP token
-`r` (Strings)[^2] | Tcode eg.`"t575, t127"`. If there are more than one tcodes using the same tcode token, use `\|` to separate them. Eg. `"t575,t575g|t127,t127fb"`. All case insensitive.
+`r` (Strings)[^2] | Tcode eg.`"t575, t127"`. If there are more than one tcodes using the same tcode token, use `\|` to separate them. Eg. `"t575,t575g\|t127,t127fb"`. All case insensitive.
 `r_code` (Strings) | Tcode token. Eg. `"TCODE1234, TCOED5678"`
 `last_name_required` (INT) | 0 = false, 1 = true. Default is 1.
 `email_required` (INT) | 0 = false, 1 = true. Default is 1.
