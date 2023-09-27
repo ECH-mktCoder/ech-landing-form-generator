@@ -17,7 +17,9 @@
     font-size: 17px;
     line-height: 18px;
 }
-
+.ech_lfg_form option:disabled {
+    color: #ddd;
+}
 .lfg_formMsg {
     color: #0170B9;
     text-align: center;

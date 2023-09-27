@@ -117,6 +117,8 @@ class Ech_Lfg_Public
 			'textarea_label' => '其他專業諮詢',	 // textarea label
 			'has_hdyhau' => '0',				// has "How did you hear about us" field. 0 = false, 1 = true
 			'hdyhau_item' => null,				// "How did you hear about us" items
+			'seminar'=>'0',           //Health Talk
+			'seminar_date'=> null,   //Health Talk Time Option
 			'submit_label'=> '提交', //submit button label
 			'brand' => $getBrandName,			// for MSP, website name value
 			'tks_para' => null,					// parameters need to pass to thank you page
@@ -214,6 +216,10 @@ class Ech_Lfg_Public
 			return '<div class="code_error">shortcode error - at least one or more hdyhau_items</div>';
 		}
 
+		$seminar = htmlspecialchars(str_replace(' ', '', $paraArr['seminar']));
+		if ($seminar == "1" && empty($paraArr['seminar_date'])) {
+			return '<div class="code_error">shortcode error - at least one or more seminar_date</div>';
+		}
 
 		if ($paraArr['wati_send'] == 1 && $paraArr['wati_msg'] == null) {
 			return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
@@ -296,6 +302,8 @@ class Ech_Lfg_Public
 			$has_hdyhau_bool = false;
 		}
 		$paraArr['hdyhau_item'] = array_map('trim', str_getcsv($paraArr['hdyhau_item'], ','));
+
+		$paraArr['seminar_date'] = array_map('trim', str_getcsv($paraArr['seminar_date'], ','));
 
 		// Wati 
 		$wati_send = htmlspecialchars(str_replace(' ', '', $paraArr['wati_send']));
@@ -438,7 +446,7 @@ class Ech_Lfg_Public
 		// *********** (END) Check if apply reCAPTCHA v3 ***************/
 
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'">
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'">
 			<div class="lfg_formMsg"></div>
 			<div class="form_row">
 				<input type="hidden" name="booking_time" value="">
@@ -579,17 +587,44 @@ class Ech_Lfg_Public
 			for ($i = 0; $i < $shop_count; $i++) {
 				$output .= '<option value="' . $paraArr['shop_code'][$i] . '">' . $paraArr['shop'][$i] . '</option>';
 			}
-			$output .= '</select>';
+			$output .= '</select></div>';
 		}
 
-		$output .= '
-		</div>
-		</div> <!-- form_row -->';
 		//**** (END) Location Options
 
-
-
-
+		//**** Health Talk
+		if ($seminar) {
+			$weekdays = [
+				'Monday'    => '星期一',
+				'Tuesday'   => '星期二',
+				'Wednesday' => '星期三',
+				'Thursday'  => '星期四',
+				'Friday'    => '星期五',
+				'Saturday'  => '星期六',
+				'Sunday'    => '星期日',
+			];
+			$output .= '<div data-ech-field="select_seminar">';
+			$output .= '<select  class="form-control" name="select_seminar" id="select_seminar" style="width: 100%;" required>';
+			$output .= '<option selected="selected" value="" >'.$this->form_echolang(['*Sessions','*講座場次','*讲座场次']).'</option>';
+			for ($i = 0; $i < count($paraArr['seminar_date']); $i++) {
+				$item = array_map('trim', str_getcsv($paraArr['seminar_date'][$i], '|'));
+				$dateTime = DateTime::createFromFormat("Y-m-d-H:i", $item[1]);
+				if ($dateTime !== false) {
+						// 格式化日期时间为所需的格式
+						$weekday = $this->form_echolang(['l',$weekdays[$dateTime->format("l")],$weekdays[$dateTime->format("l")]]);
+						$midday = ($dateTime->format('H') > 12)?$this->form_echolang(['pm','下午','下午']):$this->form_echolang(['am','上午','上午']);
+						$formattedString_en = $dateTime->format("Y-m-d（".$weekday."） H:i ");
+						$formattedString_zh = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
+						$formattedString_sc = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
+						$formattedString =$this->form_echolang([$formattedString_en.$midday,$formattedString_zh,$formattedString_sc]);
+				}
+				$output .= '<option data-shop="' . $item[0] . '" value="' . $item[1] . '" disabled>' . $formattedString . '</option>';
+				// $output .= '<option value="' . $paraArr['seminar_date'][$i] . '" disabled>' . $paraArr['seminar_date'][$i] . '</option>';
+			}
+			$output .= '</select></div>';
+		}
+		//**** (END) Health Talk
+		$output .= '</div> <!-- form_row -->';
 
 		//**** Item Options
 		$output .= '

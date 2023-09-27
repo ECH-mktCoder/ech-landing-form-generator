@@ -3,6 +3,7 @@
 
 
 	$(function(){
+		seminarCheckDate();
 		/*********** Checkbox limitation ***********/
 		var limit = jQuery('.ech_lfg_form').data("limited-no");
 		jQuery('.ech_lfg_form input.limited_checkbox').on('change', function(evt) {
@@ -80,7 +81,8 @@
 			var has_hdyhau = jQuery(this).data("has-hdyhau");
 			var has_wati_send = jQuery(this).data("wati-send");
 			var item_required = jQuery(this).data("item-required");
-	
+			var seminar = jQuery(this).data("seminar");
+
 			var items = [];
 			jQuery.each(jQuery(this).find("input[name='item']:checked"), function(){
 				items.push(jQuery(this).val());
@@ -127,6 +129,10 @@
 				_remarks += " | 途徑得知: " + jQuery(this).find("select[name='select_hdyhau']").val();
 			}
 
+			if(seminar == 1) {
+				_remarks += " | 講座場次: " + jQuery(this).find("select[name='select_seminar'] option:selected").text();
+			}
+
 			if(has_wati_send == 1) {
 				_remarks += " | ePay Ref Code: " + jQuery(this).data("epay-refcode");
 			}
@@ -138,7 +144,10 @@
 			} else if((_tel_prefix == "+86" && _tel.length != 11)) {
 				jQuery(this).find(".lfg_formMsg").html("+86電話必需11位數字(沒有空格)");
 				return false;
-			} else {
+			} else if( seminar==1 && jQuery(this).find("select[name='select_seminar'] option:selected").attr("data-shop") === undefined){
+				jQuery(this).find(".lfg_formMsg").html("請選擇講座場次");
+				return false;
+			}else{
 				var checked_item_count = jQuery(this).find("input[name='item']:checked").length;
 				if( checked_item_count == 0 && item_required == 1) {
 					jQuery(this).find(".lfg_formMsg").html("請選擇咨詢項目");
@@ -343,10 +352,39 @@
 				}
 			});
 		});
-
 	} // lfg_FBCapiSend
 
-	
+	function seminarCheckDate() {
+		if(jQuery(".ech_lfg_form").length){
+			jQuery(".ech_lfg_form").each(function() {
+				let seminar = jQuery(this).data("seminar");
+				if(seminar){
+					let today = new Date();
+					today.setHours(0, 0, 0, 0); // Set time to midnight
+					let thisSeminar =jQuery(this).find("select[name='select_seminar']");
+					let seminarOption = jQuery(this).find("select[name='select_seminar']").clone();
+					jQuery(this).find("select[name='select_seminar'] > option[data-shop]").remove();
+					jQuery(this).find("select[name='shop']").on('change',function(){
+						let shop = jQuery(this).val();
+						let options = jQuery(seminarOption).find("option[data-shop="+ shop +"]").clone();
+						jQuery(thisSeminar).find("option[data-shop]").remove();
+						jQuery(thisSeminar).append(options);
+						jQuery(options).each(function(){
+							let optionValue = jQuery(this).val();
+							let dateParts = optionValue.split("-");
+							let year = parseInt(dateParts[0]);
+							let month = parseInt(dateParts[1]) - 1; // 月份在JavaScript中是從始的，所以需要減1
+							let day = parseInt(dateParts[2]);
+							let optionDate = new Date(year, month, day, 0,);
+							if( optionDate > today ){
+								jQuery(this).prop("disabled", false);
+							}
+						});
+					});
+				}
+			});
+		}
+	}
 })( jQuery );
 
 
@@ -356,7 +394,9 @@ function nosunday(date) {
     var day = date.getDay(); 
     return [(day > 0), ''];	
 }
-	
+
+
+
 function currentTime(action) {
 	// Get the current time
 	let currentTime = new Date();
