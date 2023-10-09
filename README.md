@@ -47,6 +47,8 @@ Attribute | Description
 `wati_msg` (String) | Insert wati msg template name (provided by marketers)
 `fbcapi_send` (INT) | Enable or disable the FB Capi . 0 = disable, 1 = enable. Default is 0.
 `note_required` (INT) | Enable or disable to show `For same day reservation, please call or message us on WhatsApp.` 0 = disable, 1 = enable. Default is 0.
+`email_send` (INT) | Enable or disable sending email. 0 = disable, 1 = enable. Default is 0. 
+`email_receiver` (String) | Email receivers. Use comma to separate. This will override the Email Receiver Settings "Email Receiver" value in the dashboard.
 
 
 Below attributes values must be corresponding to each other, otherwise no form will be generated:
