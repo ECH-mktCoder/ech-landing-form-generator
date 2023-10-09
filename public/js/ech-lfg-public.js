@@ -83,6 +83,7 @@
 			var item_required = jQuery(this).data("item-required");
 			var seminar = jQuery(this).data("seminar");
 
+
 			var items = [];
 			jQuery.each(jQuery(this).find("input[name='item']:checked"), function(){
 				items.push(jQuery(this).val());
@@ -219,31 +220,59 @@
 				var origin   = window.location.origin;
 
 				var _phone = _tel_prefix + _tel;
+				
+				// items in text format
+				var itemsTEXT = [];
+				jQuery.each(jQuery(thisForm).find("input[name='item']:checked"), function(){
+					itemsTEXT.push(jQuery(this).data('text-value'));
+				});
+				var text_booking_item = itemsTEXT.join(", ");
+
+				// shop location in text format
+				var text_booking_location = jQuery(thisForm).find("input[name='shop']:checked").data("shop-text-value");
+				if (text_booking_location == null || text_booking_location == "") {
+					text_booking_location = jQuery(thisForm).find("select[name='shop'] option:selected").text();
+				}
+
+				// *********************** WATI msg ***********************
 				// check if wati pay is enabled
 				var wati_send = jQuery(thisForm).data("wati-send");								
 				if (wati_send == 1) {
 					console.log('wati enabled');
 					var _wati_msg = jQuery(thisForm).data("wati-msg");
-					
-					var itemsTEXT = [];
-					jQuery.each(jQuery(thisForm).find("input[name='item']:checked"), function(){
-						itemsTEXT.push(jQuery(this).data('text-value'));
-					});
-					var wati_booking_item = itemsTEXT.join(", ");
-
-					var wati_booking_location = jQuery(thisForm).find("input[name='shop']:checked").data("shop-text-value");
-					if (wati_booking_location == null || wati_booking_location == "") {
-						wati_booking_location = jQuery(thisForm).find("select[name='shop'] option:selected").text();
-					}
-
 					// Wati Send
-					lfg_watiSendMsg(thisForm, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, wati_booking_item, wati_booking_location, _website_url);
+					lfg_watiSendMsg(thisForm, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, text_booking_item, text_booking_location, _website_url);
 				} // if wati enabled 
+				// *********************** (end) WATI msg ***********************
 
+
+
+				// *********************** FB CAPI ***********************
 				var fbcapi_send = jQuery(thisForm).data("fbcapi-send");				
 				if(fbcapi_send){
 					lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip);
 				}
+				// *********************** (end) FB CAPI ***********************
+
+
+
+				// *********************** Email Send ***********************
+				var email_send = jQuery(thisForm).data("email-send");				
+				if(email_send){
+
+					var itemsTEXT = [];
+					jQuery.each(jQuery(thisForm).find("input[name='item']:checked"), function(){
+						itemsTEXT.push(jQuery(this).data('text-value'));
+					});
+					var text_booking_item = itemsTEXT.join(", ");
+
+					var email_receiver = jQuery(thisForm).data("email-receiver");	
+					var lfg_email_nonce = jQuery(thisForm).find("input[name='lfg_email_nonce']").val();
+					lfg_emailSend(thisForm, email_receiver, lfg_email_nonce, _source, _token, _name, _phone, _email, _age_group, _booking_date, _booking_time, text_booking_item, text_booking_location, _remarks, _website_url, _user_ip);
+				}
+				// *********************** (end) Email Send ***********************
+
+
 				// redirect to landing thank you page
 				if (tks_para != null) {
 					window.location.replace(origin+'/thanks?prod='+tks_para);
@@ -296,6 +325,39 @@
 
 
 
+	function lfg_emailSend(thisForm, email_receiver, lfg_email_nonce, _source, _token, _name, _phone, _email, _age_group, _booking_date, _booking_time, wati_booking_item, wati_booking_location, _remarks, _website_url, _user_ip) {
+		var emailData = {
+			'action': 'lfg_emailSend',
+			'email_receiver': email_receiver,
+			'lfg_email_nonce': lfg_email_nonce,
+			'source': _source, 
+			'msp_token': _token, 
+			'name': _name, 
+			'user_ip': _user_ip,
+			'website_url': _website_url,
+			'booking_item': wati_booking_item,
+			'phone': _phone,
+			'email': _email,
+			'age_group': _age_group,
+			'booking_location': wati_booking_location,
+			'booking_date': _booking_date,
+			'booking_time': _booking_time,
+			'remarks': _remarks
+		};
+
+		var ajaxurl = jQuery(thisForm).data("ajaxurl");
+		jQuery.post(ajaxurl, emailData, function(email_msg) {
+			console.info( JSON.parse(email_msg) );
+			
+		}).fail(function(xhr, status, error) {
+			// error handling
+			console.log("email send post error - xhr: " + JSON.stringify(xhr) + " status: " + status + " error: " + error)
+		});
+
+	} // lfg_emailSend
+
+
+
 	function lfg_watiAddContact(thisForm, _name, _phone, _email, _website_url, _source) {
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		var watiContactData = {
@@ -323,6 +385,9 @@
 			console.log("post error - xhr: " + JSON.stringify(xhr) + " status: " + status + " error: " + error)
 		});
 	} // lfg_watiAddContact
+
+
+
 
 	function lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip) {
 

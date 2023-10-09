@@ -123,6 +123,7 @@ class Ech_Lfg {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-wati-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-fb-capi-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-email-public.php';
 
 		$this->loader = new Ech_Lfg_Loader();
 
@@ -179,6 +180,7 @@ class Ech_Lfg {
 		$plugin_public = new Ech_Lfg_Public( $this->get_plugin_name(), $this->get_version() );
 		$lfg_wati_public = new Ech_Lfg_Wati_Public( $this->get_plugin_name(), $this->get_version() );
 		$lfg_fb_capi_public = new Ech_Lfg_Fb_Capi_Public( $this->get_plugin_name(), $this->get_version() );
+		$lfg_email_public = new Ech_Lfg_Email_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -202,6 +204,11 @@ class Ech_Lfg {
 		// ^^^ register FB Lead CAPI
 		$this->loader->add_action( 'wp_ajax_lfg_FBCapi', $lfg_fb_capi_public, 'lfg_FBCapi' );
 		$this->loader->add_action( 'wp_ajax_nopriv_lfg_FBCapi', $lfg_fb_capi_public, 'lfg_FBCapi' );
+
+
+		// ^^^ register email send 
+		$this->loader->add_action( 'wp_ajax_lfg_emailSend', $lfg_email_public, 'lfg_emailSend' );
+		$this->loader->add_action( 'wp_ajax_nopriv_lfg_emailSend', $lfg_email_public, 'lfg_emailSend' );
 
 		// ^^^ Add shortcodes
 		$this->loader->add_shortcode( 'ech_lfg', $plugin_public, 'display_ech_lfg');

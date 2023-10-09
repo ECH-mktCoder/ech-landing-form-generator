@@ -114,6 +114,18 @@
                 <input type="text" name="ech_lfg_note_whatapps_link" value="<?= htmlspecialchars(get_option( 'ech_lfg_note_whatapps_link' ))?>" id="" />
             </div>
 
+            <h2>Email Receiver Settings</h2>
+            <div class="form_row">
+                <label>Admin Contact Email: </label>
+                <input type="text" name="ech_lfg_admin_contact_email" value="<?= htmlspecialchars(get_option( 'ech_lfg_admin_contact_email' ))?>" id="" />
+            </div>
+            <div class="form_row">
+                <label>Email Receiver (use comma to separate) : </label>
+                <input type="text" name="ech_lfg_email_receiver" value="<?= htmlspecialchars(get_option( 'ech_lfg_email_receiver' ))?>" id="" />
+            </div>
+
+            
+
             <div class="form_row">
                 <button type="submit"> Save </button>
             </div>

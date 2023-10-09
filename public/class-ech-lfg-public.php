@@ -127,7 +127,10 @@ class Ech_Lfg_Public
 			'wati_msg' => null,
 			//FB Capi
 			'fbcapi_send'=>'0', 		  // fbcapi_required. 0 = false, 1 = true
-			'note_required' => '0'		//note_required. 0 = false, 1 = true
+			'note_required' => '0',		//note_required. 0 = false, 1 = true
+			// Email
+			'email_send' =>'0',
+			'email_receiver' => get_option( 'ech_lfg_email_receiver' )
 
 		), $atts);
 
@@ -335,6 +338,22 @@ class Ech_Lfg_Public
 				return '<div class="code_error">Note error - Note Phone or Whatsapp Link are empty. Please setup in dashboard. </div>';
 			}
 		}
+
+
+		// Vet 
+
+		// Email
+		$email_send = htmlspecialchars(str_replace(' ', '', $paraArr['email_send']));
+		//$email_receiver = trim($paraArr['email_receiver']);
+		$email_receiver = htmlspecialchars(str_replace(' ', '', $paraArr['email_receiver']));
+		if($email_send){
+			//$paraArr['email_receiver'] = array_map('trim', str_getcsv($paraArr['email_receiver'], ','));			
+			if ( empty($email_receiver) ) {
+				return '<div class="code_error">email_receiver error - email_receiver is empty. Please setup in dashboard or shortcode attributes . </div>';
+			}
+		}
+
+
 		$ip = $_SERVER['REMOTE_ADDR'];
 		// if ($ip = "::1") {
 		// 	$ip = "127.0.0.1";
@@ -445,11 +464,18 @@ class Ech_Lfg_Public
 		}
 		// *********** (END) Check if apply reCAPTCHA v3 ***************/
 
+
+		// set verification for real amount value using WP nonce to prevent changing value in DevTool
+		$s = $_SERVER['SERVER_NAME']; // add for more difficulties to hack
+		$lfg_email_nonce = wp_create_nonce($email_receiver . $s);
+
+
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'">
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
 			<div class="lfg_formMsg"></div>
 			<div class="form_row">
 				<input type="hidden" name="booking_time" value="">
+				<input type="hidden" name="lfg_email_nonce" value="'.$lfg_email_nonce.'">
 			</div>
 			';
 			$output .='
@@ -587,8 +613,10 @@ class Ech_Lfg_Public
 			for ($i = 0; $i < $shop_count; $i++) {
 				$output .= '<option value="' . $paraArr['shop_code'][$i] . '">' . $paraArr['shop'][$i] . '</option>';
 			}
-			$output .= '</select></div>';
+			//$output .= '</select></div>';
+			$output .= '</select>';
 		}
+		$output .= '</div>';
 
 		//**** (END) Location Options
 

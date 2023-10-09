@@ -121,6 +121,8 @@ class Ech_Lfg_Admin {
 		register_setting( 'lfg_gen_settings', 'ech_lfg_fb_access_token');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_note_phone');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_note_whatapps_link');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_email_receiver');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_admin_contact_email');
 	}
 
 	public function reg_lfg_recaptcha_settings() {
