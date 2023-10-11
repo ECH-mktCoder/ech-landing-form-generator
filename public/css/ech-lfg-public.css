@@ -11,7 +11,9 @@
 
  
 /***************** MAIN FORM *****************/
-
+.ech_lfg_form a{
+    text-decoration: underline !important;
+}
 .ech_lfg_form ::placeholder, select, select option, select option:checked {
     font-family: 'YuanTi', sans-serif;
     font-size: 17px;
