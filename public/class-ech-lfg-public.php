@@ -113,12 +113,14 @@ class Ech_Lfg_Public
 			'shop' => null,						// shop
 			'shop_code' => null,				// shop MSP token
 			'shop_label' => '*請選擇診所',		 // shop label
+			'form_type' => '0',				// Choose form type field. 0 = false, 1 = true
 			'has_textarea' => '0',				// has textarea field. 0 = false, 1 = true
 			'textarea_label' => '其他專業諮詢',	 // textarea label
 			'has_hdyhau' => '0',				// has "How did you hear about us" field. 0 = false, 1 = true
 			'hdyhau_item' => null,				// "How did you hear about us" items
 			'seminar'=>'0',           //Health Talk
 			'seminar_date'=> null,   //Health Talk Time Option
+			'has_participant'=>'0',  //Health Talk participant field
 			'submit_label'=> '提交', //submit button label
 			'brand' => $getBrandName,			// for MSP, website name value
 			'tks_para' => null,					// parameters need to pass to thank you page
@@ -224,6 +226,13 @@ class Ech_Lfg_Public
 			return '<div class="code_error">shortcode error - at least one or more seminar_date</div>';
 		}
 
+		$has_participant = htmlspecialchars(str_replace(' ', '', $paraArr['has_participant']));
+		if ($has_participant == "1") {
+			$has_participant_bool = true;
+		} else {
+			$has_participant_bool = false;
+		}
+
 		if ($paraArr['wati_send'] == 1 && $paraArr['wati_msg'] == null) {
 			return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
 		}
@@ -273,6 +282,13 @@ class Ech_Lfg_Public
 		$item_label = htmlspecialchars(str_replace(' ', '', $paraArr['item_label']));
 		$shop_label = htmlspecialchars(str_replace(' ', '', $paraArr['shop_label']));
 		$submit_label = htmlspecialchars(str_replace(' ', '', $paraArr['submit_label']));
+
+		$form_type = htmlspecialchars(str_replace(' ', '', $paraArr['form_type']));
+		if ($form_type == "1") {
+			$form_type_bool = true;
+		} else {
+			$form_type_bool = false;
+		}
 
 		$has_textarea = htmlspecialchars(str_replace(' ', '', $paraArr['has_textarea']));
 		if ($has_textarea == "1") {
@@ -471,13 +487,30 @@ class Ech_Lfg_Public
 
 
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" has_participant="' . $has_participant . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
 			<div class="lfg_formMsg"></div>
 			<div class="form_row">
 				<input type="hidden" name="booking_time" value="">
 				<input type="hidden" name="lfg_email_nonce" value="'.$lfg_email_nonce.'">
 			</div>
 			';
+
+			if ($form_type == "1") {
+				$output .= '
+				<div class="form_row">
+					<div>
+						<label>請選擇預約或查詢: </label>
+						<br>
+						<label class="radio_label">
+						<input type="radio" name="lfg_form_type" id="booking_type" value="booking" checked="checked"/>
+						<label for="booking_type" class="form_type_lable">預約</label>
+						<input type="radio" name="lfg_form_type" id="enquiry_type" value="enquiry"/>
+						<label for="enquiry_type" class="form_type_lable">查詢</label>
+						</label>
+					</div>
+				</div>';
+			}
+
 			$output .='
 			<div class="form_row customer_info">
 			';
@@ -623,28 +656,44 @@ class Ech_Lfg_Public
 		//**** Health Talk
 		if ($seminar) {
 			$weekdays = [
-				'Monday'    => '星期一',
-				'Tuesday'   => '星期二',
-				'Wednesday' => '星期三',
-				'Thursday'  => '星期四',
-				'Friday'    => '星期五',
-				'Saturday'  => '星期六',
-				'Sunday'    => '星期日',
+				'Monday'    => '一',
+				'Tuesday'   => '二',
+				'Wednesday' => '三',
+				'Thursday'  => '四',
+				'Friday'    => '五',
+				'Saturday'  => '六',
+				'Sunday'    => '日',
 			];
 			$output .= '<div data-ech-field="select_seminar">';
 			$output .= '<select  class="form-control" name="select_seminar" id="select_seminar" style="width: 100%;" required>';
 			$output .= '<option selected="selected" value="" >'.$this->form_echolang(['*Sessions','*講座場次','*讲座场次']).'</option>';
+		
 			for ($i = 0; $i < count($paraArr['seminar_date']); $i++) {
 				$item = array_map('trim', str_getcsv($paraArr['seminar_date'][$i], '|'));
-				$dateTime = DateTime::createFromFormat("Y-m-d-H:i", $item[1]);
+				$date = array_map('trim', str_getcsv($item[1], ' '))[0];
+				$time = array_map('trim', str_getcsv($item[1], ' '))[1];
+				$startTime = array_map('trim', str_getcsv($time, '-'))[0];
+				$endTime = array_map('trim', str_getcsv($time, '-'))[1];
+				$dateTime = DateTime::createFromFormat("Y-m-d H:i", $date." ".$startTime);
+		
 				if ($dateTime !== false) {
-						// 格式化日期时间为所需的格式
 						$weekday = $this->form_echolang(['l',$weekdays[$dateTime->format("l")],$weekdays[$dateTime->format("l")]]);
 						$midday = ($dateTime->format('H') > 12)?$this->form_echolang(['pm','下午','下午']):$this->form_echolang(['am','上午','上午']);
 						$formattedString_en = $dateTime->format("Y-m-d（".$weekday."） H:i ");
 						$formattedString_zh = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
 						$formattedString_sc = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
-						$formattedString =$this->form_echolang([$formattedString_en.$midday,$formattedString_zh,$formattedString_sc]);
+						$otherStr = "";
+						if($endTime!=""){
+							$otherStr .= $this->form_echolang([" - ".$endTime." ".$midday,"-".$endTime,"-".$endTime]);
+						}
+						for ($k=0; $k < count($item) ; $k++) { 
+							if($k > 1){
+								$otherStr.=" ".$item[$k];
+							}
+						}
+						$formattedString =$this->form_echolang([$formattedString_en.$midday." ".$otherStr,$formattedString_zh.$otherStr,$formattedString_sc." ".$otherStr]);
+				}else{
+					return '<div class="code_error">seminar date format error</div>';
 				}
 				$output .= '<option data-shop="' . $item[0] . '" value="' . $item[1] . '" disabled>' . $formattedString . '</option>';
 				// $output .= '<option value="' . $paraArr['seminar_date'][$i] . '" disabled>' . $paraArr['seminar_date'][$i] . '</option>';
@@ -652,7 +701,18 @@ class Ech_Lfg_Public
 			$output .= '</select></div>';
 		}
 		//**** (END) Health Talk
+
+		//**** Health Talk participant
+		if($has_participant_bool){
+			$output .= '
+				<div data-ech-field="participant">
+					<input type="number" name="participant" placeholder="*'.$this->form_echolang(['Participant','人數','人数']).'" class="form-control" min="1" max="10" required>
+				</div>';
+		}
+		//**** (END) Health Talk participant
+		
 		$output .= '</div> <!-- form_row -->';
+
 
 		//**** Item Options
 		$output .= '
@@ -720,7 +780,7 @@ class Ech_Lfg_Public
 		if ($has_hdyhau_bool) {
 			$output .= '<div class="form_row"><div data-ech-field="select_hdyhau">';
 			$output .= '<select  class="form-control" name="select_hdyhau" id="select_hdyhau" style="width: 100%;" >';
-			$output .= '<option disabled="" selected="" value="">從以下那一種途徑得知我們?</option>';
+			$output .= '<option disabled="" selected="" value="">'.$this->form_echolang(['How did you hear about us ?','從何得知?','从何得知？']).'</option>';
 			for ($i = 0; $i < count($paraArr['hdyhau_item']); $i++) {
 				$output .= '<option value="' . $paraArr['hdyhau_item'][$i] . '">' . $paraArr['hdyhau_item'][$i] . '</option>';
 			}

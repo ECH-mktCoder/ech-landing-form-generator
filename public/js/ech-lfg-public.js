@@ -4,6 +4,27 @@
 
 	$(function(){
 		seminarCheckDate();
+		/*********** Select form type ***********/
+    jQuery('input[type=radio][name=lfg_form_type]').on('change', function() {
+			let thisForm = jQuery(this).parents('form');
+			let dateTimeRow=jQuery(thisForm).find('div[data-ech-field="booking_date"]').parent('div.form_row');
+			let shopRow=jQuery(thisForm).find('div[data-ech-field="shop"]').parent('div.form_row');
+			if (jQuery(this).val() == 'booking') {
+					jQuery(dateTimeRow).show();
+					jQuery(shopRow).show();
+					jQuery(thisForm).find('[name="booking_date"]').prop('required',true);
+					jQuery(thisForm).find('[name="booking_time"]').prop('required',true);
+					jQuery(thisForm).find('[name="shop"]').prop('required',true);
+			}else if (jQuery(this).val() == 'enquiry') {
+					jQuery(dateTimeRow).hide();
+					jQuery(shopRow).hide();
+					jQuery(thisForm).find('[name="booking_date"]').prop('required',false);
+					jQuery(thisForm).find('[name="booking_time"]').prop('required',false);
+					jQuery(thisForm).find('[name="shop"]').prop('required',false);
+			}
+		});
+		/*********** (END) Select form type ***********/
+
 		/*********** Checkbox limitation ***********/
 		var limit = jQuery('.ech_lfg_form').data("limited-no");
 		jQuery('.ech_lfg_form input.limited_checkbox').on('change', function(evt) {
@@ -82,8 +103,8 @@
 			var has_wati_send = jQuery(this).data("wati-send");
 			var item_required = jQuery(this).data("item-required");
 			var seminar = jQuery(this).data("seminar");
-
-
+			var has_participant = jQuery(this).data("has-has_participant");
+			var form_type = jQuery(this).find("input[name=lfg_form_type]:checked").val();
 			var items = [];
 			jQuery.each(jQuery(this).find("input[name='item']:checked"), function(){
 				items.push(jQuery(this).val());
@@ -113,6 +134,9 @@
 			} else {
 				var _shop_area_code = jQuery(this).find('select[name=shop]').val();
 			}
+			if(form_type=='enquiry'){
+				_shop_area_code = "OT23";
+			}
 
 			if(has_gender == 1) {
 				_remarks += "性別: " + jQuery(this).find("select[name='gender']").val();
@@ -122,16 +146,19 @@
 				_remarks += " | 年齡: " + jQuery(this).find("select[name='age'] option:selected").text();
 			}
 
+			if(seminar == 1) {
+				_remarks += " | 講座場次: " + jQuery(this).find("select[name='select_seminar'] option:selected").text();
+			}
+
+			if(has_participant == 1) {
+				_remarks += " | 人數: " + jQuery(this).find("input[name='participant']").val();
+			}
+
 			if(has_textarea == 1) {
 				_remarks += " | " +jQuery(this).find("textarea[name='remarks']").val();
 			}
-
 			if(has_hdyhau == 1) {
 				_remarks += " | 途徑得知: " + jQuery(this).find("select[name='select_hdyhau']").val();
-			}
-
-			if(seminar == 1) {
-				_remarks += " | 講座場次: " + jQuery(this).find("select[name='select_seminar'] option:selected").text();
 			}
 
 			if(has_wati_send == 1) {
@@ -392,7 +419,7 @@
 	function lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip) {
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
-		const event_id = 'Lead_' + new Date().getTime();
+		const event_id = new Date().getTime();
 		var fb_data = {
 			'action': 'lfg_FBCapi',
 			'website_url': _website_url,
@@ -426,26 +453,34 @@
 				if(seminar){
 					let today = new Date();
 					today.setHours(0, 0, 0, 0); // Set time to midnight
+
 					let thisSeminar =jQuery(this).find("select[name='select_seminar']");
 					let seminarOption = jQuery(this).find("select[name='select_seminar']").clone();
 					jQuery(this).find("select[name='select_seminar'] > option[data-shop]").remove();
-					jQuery(this).find("select[name='shop']").on('change',function(){
-						let shop = jQuery(this).val();
-						let options = jQuery(seminarOption).find("option[data-shop="+ shop +"]").clone();
-						jQuery(thisSeminar).find("option[data-shop]").remove();
-						jQuery(thisSeminar).append(options);
-						jQuery(options).each(function(){
-							let optionValue = jQuery(this).val();
-							let dateParts = optionValue.split("-");
-							let year = parseInt(dateParts[0]);
-							let month = parseInt(dateParts[1]) - 1; // 月份在JavaScript中是從始的，所以需要減1
-							let day = parseInt(dateParts[2]);
-							let optionDate = new Date(year, month, day, 0,);
-							if( optionDate > today ){
-								jQuery(this).prop("disabled", false);
-							}
-						});
+					let shop = jQuery(this).find("input[name='shop']:checked,select[name='shop'] option:selected").val();
+					seminarSetOption(today,thisSeminar,shop,seminarOption);
+					jQuery(this).find("select[name='shop'],input[name='shop']").on('change',function(){
+						shop = jQuery(this).val();
+						seminarSetOption(today,thisSeminar,shop,seminarOption);
 					});
+				}
+			});
+		}
+	}
+	function seminarSetOption(today,thisSeminar,shop,seminarOption) {
+		if(shop!=""){
+			let options = jQuery(seminarOption).find("option[data-shop="+ shop +"]").clone();
+			jQuery(thisSeminar).find("option[data-shop]").remove();
+			jQuery(thisSeminar).append(options);
+			jQuery(options).each(function(){
+				let optionValue = jQuery(this).val();
+				let dateParts = optionValue.split("-");
+				let year = parseInt(dateParts[0]);
+				let month = parseInt(dateParts[1]) - 1; // 月份在JavaScript中是從始的，所以需要減1
+				let day = parseInt(dateParts[2]);
+				let optionDate = new Date(year, month, day, 0,);
+				if( optionDate > today ){
+					jQuery(this).prop("disabled", false);
 				}
 			});
 		}
