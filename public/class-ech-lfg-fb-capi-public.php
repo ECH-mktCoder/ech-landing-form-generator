@@ -90,14 +90,34 @@ class Ech_Lfg_Fb_Capi_Public
 						}
 				]
 		}'; //param_data2
-
+		$param_data3 = '{
+			"data": [
+					{
+								"event_id": "CompleteRegistration'.$event_id.'",
+								"event_name": "CompleteRegistration",
+								"event_time": '.time().',
+								"action_source": "website",
+								"event_source_url": "'.$current_page.'",
+								"user_data": {
+										"client_ip_address": "'.$user_ip.'",
+										"client_user_agent": "'.$user_agent.'",
+										"em": ["'.hash('sha256', $user_email).'"],
+										"ph": ["'.hash('sha256', $user_phone).'"],
+										"fn": ["'.hash('sha256', $user_fn).'"],
+										"ln": ["'.hash('sha256', $user_ln).'"]
+								}
+						}
+				]
+		}'; //param_data3
 		if(!empty($user_phone)) {
 			$lead	= $this->fb_curl($param_data1);
 			$purchase	= $this->fb_curl($param_data2);
+			$completeRegistration	= $this->fb_curl($param_data3);
 
 			$result_ary = array(
 				'lead' => json_decode($lead),
-				'purchase' => json_decode($purchase)
+				'purchase' => json_decode($purchase),
+				'completeRegistration' => json_decode($completeRegistration)
 			);
 
 			$result = json_encode($result_ary);
