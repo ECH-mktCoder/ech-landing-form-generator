@@ -420,6 +420,13 @@
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		const event_id = new Date().getTime();
+		const currnetUrl = window.location.href;
+		const fbp = getCookieValue('_fbp');
+		let fbc = getCookieValue('_fbc');
+		if(fbc==null){
+			let urlParams = new URLSearchParams(currnetUrl);
+			fbc = urlParams.get('fbclid');
+		}
 		var fb_data = {
 			'action': 'lfg_FBCapi',
 			'website_url': _website_url,
@@ -429,7 +436,9 @@
 			'user_phone':_phone,
 			'user_fn':jQuery(thisForm).find("input[name='first_name']").val(),
 			'user_ln':jQuery(thisForm).find("input[name='last_name']").val(),
-			'event_id': event_id
+			'event_id': event_id,
+			'fbp': fbp,
+			'fbc': fbc,
 		};
 		fbq('track', 'Lead', {}, {eventID: 'Lead' + event_id});
 		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: 'Purchase' + event_id});
@@ -489,7 +498,18 @@
 	}
 })( jQuery );
 
-
+function getCookieValue(cookieName) {
+	var name = cookieName + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var cookieArray = decodedCookie.split(';');
+	for(var i = 0; i < cookieArray.length; i++) {
+			var cookie = cookieArray[i].trim();
+			if (cookie.indexOf(name) == 0) {
+					return cookie.substring(name.length, cookie.length);
+			}
+	}
+	return null;
+} //getCookieValue
 
 
 function nosunday(date) {

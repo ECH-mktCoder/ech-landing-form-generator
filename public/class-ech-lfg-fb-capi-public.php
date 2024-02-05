@@ -45,7 +45,9 @@ class Ech_Lfg_Fb_Capi_Public
 		$user_phone = $_POST['user_phone'];
 		$user_fn = $_POST['user_fn'];
 		$user_ln = $_POST['user_ln'];
-	
+		$fbp = $_POST['fbp'];
+		$fbc = $_POST['fbc'];
+
 		$param_data1 = '{
 										"data": [
 												{
@@ -60,7 +62,9 @@ class Ech_Lfg_Fb_Capi_Public
 																"em": ["'.hash('sha256', $user_email).'"],
 																"ph": ["'.hash('sha256', $user_phone).'"],
 																"fn": ["'.hash('sha256', $user_fn).'"],
-																"ln": ["'.hash('sha256', $user_ln).'"]
+																"ln": ["'.hash('sha256', $user_ln).'"],
+																"fbp": "'.$fbp.'",
+																"fbc": "'.$fbc.'"
 														}
 												}
 										]
@@ -85,7 +89,9 @@ class Ech_Lfg_Fb_Capi_Public
 										"em": ["'.hash('sha256', $user_email).'"],
 										"ph": ["'.hash('sha256', $user_phone).'"],
 										"fn": ["'.hash('sha256', $user_fn).'"],
-										"ln": ["'.hash('sha256', $user_ln).'"]
+										"ln": ["'.hash('sha256', $user_ln).'"],
+										"fbp": "'.$fbp.'",
+										"fbc": "'.$fbc.'"
 								}
 						}
 				]
