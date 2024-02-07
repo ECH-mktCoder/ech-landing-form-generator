@@ -110,7 +110,9 @@ class Ech_Lfg_Fb_Capi_Public
 										"em": ["'.hash('sha256', $user_email).'"],
 										"ph": ["'.hash('sha256', $user_phone).'"],
 										"fn": ["'.hash('sha256', $user_fn).'"],
-										"ln": ["'.hash('sha256', $user_ln).'"]
+										"ln": ["'.hash('sha256', $user_ln).'"],
+										"fbp": "'.$fbp.'",
+										"fbc": "'.$fbc.'"
 								}
 						}
 				]
