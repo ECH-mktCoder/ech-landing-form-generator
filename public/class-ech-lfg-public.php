@@ -117,6 +117,7 @@ class Ech_Lfg_Public
 			'has_textarea' => '0',				// has textarea field. 0 = false, 1 = true
 			'textarea_label' => '其他專業諮詢',	 // textarea label
 			'has_hdyhau' => '0',				// has "How did you hear about us" field. 0 = false, 1 = true
+			'hdyhau_label' =>$this->form_echolang(['How did you hear about us ?','從何得知?','从何得知？']),
 			'hdyhau_item' => null,				// "How did you hear about us" items
 			'seminar'=>'0',           //Health Talk
 			'seminar_date'=> null,   //Health Talk Time Option
@@ -320,6 +321,8 @@ class Ech_Lfg_Public
 		} else {
 			$has_hdyhau_bool = false;
 		}
+		$hdyhau_label = htmlspecialchars(str_replace(' ', '', $paraArr['hdyhau_label']));
+
 		$paraArr['hdyhau_item'] = array_map('trim', str_getcsv($paraArr['hdyhau_item'], ','));
 
 		$paraArr['seminar_date'] = array_map('trim', str_getcsv($paraArr['seminar_date'], ','));
@@ -779,8 +782,8 @@ class Ech_Lfg_Public
 		//**** HOW DID YOU HEAR ABOUT US
 		if ($has_hdyhau_bool) {
 			$output .= '<div class="form_row"><div data-ech-field="select_hdyhau">';
-			$output .= '<select  class="form-control" name="select_hdyhau" id="select_hdyhau" style="width: 100%;" >';
-			$output .= '<option disabled="" selected="" value="">'.$this->form_echolang(['How did you hear about us ?','從何得知?','从何得知？']).'</option>';
+			$output .= '<select  class="form-control" name="select_hdyhau" id="select_hdyhau" style="width: 100%;" required>';
+			$output .= '<option disabled="" selected="" value="">'.$hdyhau_label.'</option>';
 			for ($i = 0; $i < count($paraArr['hdyhau_item']); $i++) {
 				$output .= '<option value="' . $paraArr['hdyhau_item'][$i] . '">' . $paraArr['hdyhau_item'][$i] . '</option>';
 			}

@@ -158,7 +158,7 @@
 				_remarks += " | " +jQuery(this).find("textarea[name='remarks']").val();
 			}
 			if(has_hdyhau == 1) {
-				_remarks += " | 途徑得知: " + jQuery(this).find("select[name='select_hdyhau']").val();
+				_remarks += " | "+ jQuery(this).find("select[name='select_hdyhau'] option:first-child").html() +" : " + jQuery(this).find("select[name='select_hdyhau']").val();
 			}
 
 			if(has_wati_send == 1) {
