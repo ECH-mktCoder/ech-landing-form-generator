@@ -419,9 +419,10 @@
 	function lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip) {
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
-		const event_id = new Date().getTime();
-		const currnetUrl = window.location.href;
-		const fbp = getCookieValue('_fbp');
+		const event_id = new Date().getTime(),
+					currnetUrl = window.location.href,
+					website_url_no_para = location.origin + location.pathname,
+					fbp = getCookieValue('_fbp');
 		let fbc = getCookieValue('_fbc');
 		if(fbc==null){
 			let urlParams = new URLSearchParams(currnetUrl);
@@ -429,7 +430,7 @@
 		}
 		var fb_data = {
 			'action': 'lfg_FBCapi',
-			'website_url': _website_url,
+			'website_url': website_url_no_para,
 			'user_ip':_user_ip,
 			'user_agent':navigator.userAgent,
 			'user_email':_email,
