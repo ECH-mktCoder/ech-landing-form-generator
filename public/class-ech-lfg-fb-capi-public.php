@@ -39,7 +39,7 @@ class Ech_Lfg_Fb_Capi_Public
 
 		$event_id = $_POST['event_id'];
 		$current_page = $_POST['website_url'];
-		$user_ip = $_POST['user_ip'];
+		$user_ip = $_SERVER['REMOTE_ADDR'];
 		$user_agent = $_POST['user_agent'];
 		$user_email = $_POST['user_email'];
 		$user_phone = $_POST['user_phone'];
