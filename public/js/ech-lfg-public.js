@@ -7,16 +7,19 @@
 		/*********** Select form type ***********/
     jQuery('input[type=radio][name=lfg_form_type]').on('change', function() {
 			let thisForm = jQuery(this).parents('form');
-			let dateTimeRow=jQuery(thisForm).find('div[data-ech-field="booking_date"]').parent('div.form_row');
-			let shopRow=jQuery(thisForm).find('div[data-ech-field="shop"]').parent('div.form_row');
+			let bookingDate=jQuery(thisForm).find('div[data-ech-field="booking_date"]');
+			let bookingTime=jQuery(thisForm).find('div[data-ech-field="booking_time"]');
+			let shopRow=jQuery(thisForm).find('div[data-ech-field="shop"]');
 			if (jQuery(this).val() == 'booking') {
-					jQuery(dateTimeRow).show();
+					jQuery(bookingDate).show();
+					jQuery(bookingTime).show();
 					jQuery(shopRow).show();
 					jQuery(thisForm).find('[name="booking_date"]').prop('required',true);
 					jQuery(thisForm).find('[name="booking_time"]').prop('required',true);
 					jQuery(thisForm).find('[name="shop"]').prop('required',true);
 			}else if (jQuery(this).val() == 'enquiry') {
-					jQuery(dateTimeRow).hide();
+					jQuery(bookingDate).hide();
+					jQuery(bookingTime).hide();
 					jQuery(shopRow).hide();
 					jQuery(thisForm).find('[name="booking_date"]').prop('required',false);
 					jQuery(thisForm).find('[name="booking_time"]').prop('required',false);
@@ -164,7 +167,10 @@
 			if(has_wati_send == 1) {
 				_remarks += " | ePay Ref Code: " + jQuery(this).data("epay-refcode");
 			}
-	
+			
+			var _info_remark = jQuery(this).find('input[name="info_remark[]"]:checked').map(function() {
+        _remarks += " | " + jQuery(this).val();
+      }).get();
 	
 			if(( _tel_prefix == "+852" && _tel.length != 8 ) || ( _tel_prefix == "+853" && _tel.length != 8 ) ) {
 				jQuery(this).find(".lfg_formMsg").html("+852, +853電話必需8位數字(沒有空格)");

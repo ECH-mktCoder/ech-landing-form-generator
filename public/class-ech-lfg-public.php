@@ -122,6 +122,7 @@ class Ech_Lfg_Public
 			'seminar'=>'0',           //Health Talk
 			'seminar_date'=> null,   //Health Talk Time Option
 			'has_participant'=>'0',  //Health Talk participant field
+			'quota_required'=> '0',              //booking quota field. 0 = false, 1 = true
 			'submit_label'=> '提交', //submit button label
 			'brand' => $getBrandName,			// for MSP, website name value
 			'tks_para' => null,					// parameters need to pass to thank you page
@@ -327,6 +328,8 @@ class Ech_Lfg_Public
 
 		$paraArr['seminar_date'] = array_map('trim', str_getcsv($paraArr['seminar_date'], ','));
 
+		$quota_required = htmlspecialchars(str_replace(' ', '', $paraArr['quota_required']));
+
 		// Wati 
 		$wati_send = htmlspecialchars(str_replace(' ', '', $paraArr['wati_send']));
 		$wati_msg = htmlspecialchars(str_replace(' ', '', $paraArr['wati_msg']));
@@ -491,8 +494,8 @@ class Ech_Lfg_Public
 
 		$output .= '
 		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" has_participant="' . $has_participant . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
-			<div class="lfg_formMsg"></div>
-			<div class="form_row">
+			<div class="form_row lfg_formMsg"></div>
+			<div class="form_row" data-ech-field="hidden">
 				<input type="hidden" name="booking_time" value="">
 				<input type="hidden" name="lfg_email_nonce" value="'.$lfg_email_nonce.'">
 			</div>
@@ -500,320 +503,345 @@ class Ech_Lfg_Public
 
 			if ($form_type == "1") {
 				$output .= '
-				<div class="form_row">
-					<div>
-						<label>請選擇預約或查詢: </label>
-						<br>
-						<label class="radio_label">
+				<div class="form_row" data-ech-field="form_type">
+					<div>請選擇預約或查詢: </div>
+					<div class="radio_label">
 						<input type="radio" name="lfg_form_type" id="booking_type" value="booking" checked="checked"/>
 						<label for="booking_type" class="form_type_lable">預約</label>
 						<input type="radio" name="lfg_form_type" id="enquiry_type" value="enquiry"/>
 						<label for="enquiry_type" class="form_type_lable">查詢</label>
-						</label>
 					</div>
 				</div>';
 			}
 
-			$output .='
-			<div class="form_row customer_info">
-			';
-				if ($last_name_required_bool) {
-					$output .='
-					<div data-ech-field="last_name">
-						<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40" required >
-					</div>
-					';
-				} else {
-					$output .='
-					<div data-ech-field="last_name" style="display:none;">
-						<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40">
-					</div>
-					';
-				}
+			if ($last_name_required_bool) {
+				$output .='
+				<div class="form_row" data-ech-field="last_name">
+					<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40" required >
+				</div>
+				';
+			} else {
+				$output .='
+				<div class="form_row"  data-ech-field="last_name" style="display:none;">
+					<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40">
+				</div>
+				';
+			}
 			$output .= '
-			<div data-ech-field="first_name">
+			<div class="form_row" data-ech-field="first_name">
 				<input type="text" name="first_name" id="first_name" class="form-control" placeholder="*名字" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}" size="40" required >
 			</div>
 			';
-		//**** Gender
-		if ($has_gender_bool) {
-			$output .= '<div data-ech-field="gender">';
-			$output .= '<select  class="form-control" name="gender" id="gender" style="width: 100%;" >';
-			$output .= '<option disabled="" selected="" value="">*性別</option>';
-			$output .= '<option value="male">男性</option>';
-			$output .= '<option value="female">女性</option>';
-			$output .= '</select>';
-			$output .= '</div>';
-		}
-		//**** (END) Gender
-
-		//**** Age
-		if ($has_age_bool) {
-			$output .= '<div data-ech-field="age">';
-			$output .= '<select  class="form-control" name="age" id="age" style="width: 100%;" >';
-			$output .= '<option disabled="" selected="" value="">*年齡</option>';
-			for ($i = 0; $i < count($paraArr['age_option']); $i++) {
-				$output .= '<option value="' . $paraArr['age_code'][$i] . '">' . $paraArr['age_option'][$i] . '</option>';
+			//**** Gender
+			if ($has_gender_bool) {
+				$output .= '
+				<div class="form_row" data-ech-field="gender">
+					<select  class="form-control" name="gender" id="gender" style="width: 100%;" >
+						<option disabled="" selected="" value="">*性別</option>
+						<option value="male">男性</option>
+						<option value="female">女性</option>
+					</select>
+				</div>';
 			}
-			$output .= '</select>';
-			$output .= '</div>';
-		}
-		//**** (END) Age
+			//**** (END) Gender
 
-		//**** Tel Prefix
-		$output .= '<div data-ech-field="telPrefix">
+			//**** Age
+			if ($has_age_bool) {
+				$output .= '
+				<div class="form_row" data-ech-field="age">
+					<select  class="form-control" name="age" id="age" style="width: 100%;" >
+						<option disabled="" selected="" value="">*年齡</option>';
+						for ($i = 0; $i < count($paraArr['age_option']); $i++) {
+							$output .= '<option value="' . $paraArr['age_code'][$i] . '">' . $paraArr['age_option'][$i] . '</option>';
+						}
+					$output .= '
+					</select>
+				</div>';
+			}
+			//**** (END) Age
+
+			//**** Tel Prefix
+			$output .= '
+			<div class="form_row" data-ech-field="telPrefix">
 				<select  class="form-control" name="telPrefix" id="tel_prefix" style="width: 100%;" required >
 					<option disabled="" selected="" value="">*請選擇</option>
 					<option value="+852">+852</option>
 					<option value="+853">+853</option>
 					<option value="+86">+86</option> 
 				</select>
-			</div>
-			';
-		//**** (END) Tel Prefix
+			</div>';
+			//**** (END) Tel Prefix
 
-		//**** Tel
-		$output .= '<div data-ech-field="tel">
+			//**** Tel
+			$output .= '
+			<div class="form_row" data-ech-field="tel">
 				<input type="text" name="tel" placeholder="*電話"  class="form-control" size="30" id="tel" pattern="[0-9]{8,11}" required >
-			</div>
-			';
-		//**** (END) Tel
-		
-		//**** Email
-		$output .= '<div data-ech-field="email">';
-		if ($email_required_bool) {
-			$output .= '<input type="email" name="email" id="email" placeholder="*電郵" class="form-control" size="40" required>';
-		} else {
-			$output .= '<input type="email" name="email" id="email" placeholder="電郵" class="form-control" size="40" >';
-		}
-		$output .= '</div>';
-		//**** (END) Email
-
-		$output .= '</div> <!-- form_row -->';
-
-
-		$output .= '<div class="form_row">';
-
-		//******* Choose doctor if any
-		if ($has_dr_bool) {
-			$output .= '<div data-ech-field="select_dr">';
-			$output .= '<select  class="form-control" name="select_dr" id="select_dr" style="width: 100%;" required >';
-			$output .= '<option disabled="" selected="" value="">*請選擇醫生</option>';
-			for ($i = 0; $i < count($paraArr['dr']); $i++) {
-				$output .= '<option value="' . $paraArr['dr_code'][$i] . '">' . $paraArr['dr'][$i] . '</option>';
-			}
-			$output .= '</select>';
-			$output .= '</div>';
-		}
-		//******* (END) Choose doctor if any
-
-		// Booking Date and Time
-		if ($booking_date_required_bool) {
-			$output .= '
-			<div data-ech-field="booking_date">
-				<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40" required>
-			</div>
-			<div data-ech-field="booking_time">
-					<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40" required="">
 			</div>';
-		}else{
+			//**** (END) Tel
+			
+			//**** Email
 			$output .= '
-			<div data-ech-field="booking_date" style="display:none">
-				<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40">
-			</div>
-			<div data-ech-field="booking_time" style="display:none">
-					<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40">
-			</div>';
-		}
-
-		$output .= '</div><!-- form_row -->';
-
-		//**** Location Options
-		$output .= '
-		<div class="form_row">
-			<div data-ech-field="shop">';
-		if ($shop_count <= 3) {
-			// radio
-			$output .= '<label>' . $shop_label . '</label><br>';
-			if ($shop_count == 1) {
-				$output .= '<label class="radio_label"><input type="radio" value="' . $paraArr['shop_code'][0] . '" data-shop-text-value="' . $paraArr['shop'][0] . '" name="shop" checked onclick="return false;">' . $paraArr['shop'][0] . '</label>';
-			} else {
-				for ($i = 0; $i < $shop_count; $i++) {
-					$output .= '<label class="radio_label"><input type="radio" value="' . $paraArr['shop_code'][$i] . '" name="shop" data-shop-text-value="' . $paraArr['shop'][$i] . '" required>' . $paraArr['shop'][$i] . '</label>';
+			<div class="form_row" data-ech-field="email">';
+				if ($email_required_bool) {
+					$output .= '<input type="email" name="email" id="email" placeholder="*電郵" class="form-control" size="40" required>';
+				} else {
+					$output .= '<input type="email" name="email" id="email" placeholder="電郵" class="form-control" size="40" >';
 				}
-			}
-		} else {
-			// select
-			$output .= '<select  class="form-control" name="shop" id="shop" style="width: 100%;" required >';
-			$output .= '<option disabled="" selected="" value="">' . $shop_label . '</option>';
-			for ($i = 0; $i < $shop_count; $i++) {
-				$output .= '<option value="' . $paraArr['shop_code'][$i] . '">' . $paraArr['shop'][$i] . '</option>';
-			}
-			//$output .= '</select></div>';
-			$output .= '</select>';
-		}
-		$output .= '</div>';
+			$output .= '
+			</div>';
+			//**** (END) Email
 
-		//**** (END) Location Options
 
-		//**** Health Talk
-		if ($seminar) {
-			$weekdays = [
-				'Monday'    => '一',
-				'Tuesday'   => '二',
-				'Wednesday' => '三',
-				'Thursday'  => '四',
-				'Friday'    => '五',
-				'Saturday'  => '六',
-				'Sunday'    => '日',
-			];
-			$output .= '<div data-ech-field="select_seminar">';
-			$output .= '<select  class="form-control" name="select_seminar" id="select_seminar" style="width: 100%;" required>';
-			$output .= '<option selected="selected" value="" >'.$this->form_echolang(['*Sessions','*講座場次','*讲座场次']).'</option>';
-		
-			for ($i = 0; $i < count($paraArr['seminar_date']); $i++) {
-				$item = array_map('trim', str_getcsv($paraArr['seminar_date'][$i], '|'));
-				$date = array_map('trim', str_getcsv($item[1], ' '))[0];
-				$time = array_map('trim', str_getcsv($item[1], ' '))[1];
-				$startTime = array_map('trim', str_getcsv($time, '-'))[0];
-				$endTime = array_map('trim', str_getcsv($time, '-'))[1];
-				$dateTime = DateTime::createFromFormat("Y-m-d H:i", $date." ".$startTime);
-		
-				if ($dateTime !== false) {
-						$weekday = $this->form_echolang(['l',$weekdays[$dateTime->format("l")],$weekdays[$dateTime->format("l")]]);
-						$midday = ($dateTime->format('H') > 12)?$this->form_echolang(['pm','下午','下午']):$this->form_echolang(['am','上午','上午']);
-						$formattedString_en = $dateTime->format("Y-m-d（".$weekday."） H:i ");
-						$formattedString_zh = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
-						$formattedString_sc = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
-						$otherStr = "";
-						if($endTime!=""){
-							$otherStr .= $this->form_echolang([" - ".$endTime." ".$midday,"-".$endTime,"-".$endTime]);
+
+
+			//******* Choose doctor if any
+			if ($has_dr_bool) {
+				$output .= '
+				<div class="form_row" data-ech-field="select_dr">
+					<select  class="form-control" name="select_dr" id="select_dr" style="width: 100%;" required >
+						<option disabled="" selected="" value="">*請選擇醫生</option>';
+						for ($i = 0; $i < count($paraArr['dr']); $i++) {
+							$output .= '<option value="' . $paraArr['dr_code'][$i] . '">' . $paraArr['dr'][$i] . '</option>';
 						}
-						for ($k=0; $k < count($item) ; $k++) { 
-							if($k > 1){
-								$otherStr.=" ".$item[$k];
+					$output .= '
+					</select>
+				</div>';
+			}
+			//******* (END) Choose doctor if any
+
+			// Booking Date and Time
+			if ($booking_date_required_bool) {
+				$output .= '
+				<div class="form_row" data-ech-field="booking_date">
+					<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40" required>
+				</div>
+				<div class="form_row" data-ech-field="booking_time">
+						<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40" required="">
+				</div>';
+			}else{
+				$output .= '
+				<div class="form_row" data-ech-field="booking_date" style="display:none">
+					<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40">
+				</div>
+				<div class="form_row" data-ech-field="booking_time" style="display:none">
+						<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40">
+				</div>';
+			}
+
+
+			//**** Location Options
+			$output .= '
+			<div class="form_row" data-ech-field="shop">';
+				if ($shop_count <= 3) {
+					// radio
+					$output .= '<div>' . $shop_label . '</div>';
+					if ($shop_count == 1) {
+						$output .= '<label class="radio_label"><input type="radio" value="' . $paraArr['shop_code'][0] . '" data-shop-text-value="' . $paraArr['shop'][0] . '" name="shop" checked onclick="return false;">' . $paraArr['shop'][0] . '</label>';
+					} else {
+						for ($i = 0; $i < $shop_count; $i++) {
+							$output .= '<label class="radio_label"><input type="radio" value="' . $paraArr['shop_code'][$i] . '" name="shop" data-shop-text-value="' . $paraArr['shop'][$i] . '" required>' . $paraArr['shop'][$i] . '</label>';
+						}
+					}
+				} else {
+					// select
+					$output .= '
+					<select class="form-control" name="shop" id="shop" style="width: 100%;" required >
+						<option disabled="" selected="" value="">' . $shop_label . '</option>';
+						for ($i = 0; $i < $shop_count; $i++) {
+							$output .= '<option value="' . $paraArr['shop_code'][$i] . '">' . $paraArr['shop'][$i] . '</option>';
+						}
+					$output .= '
+					</select>';
+				}
+			$output .= '
+			</div>';
+
+			//**** (END) Location Options
+
+			//**** Health Talk
+			if ($seminar) {
+				$weekdays = [
+					'Monday'    => '一',
+					'Tuesday'   => '二',
+					'Wednesday' => '三',
+					'Thursday'  => '四',
+					'Friday'    => '五',
+					'Saturday'  => '六',
+					'Sunday'    => '日',
+				];
+				$output .= '
+				<div class="form_row" data-ech-field="select_seminar">
+					<select  class="form-control" name="select_seminar" id="select_seminar" style="width: 100%;" required>
+						<option selected="selected" value="" >'.$this->form_echolang(['*Sessions','*講座場次','*讲座场次']).'</option>';
+				
+						for ($i = 0; $i < count($paraArr['seminar_date']); $i++) {
+							$item = array_map('trim', str_getcsv($paraArr['seminar_date'][$i], '|'));
+							$date = array_map('trim', str_getcsv($item[1], ' '))[0];
+							$time = array_map('trim', str_getcsv($item[1], ' '))[1];
+							$startTime = array_map('trim', str_getcsv($time, '-'))[0];
+							$endTime = array_map('trim', str_getcsv($time, '-'))[1];
+							$dateTime = DateTime::createFromFormat("Y-m-d H:i", $date." ".$startTime);
+					
+							if ($dateTime !== false) {
+									$weekday = $this->form_echolang(['l',$weekdays[$dateTime->format("l")],$weekdays[$dateTime->format("l")]]);
+									$midday = ($dateTime->format('H') > 12)?$this->form_echolang(['pm','下午','下午']):$this->form_echolang(['am','上午','上午']);
+									$formattedString_en = $dateTime->format("Y-m-d（".$weekday."） H:i ");
+									$formattedString_zh = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
+									$formattedString_sc = $dateTime->format("Y年m月d日（".$weekday."）".$midday."H:i");
+									$otherStr = "";
+									if($endTime!=""){
+										$otherStr .= $this->form_echolang([" - ".$endTime." ".$midday,"-".$endTime,"-".$endTime]);
+									}
+									for ($k=0; $k < count($item) ; $k++) { 
+										if($k > 1){
+											$otherStr.=" ".$item[$k];
+										}
+									}
+									$formattedString =$this->form_echolang([$formattedString_en.$midday." ".$otherStr,$formattedString_zh.$otherStr,$formattedString_sc." ".$otherStr]);
+							}else{
+								return '<div class="code_error">seminar date format error</div>';
 							}
+							$output .= '<option data-shop="' . $item[0] . '" value="' . $item[1] . '" disabled>' . $formattedString . '</option>';
+							// $output .= '<option value="' . $paraArr['seminar_date'][$i] . '" disabled>' . $paraArr['seminar_date'][$i] . '</option>';
 						}
-						$formattedString =$this->form_echolang([$formattedString_en.$midday." ".$otherStr,$formattedString_zh.$otherStr,$formattedString_sc." ".$otherStr]);
-				}else{
-					return '<div class="code_error">seminar date format error</div>';
-				}
-				$output .= '<option data-shop="' . $item[0] . '" value="' . $item[1] . '" disabled>' . $formattedString . '</option>';
-				// $output .= '<option value="' . $paraArr['seminar_date'][$i] . '" disabled>' . $paraArr['seminar_date'][$i] . '</option>';
+					$output .= '
+					</select>
+				</div>';
 			}
-			$output .= '</select></div>';
-		}
-		//**** (END) Health Talk
+			//**** (END) Health Talk
 
-		//**** Health Talk participant
-		if($has_participant_bool){
-			$output .= '
-				<div data-ech-field="participant">
+			//**** Health Talk participant
+			if($has_participant_bool){
+				$output .= '
+				<div class="form_row" data-ech-field="participant">
 					<input type="number" name="participant" placeholder="*'.$this->form_echolang(['Participant','人數','人数']).'" class="form-control" min="1" max="10" required>
 				</div>';
-		}
-		//**** (END) Health Talk participant
-		
-		$output .= '</div> <!-- form_row -->';
-
-
-		//**** Item Options
-		$output .= '
-		<div class="form_row">
-			<div data-ech-field="item">';
-
-		if (count($paraArr['item']) == 1) {
-			$output .= '<label>' . $item_label . '</label><br>';
-			$output .= '<label class="checkbox_label"><input type="checkbox" value="' . $paraArr['item_code'][0] . '" name="item" data-text-value="' . $paraArr['item'][0] . '" checked onclick="return false;">' . $paraArr['item'][0] . '</label>';
-		} else if (count($paraArr['item']) < 7) {
-			$output .= '<label>' . $item_label . '</label><br>';
-			for ($i = 0; $i < count($paraArr['item']); $i++) {
-				$output .= '<label class="checkbox_label"><input type="checkbox" class="';
-				if ($limited_bool) {
-					$output .= 'limited_checkbox';
-				} else {
-					$output .= '';
-				}
-				$output .= '" value="' . $paraArr['item_code'][$i] . '" name="item" data-text-value="' . $paraArr['item'][$i] . '">' . $paraArr['item'][$i] . '</label><br>';
 			}
-		} else {
-			// dropdown list checkbox 
-			$output .= '<div class="lfg_checkbox_dropdown"><label class="lfg_dropdown_title">' . $item_label . '</label>';
-			$output .= '<ul class="lfg_checkbox_dropdown_list">';
-			for ($i = 0; $i < count($paraArr['item']); $i++) {
-				$output .= '<li>';
-				$output .= '<label class="checkbox_label"><input type="checkbox" class="';
-				if ($limited_bool) {
-					$output .= 'limited_checkbox';
-				} else {
-					$output .= '';
-				}
-				$output .= '" value="' . $paraArr['item_code'][$i] . '" name="item" data-text-value="' . $paraArr['item'][$i] . '">' . $paraArr['item'][$i] . '</label>';
-				$output .= '</li>';
-			} // for loop
-			$output .= '</ul>'; //lfg_checkbox_dropdown_list
-			$output .= '</div>'; // lfg_checkbox_dropdown
-
-
-		} // count($paraArr['item'])
-		$output .= '
-			</div>
-		</div> <!-- form_row -->';
-		//**** (END) Item Options
+			//**** (END) Health Talk participant
+			
 
 
 
-
-		//**** TEXTAREA 
-		if ($has_textarea_bool) {
+			//**** Item Options
 			$output .= '
-			<div class="form_row">
-				<div data-ech-field="remarks">
-					<textarea class="form-control" type="textarea" name="remarks" id="remarks" placeholder="' . $textarea_label . '" maxlength="140" rows="7"></textarea>
+			<div class="form_row" data-ech-field="item">';
+
+				if (count($paraArr['item']) == 1) {
+					$output .= '<div>' . $item_label . '</div>';
+					$output .= '<label class="checkbox_label"><input type="checkbox" value="' . $paraArr['item_code'][0] . '" name="item" data-text-value="' . $paraArr['item'][0] . '" checked onclick="return false;">' . $paraArr['item'][0] . '</label>';
+				} else if (count($paraArr['item']) < 7) {
+					$output .= '<div>' . $item_label . '</div>';
+					for ($i = 0; $i < count($paraArr['item']); $i++) {
+						$output .= '<label class="checkbox_label"><input type="checkbox" class="';
+						if ($limited_bool) {
+							$output .= 'limited_checkbox';
+						} else {
+							$output .= '';
+						}
+						$output .= '" value="' . $paraArr['item_code'][$i] . '" name="item" data-text-value="' . $paraArr['item'][$i] . '">' . $paraArr['item'][$i] . '</label><br>';
+					}
+				} else {
+					// dropdown list checkbox 
+					$output .= '
+					<div class="lfg_checkbox_dropdown">
+						<div class="lfg_dropdown_title">' . $item_label . '</div>
+							<ul class="lfg_checkbox_dropdown_list">';
+								for ($i = 0; $i < count($paraArr['item']); $i++) {
+									$output .= '
+									<li>
+										<label class="checkbox_label">
+											<input type="checkbox" class="';
+											if ($limited_bool) {
+												$output .= 'limited_checkbox';
+											} else {
+												$output .= '';
+											}
+											$output .= '" value="' . $paraArr['item_code'][$i] . '" name="item" data-text-value="' . $paraArr['item'][$i] . '">' . $paraArr['item'][$i] . '</label>
+									</li>';
+								} // for loop
+							$output .= '
+							</ul>'; //lfg_checkbox_dropdown_list
+						$output .= '
+					</div>'; // lfg_checkbox_dropdown
+
+				} // count($paraArr['item'])
+			$output .= '
+			</div> <!-- form_row -->';
+			//**** (END) Item Options
+
+
+
+
+			//**** TEXTAREA 
+			if ($has_textarea_bool) {
+				$output .= '
+				<div class="form_row" data-ech-field="remarks">
+						<textarea class="form-control" type="textarea" name="remarks" id="remarks" placeholder="' . $textarea_label . '" maxlength="140" rows="7"></textarea>
 				</div>
-			</div>
-			<!-- form_row -->
-			';
-		}
-		//**** (END) TEXTAREA 
-
-
-
-		//**** HOW DID YOU HEAR ABOUT US
-		if ($has_hdyhau_bool) {
-			$output .= '<div class="form_row"><div data-ech-field="select_hdyhau">';
-			$output .= '<select  class="form-control" name="select_hdyhau" id="select_hdyhau" style="width: 100%;" required>';
-			$output .= '<option disabled="" selected="" value="">'.$hdyhau_label.'</option>';
-			for ($i = 0; $i < count($paraArr['hdyhau_item']); $i++) {
-				$output .= '<option value="' . $paraArr['hdyhau_item'][$i] . '">' . $paraArr['hdyhau_item'][$i] . '</option>';
+				<!-- form_row -->
+				';
 			}
-			$output .= '</select>';
-			$output .= '</div></div>';
-		}
-		//**** (END) HOW DID YOU HEAR ABOUT US
+			//**** (END) TEXTAREA 
 
 
 
-		$output .= ' 
-			<div class="form_row">
-								<div data-ech-field="info_remark">
+			//**** HOW DID YOU HEAR ABOUT US
+			if ($has_hdyhau_bool) {
+				$output .= '
+				<div class="form_row" data-ech-field="select_hdyhau">
+					<select  class="form-control" name="select_hdyhau" id="select_hdyhau" style="width: 100%;" required>
+						<option disabled="" selected="" value="">'.$hdyhau_label.'</option>';
+						for ($i = 0; $i < count($paraArr['hdyhau_item']); $i++) {
+							$output .= '<option value="' . $paraArr['hdyhau_item'][$i] . '">' . $paraArr['hdyhau_item'][$i] . '</option>';
+						}
+					$output .= '
+					</select>
+				</div>';
+			}
+			//**** (END) HOW DID YOU HEAR ABOUT US
 
-					<p class="redWord">本中心將與您聯絡確認詳情，方為確實是次預約。</p>
-					<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a href="https://echealthcare.com/zh/privacy-policy"   target="_blank">私隱政策聲明</a>。</label>
-					<small> *必需填寫</small>';
-		if($note_required){
-			$output .= '<p data-ech-field="note">'.$this->form_echolang(['For same day reservation, please <a href="tel:tel:'.$note_phone.'">call</a> or message us on <a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>.','當天預約請<a href="tel:'.$note_phone.'">致電</a>或透過<a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>聯繫我們。','当天预约请<a href="tel:'.$note_phone.'">致电</a>或透过<a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>联系我们。']).'</p>';
-		}
-		$output .= ' 
-				</div>
+
+
+			$output .= ' 
+			<div class="form_row" data-ech-field="info_remark">
+				<div class="redWord">本中心將與您聯絡確認詳情，方為確實是次預約。</div>
+				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a href="https://echealthcare.com/zh/privacy-policy"   target="_blank">私隱政策聲明</a>。</label>
+				<div><small> *必需填寫</small></div>
+			</div>';
+
+			if($note_required){
+				$output .= '
+				<div class="form_row" data-ech-field="note">
+					<div>'.$this->form_echolang(['For same day reservation, please <a href="tel:tel:'.$note_phone.'">call</a> or message us on <a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>.','當天預約請<a href="tel:'.$note_phone.'">致電</a>或透過<a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>聯繫我們。','当天预约请<a href="tel:'.$note_phone.'">致电</a>或透过<a class="wtsL" href="'.$note_whatapps_link.'" target="_blank">WhatsApp</a>联系我们。']).'</div>
+				</div><!-- form_row -->';
+			}
+			
+
+			$output .= '
+			<div class="form_row" data-ech-btn="submit">
+					<button type="submit" value="提交" id= "submitBtn" >' . $submit_label . '</button>
 			</div><!-- form_row -->';
-		
-		$output .= '<div class="form_row" data-ech-btn="submit">
-				<button type="submit" value="提交" id= "submitBtn" >' . $submit_label . '</button>
-			</div><!-- form_row -->
-		</form>
-		';
 
+			if($quota_required == '1'){
+				date_default_timezone_set('Asia/Taipei');
+				$currentHour = date('H');
+				$quota="1";
+				$quota_str="";
+				if ($currentHour >= 6 && $currentHour < 13) {
+						$quota="7";
+				} elseif ($currentHour >= 13 && $currentHour < 18) {
+						$quota="4";
+				} elseif ($currentHour >= 18) {
+						$quota="3";
+				}
+				$string_zh ="<h6>預約名額，尚餘 <b>".$quota."</b> 個​</h6><h6>由於預約眾多，名額設限</h6><h6>不便之處，敬請原諒</h6>";
+				$string_en ="<h6>Only <b>".$quota."</b> slots remaining for booking</h6><h6>Due to high demand,<br>limited slots are available</h6><h6>We apologize for any inconvenience</h6>";
+				$string_sc ="<h6>预约名额，尚余<b>".$quota."</b> 个​</h6><h6>由于预约众多，名额设限</h6><h6>不便之处，敬请原谅</ h6>";
+				$quota_str = $this->form_echolang([$string_en,$string_zh,$string_sc]);
+				$output .= '<div class="form_row" data-ech-field="quota">'. $quota_str .'</div><!-- form_row -->';
+			}
+		$output .= '
+		</form>';
 		return $output;
 	} // function display_ech_lfg()
 
@@ -826,7 +854,7 @@ class Ech_Lfg_Public
 		$crData['token'] = $_POST['token'];
 		$crData['source'] = $_POST['source'];
 		$crData['name'] = $_POST['name'];
-		$crData['user_ip'] = $_POST['user_ip'];
+		$crData['user_ip'] = $_SERVER['REMOTE_ADDR'];
 		$crData['website_name'] = $_POST['website_name'];
 		$crData['website_url'] = $_POST['website_url'];
 		$crData['enquiry_item'] = $_POST['enquiry_item'];

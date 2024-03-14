@@ -11,6 +11,11 @@
 
  
 /***************** MAIN FORM *****************/
+.ech_lfg_form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 .ech_lfg_form a{
     text-decoration: underline !important;
 }
@@ -31,18 +36,30 @@
 }
 
 .hidden_checkbox { display: none; }
+
 .form_row {
-    display: flex;
-    flex-direction: row;
+    flex-basis: 100%;
     box-sizing: border-box;
-    align-items: flex-end;
-}
-.form_row > div {
-    margin: 5px;
-    box-sizing: border-box;
-    width: 100%;
 }
 
+div[data-ech-field="last_name"],
+div[data-ech-field="first_name"],
+div[data-ech-field="telPrefix"],
+div[data-ech-field="tel"],
+div[data-ech-field="email"]{
+    flex-basis: calc( (100% - 40px) / 5);
+}
+div[data-ech-field="booking_date"],
+div[data-ech-field="booking_time"]{
+    flex-basis: calc( (100% - 10px) / 2);
+}
+div[data-ech-field="info_remark"] .redWord{
+    font-size: 14px;
+}
+div[data-ech-field="quota"] h6{
+    margin-bottom: 10px;
+    text-align: center;
+}
 .checkbox_label input[type=checkbox], .radio_label input[type=radio] {
     margin-right: 5px; 
 }
@@ -52,7 +69,7 @@
 .form_row div p {
     margin-bottom: 0px;
 }
-.form_row p.redWord, .formMsg {
+.form_row .redWord, .lfg_formMsg {
     color: red;
 }
 
@@ -174,10 +191,9 @@ small {
 
 @media(max-width: 768px) {
     .form_row {
-        flex-wrap: wrap;
+        flex-basis: 100% !important;
     }
-    #submitBtn { width: 100%; }
-    .formMsg { font-size: 15px; line-height: 23px; }
+    .lfg_formMsg { font-size: 15px; line-height: 23px; }
 }
 
 
