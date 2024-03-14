@@ -42,6 +42,7 @@ Attribute | Description
 `seminar` (INT) | Has Seminar field. 0 = false, 1 = true. Default is 0.
 `seminar_date` (Strings) | Seminar Session items. Use comma to separate item. Use `\|` to separate Shop code and Date. Eg. `"HK09 \| 2023-10-14-11:00, NT04 \| 2023-10-07 15:00-16:00 \| SMILE 微笑矯視講座 (旺角)"` 
 `has_participant` (INT) | Heath Talk participant. 0 = false, 1 = true. Default is 0
+`quota_required` (INT) | Booking Quota. 0 = false, 1 = true. Default is 0
 `submit_label` (String) | Submit label. Default is "提交" 
 `brand` (String) | This will override the global setting "brand name" value which is set in the dashboard. 
 `tks_para` (String) | URL parameter needs to pass to thank you page, usually product/treatment name. It is used for traffic tracking. Eg. `https://xxx.com/thanks?prod=TKS_PARA_VALUE`
