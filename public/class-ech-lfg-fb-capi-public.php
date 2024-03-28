@@ -39,7 +39,6 @@ class Ech_Lfg_Fb_Capi_Public
 
 		$event_id = $_POST['event_id'];
 		$current_page = $_POST['website_url'];
-		$user_ip = $_SERVER['REMOTE_ADDR'];
 		$user_agent = $_POST['user_agent'];
 		$user_email = $_POST['user_email'];
 		$user_phone = $_POST['user_phone'];
@@ -47,6 +46,13 @@ class Ech_Lfg_Fb_Capi_Public
 		$user_ln = $_POST['user_ln'];
 		$fbp = $_POST['fbp'];
 		$fbc = $_POST['fbc'];
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
+		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} else {
+			$user_ip = $_SERVER['REMOTE_ADDR'];
+		}
 
 		$param_data1 = '{
 										"data": [
