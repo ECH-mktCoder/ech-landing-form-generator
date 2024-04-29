@@ -273,8 +273,9 @@
 				if (wati_send == 1) {
 					console.log('wati enabled');
 					var _wati_msg = jQuery(thisForm).data("wati-msg");
+					var _send_api = jQuery(thisForm).data("msg-send-api");
 					// Wati Send
-					lfg_watiSendMsg(thisForm, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, text_booking_item, text_booking_location, _website_url);
+					lfg_watiSendMsg(thisForm, _send_api, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, text_booking_item, text_booking_location, _website_url);
 				} // if wati enabled 
 				// *********************** (end) WATI msg ***********************
 
@@ -322,12 +323,18 @@
 	}
 
 
-	function lfg_watiSendMsg(thisForm, _watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url) {
+	function lfg_watiSendMsg(thisForm, _msgSendApi, _watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url) {
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		var _epayRefCode = jQuery(thisForm).data("epay-refcode");
+		let _action = '';
+		if(_msgSendApi == "wati" ){
+			_action = 'lfg_WatiSendMsg';
+		}else{
+			_action = 'lfg_OmnichatSendMsg';
+		}
 		var watiData = {
-			'action': 'lfg_WatiSendMsg',
+			'action': _action,
 			'wati_msg': _watiMsg,
 			'name': _name, 
 			'phone': _phone,
@@ -342,12 +349,21 @@
 		//console.log(watiData);
 
 		jQuery.post(ajaxurl, watiData, function(wati_msg) {
+			// console.log(wati_msg);
 			var watiObj = JSON.parse(wati_msg);
 			// console.log(watiObj);
-			if (watiObj.result) {
-				console.log('wtsapp msg sent');
-			} else {
-				console.log('wati send error');
+			if(_msgSendApi == 'wati'){
+				if (watiObj.result) {
+					console.log('wtsapp msg sent');
+				} else {
+					console.log('wati send error');
+				}
+			}else if(_msgSendApi == 'omnichat'){
+				if (watiObj.content.messageId) {
+					console.log('wtsapp msg sent');
+				} else {
+					console.log('wati send error');
+				}
 			}
 			
 		}).fail(function(xhr, status, error) {

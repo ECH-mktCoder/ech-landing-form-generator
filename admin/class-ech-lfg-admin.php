@@ -115,6 +115,9 @@ class Ech_Lfg_Admin {
 		register_setting( 'lfg_gen_settings', 'ech_lfg_submitBtn_hoverColor');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_submitBtn_text_color');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_submitBtn_text_hoverColor');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_msg_api');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_brand_whatsapp');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_omnichat_token');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_wati_key');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_wati_api_domain');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_pixel_id');

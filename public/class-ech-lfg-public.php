@@ -334,11 +334,22 @@ class Ech_Lfg_Public
 		$wati_send = htmlspecialchars(str_replace(' ', '', $paraArr['wati_send']));
 		$wati_msg = htmlspecialchars(str_replace(' ', '', $paraArr['wati_msg']));
 		if ( $wati_send == 1 ) {
-			$get_watiKey = get_option( 'ech_lfg_wati_key' );
-			$get_watiAPI = get_option( 'ech_lfg_wati_api_domain' );
-
-			if ( empty($get_watiKey) || empty($get_watiAPI) ) {
-				return '<div class="code_error">Wati error - Wati Key or Wati API are empty. Please setup in dashboard. </div>';
+			$msg_send_api = get_option( 'ech_lfg_msg_api' );
+			if(empty($msg_send_api)){
+				return '<div class="code_error">Sending Message Api error - Sending Message Api Should be choose. Please setup in dashboard. </div>';
+			}
+			if($msg_send_api == 'wati'){
+				$get_watiKey = get_option( 'ech_lfg_wati_key' );
+				$get_watiAPI = get_option( 'ech_lfg_wati_api_domain' );
+				if ( empty($get_watiKey) || empty($get_watiAPI) ) {
+					return '<div class="code_error">Wati error - Wati Key or Wati API are empty. Please setup in dashboard. </div>';
+				}
+			}elseif($msg_send_api == 'omnichat'){
+				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );
+				$get_omnichat_token = get_option( 'ech_lfg_omnichat_token' );
+				if ( empty($get_brandWtsNo) || empty($get_omnichat_token) ) {
+					return '<div class="code_error">Omnichat error - Brand Whatsapp Number or Omnichat Token are empty. Please setup in dashboard. </div>';
+				}
 			}
 		}
 		// FB Capi 
@@ -493,7 +504,7 @@ class Ech_Lfg_Public
 
 
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" has_participant="' . $has_participant . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" has_participant="' . $has_participant . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-msg-send-api="'.$msg_send_api.'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
 			<div class="form_row lfg_formMsg"></div>
 			<div class="form_row" data-ech-field="hidden">
 				<input type="hidden" name="booking_time" value="">

@@ -80,7 +80,15 @@
                 <input type="text" name="ech_lfg_submitBtn_text_hoverColor" value="<?= htmlspecialchars(get_option( 'ech_lfg_submitBtn_text_hoverColor' ))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}">
             </div>
 
-
+            <h2>Sending Message Api</h2>
+            <div class="form-row">
+                <select name="ech_lfg_msg_api">
+                    <option value="">請選擇</option>
+                    <option value="wati" <?= (get_option( 'ech_lfg_msg_api' ) == "wati") ? 'selected' : '' ?>>Wati</option>
+                    <option value="omnichat" <?= (get_option( 'ech_lfg_msg_api' ) == "omnichat") ? 'selected' : '' ?>>Omnichat</option>
+                </select>
+            </div>
+            
             <h2>Wati Settings</h2>
             <div class="form_row">
                 <label>Wati Key: </label>
@@ -90,6 +98,16 @@
             <div class="form_row">
                 <label>Wati API domain: </label>
                 <input type="text" name="ech_lfg_wati_api_domain" value="<?= htmlspecialchars(get_option( 'ech_lfg_wati_api_domain' ))?>" id="" />
+            </div>
+
+            <h2>Omnichat Settings</h2>
+            <div class="form_row">
+                <label>Brand Whatsapp Number: </label>
+                <input type="text" name="ech_lfg_brand_whatsapp" value="<?= htmlspecialchars(get_option( 'ech_lfg_brand_whatsapp' ))?>" id="" />
+            </div>
+            <div class="form_row">
+                <label>Omnichat Token: </label>
+                <input type="text" name="ech_lfg_omnichat_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_omnichat_token' ))?>" id="" />
             </div>
 
             <h2>FB Capi Settings</h2>
