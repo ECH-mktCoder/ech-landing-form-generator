@@ -51,7 +51,6 @@ Attribute | Description
 `msg_header` (String) | wati msg template header parameters, if template header setup image, video, document, the field is required. Eg. `image \| https://nymg.com.hk/wp-content/uploads/2024/04/NYMG.jpg`
 `msg_body` (String) | wati msg template body parameters, if special ranking is required, the field is required. Eg. `name, booking_location, booking_item`
 `msg_button` (String) | wati msg template button parameters, if template button setup, the field is required. Eg. `https://nymg.com.hk/epay-landing/`, `https://example.com, https://example2.com`
-
 `fbcapi_send` (INT) | Enable or disable the FB Capi . 0 = disable, 1 = enable. Default is 0.
 `note_required` (INT) | Enable or disable to show `For same day reservation, please call or message us on WhatsApp.` 0 = disable, 1 = enable. Default is 0.
 `email_send` (INT) | Enable or disable sending email. 0 = disable, 1 = enable. Default is 0. 
