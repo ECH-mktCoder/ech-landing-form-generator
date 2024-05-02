@@ -327,11 +327,17 @@
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		var _epayRefCode = jQuery(thisForm).data("epay-refcode");
-		let _action = '';
+		let _action = '',
+				_msg_header = '',
+				_msg_body = '',
+				_msg_button = '';
 		if(_msgSendApi == "wati" ){
 			_action = 'lfg_WatiSendMsg';
 		}else{
 			_action = 'lfg_OmnichatSendMsg';
+			_msg_header = jQuery(thisForm).data("msg-header");
+			_msg_body = jQuery(thisForm).data("msg-body");
+			_msg_button = jQuery(thisForm).data("msg-button");
 		}
 		var watiData = {
 			'action': _action,
@@ -344,7 +350,10 @@
 			'booking_item': _booking_item,
 			'booking_location': _booking_location,
 			'website_url': _website_url,
-			'epayRefCode': _epayRefCode
+			'epayRefCode': _epayRefCode,
+			'msg_header': _msg_header,
+			'msg_body': _msg_body,
+			'msg_button': _msg_button
 		};
 		//console.log(watiData);
 

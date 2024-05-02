@@ -49,7 +49,6 @@ class Ech_Lfg_Omnichat_Public
                         "website_url" => $_POST['website_url'],
                         "epay_refcode" => $_POST['epayRefCode']
                     );
-        
         $epayData = urlencode(json_encode($epayData, JSON_UNESCAPED_SLASHES));
         
         $data['trackId'] = $_POST['wati_msg'];
@@ -58,8 +57,148 @@ class Ech_Lfg_Omnichat_Public
         $data['to'] = $_POST['phone'];
         $data['tags'] = [$_POST['wati_msg']];
 
-        $buttonComponent= [];
-        if(strpos($_POST['wati_msg'],"epay") !== false ){
+        // data sample
+        // {
+        //     "trackId": "cny2023",
+        //     "platform": "whatsapp",
+        //     "channelId": "85290000001",
+        //     "to": "85260000001",
+        //     "tags": [
+        //         "remarking-001"
+        //     ],
+        //     "messages": [
+        //         {
+        //             "type": "whatsappTemplate",
+        //             "whatsappTemplate": {
+        //                 "name": "cny_campaign_2023",
+        //                 "components": [
+        //                     {
+        //                         "type": "header",
+        //                         "parameters": [
+        //                             {
+        //                                 "type": "image",
+        //                                 "image": {
+        //                                     "link": "https://example.com/red-pocket.png"
+        //                                 }
+        //                             }
+        //                         ]
+        //                     },
+        //                     {
+        //                         "type": "body",
+        //                         "parameters": [
+        //                             {
+        //                                 "type": "text",
+        //                                 "text": "Mr. Chan"
+        //                             },
+        //                             {
+        //                                 "type": "text",
+        //                                 "text": "$100 Red pocket"
+        //                             }
+        //                         ]
+        //                     },
+        //                     {
+        //                         "type": "button",
+        //                         "sub_type": "url",
+        //                         "index": "0",
+        //                         "parameters": [
+        //                             {
+        //                                 "type": "text",
+        //                                 "text": "https://example.com/landing.html"
+        //                             }
+        //                         ]
+        //                     }
+        //                 ]
+        //             }
+        //         }
+        //     ]
+        // }
+
+        $messages = [
+            'type' => 'whatsappTemplate',
+            'whatsappTemplate' => [
+                'name' => $_POST['wati_msg'],
+                'components' => []
+            ]
+            
+        ];
+
+        $msg_header = '';
+        $media_type=['image','video','document'];
+        $headerComponent = [];
+        if(isset($_POST['msg_header']) && !empty($_POST['msg_header'])){
+            $msg_header = $_POST['msg_header'];
+            $type = explode('|',$msg_header)[0];
+            $content = explode('|',$msg_header)[1];
+            if(in_array($type,$media_type)){
+                $headerComponent = [
+                    'type' => 'header',
+                    'parameters' => [
+                                        [
+                                            'type' => $type,
+                                            $type => ['link' => $content]
+                        ]
+                    ]
+                ];
+            }else{
+                $headerComponent = [
+                    'type' => 'header',
+                    'parameters' => [
+                        ['type' => $type,'text' => $content]
+                    ]
+                ];
+            }
+            array_push($messages['whatsappTemplate']['components'],$headerComponent);
+        }
+
+        $msg_body = '';
+        $bodyComponent= [
+            'type' => 'body',
+            'parameters' => []
+        ];
+
+        if(isset($_POST['msg_body']) && !empty($_POST['msg_body'])){
+            $msg_body = $_POST['msg_body'];
+            foreach (explode(',',$msg_body) as $value) {
+                $temp = ['type' => 'text', 'text' => $_POST[$value]];
+                array_push($bodyComponent['parameters'],$temp);
+            }
+        }else{
+            $bodyComponent = [
+                'type' => 'body',
+                'parameters' => [
+                    ['type' => 'text', 'text' => $_POST['name']],
+                    ['type' => 'text', 'text' => $_POST['booking_location']],
+                    ['type' => 'text', 'text' => $_POST['booking_item']],
+                ]
+            ];
+        }
+
+        $msg_button = '';
+        $buttonComponent = [];
+        if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
+            $msg_button = $_POST['msg_button'];
+            foreach (explode(',',$msg_button) as $key => $value) {
+                $temp = [
+                    'type' => 'button',
+                    'sub_type' => 'url',
+                    'index' => $key,
+                    'parameters' => [
+                        ['type' => 'text','text' => $value]
+                    ]
+                ];
+                array_push($messages['whatsappTemplate']['components'],$temp);
+            }
+        }elseif(strpos($_POST['wati_msg'],"epay") !== false ){
+
+            $bodyComponent = [
+                'type' => 'body',
+                'parameters' => [
+                    ['type' => 'text', 'text' => $_POST['booking_date']],
+                    ['type' => 'text', 'text' => $_POST['booking_time']],
+                    ['type' => 'text', 'text' => $_POST['booking_location']],
+                ]
+            ];
+
             $buttonComponent = [
                 'type' => 'button',
                 'sub_type' => 'url',
@@ -68,44 +207,11 @@ class Ech_Lfg_Omnichat_Public
                     ['type' => 'text','text' => $domain.'/epay-landing/?epay='.$epayData]
                 ]
             ];
+            array_push($messages['whatsappTemplate']['components'],$buttonComponent);
+
         }
-        if(!empty($buttonComponent)){
-            $messages = [
-                'type' => 'whatsappTemplate',
-                'whatsappTemplate' => [
-                    'name' => $_POST['wati_msg'],
-                    'components' => [
-                        [
-                            'type' => 'body',
-                            'parameters' => [
-                                ['type' => 'text', 'text' => $_POST['booking_date']],
-                                ['type' => 'text', 'text' => $_POST['booking_time']],
-                                ['type' => 'text', 'text' => $_POST['booking_location']]
-                            ]
-                        ],
-                        $buttonComponent
-                    ]
-                ]
-            ];
-        }else{
-            $messages = [
-                'type' => 'whatsappTemplate',
-                'whatsappTemplate' => [
-                    'name' => $_POST['wati_msg'],
-                    'components' => [
-                        [
-                            'type' => 'body',
-                            'parameters' => [
-                                ['type' => 'text', 'text' => $_POST['name']],
-                                ['type' => 'text', 'text' => $_POST['booking_location']],
-                                ['type' => 'text', 'text' => $_POST['booking_item']]
-                            ]
-                        ],
-                    ]
-                ]
-                
-            ];
-        }
+        array_push($messages['whatsappTemplate']['components'],$bodyComponent);
+        
         $data['messages'] = [$messages];
 
         $result	= $this->lfg_omnichat_curl("https://open-api.omnichat.ai/v1/direct-messages", $data);
