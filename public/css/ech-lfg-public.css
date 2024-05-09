@@ -148,7 +148,7 @@ small {
     margin: 0;
     padding: 0;
     position: absolute;
-    top: -300px; /* align the dropdown right below the dropdown text */
+    top: -200px; /* align the dropdown right below the dropdown text */
     border: inherit;
     border-top: none;
     left: -1px; /* align the dropdown to the left */
@@ -156,7 +156,7 @@ small {
     opacity: 0; /* hide the dropdown */
     background: #fff;
     transition: opacity 0.4s ease-in-out;
-    height: 300px;
+    height: 200px;
     overflow: scroll;
     overflow-x: hidden;
     pointer-events: none; /* avoid mouse click events inside the dropdown */
