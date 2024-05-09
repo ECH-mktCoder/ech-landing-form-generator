@@ -148,7 +148,7 @@ small {
     margin: 0;
     padding: 0;
     position: absolute;
-    top: 100%; /* align the dropdown right below the dropdown text */
+    top: -300px; /* align the dropdown right below the dropdown text */
     border: inherit;
     border-top: none;
     left: -1px; /* align the dropdown to the left */
@@ -160,7 +160,7 @@ small {
     overflow: scroll;
     overflow-x: hidden;
     pointer-events: none; /* avoid mouse click events inside the dropdown */
-    z-index: 10;
+    z-index: 999;
 }
 .lfg_is_active .lfg_checkbox_dropdown_list {
     opacity: 1; /* display the dropdown */

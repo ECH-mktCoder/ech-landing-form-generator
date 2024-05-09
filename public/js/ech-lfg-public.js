@@ -54,7 +54,13 @@
 			jQuery(".lfg_checkbox_dropdown").click(function () {
 				jQuery(this).toggleClass("lfg_is_active");
 			});
-			
+
+			jQuery(document).on('click', function(event) {
+				if (!jQuery(event.target).closest('.lfg_checkbox_dropdown').length) {
+						jQuery('.lfg_checkbox_dropdown').removeClass('lfg_is_active');
+				}
+			});
+
 			jQuery(".lfg_checkbox_dropdown ul").click(function(e) {
 				e.stopPropagation();
 			});
@@ -287,7 +293,39 @@
 					lfg_FBCapiSend(thisForm, _phone, _email,_website_url,_user_ip);
 				}
 				// *********************** (end) FB CAPI ***********************
+				
+				// ************* set values to be ready for GTM Enchanced Conversion ****************/				
+				var gtm_ec_country = "";
+				switch(_tel_prefix) {
+					case "+853": 
+						gtm_ec_country = "Macao";
+						break;
+					case "+86": 
+						gtm_ec_country ="China";
+						break;
+					default:
+						gtm_ec_country = "HK";
+				}
 
+				window.dataLayer = window.dataLayer || [];
+				dataLayer.push({
+					"gtm-ec-email":_email,
+					"gtm-ec-phone": _tel,
+					"gtm-ec-first-name": jQuery(thisForm).find("input[name='first_name']").val(),
+					"gtm-ec-last-name": jQuery(thisForm).find("input[name='last_name']").val(),
+					"gtm-ec-country": gtm_ec_country,
+					"gtm-ec-postal-code":"0000",
+					"gtm-ec-source": _source,
+					"gtm-ec-booking-date": _booking_date,
+					"gtm-ec-booking-time": _booking_time,
+					"gtm-ec-booking-location": text_booking_location,
+					"gtm-ec-booking-item": text_booking_item,
+					"gtm-ec-gender": jQuery(thisForm).find("select[name='gender']").val(),
+					"gtm-ec-age": jQuery(thisForm).find("select[name='age'] option:selected").text(),
+					"event": "enhanced-conversion-data-to-gtm" 
+				});
+				console.log(dataLayer);
+				// ************* (end)set values to be ready for GTM Enchanced Conversion ****************/
 
 
 				// *********************** Email Send ***********************
