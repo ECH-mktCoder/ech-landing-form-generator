@@ -163,54 +163,56 @@ class Ech_Lfg_Omnichat_Public
                 array_push($bodyComponent['parameters'],$temp);
             }
         }else{
-            $bodyComponent = [
-                'type' => 'body',
-                'parameters' => [
-                    ['type' => 'text', 'text' => $_POST['name']],
-                    ['type' => 'text', 'text' => $_POST['booking_location']],
-                    ['type' => 'text', 'text' => $_POST['booking_item']],
-                ]
-            ];
-        }
-
-        $msg_button = '';
-        $buttonComponent = [];
-        if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
-            $msg_button = $_POST['msg_button'];
-            foreach (explode(',',$msg_button) as $key => $value) {
-                $temp = [
-                    'type' => 'button',
-                    'sub_type' => 'url',
-                    'index' => $key,
+            if(strpos($_POST['wati_msg'],"epay") !== false ){
+                $bodyComponent = [
+                    'type' => 'body',
                     'parameters' => [
-                        ['type' => 'text','text' => $value]
+                        ['type' => 'text', 'text' => $_POST['booking_date']],
+                        ['type' => 'text', 'text' => $_POST['booking_time']],
+                        ['type' => 'text', 'text' => $_POST['booking_location']],
                     ]
                 ];
-                array_push($messages['whatsappTemplate']['components'],$temp);
+            }else{
+                $bodyComponent = [
+                    'type' => 'body',
+                    'parameters' => [
+                        ['type' => 'text', 'text' => $_POST['name']],
+                        ['type' => 'text', 'text' => $_POST['booking_location']],
+                        ['type' => 'text', 'text' => $_POST['booking_item']],
+                    ]
+                ];
             }
-        }elseif(strpos($_POST['wati_msg'],"epay") !== false ){
-
-            $bodyComponent = [
-                'type' => 'body',
-                'parameters' => [
-                    ['type' => 'text', 'text' => $_POST['booking_date']],
-                    ['type' => 'text', 'text' => $_POST['booking_time']],
-                    ['type' => 'text', 'text' => $_POST['booking_location']],
-                ]
-            ];
-
-            $buttonComponent = [
-                'type' => 'button',
-                'sub_type' => 'url',
-                'index' => '0',
-                'parameters' => [
-                    ['type' => 'text','text' => $domain.'/epay-landing/?epay='.$epayData]
-                ]
-            ];
-            array_push($messages['whatsappTemplate']['components'],$buttonComponent);
-
         }
         array_push($messages['whatsappTemplate']['components'],$bodyComponent);
+
+        $msg_button = '';
+        if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
+            $msg_button = $_POST['msg_button'];
+            if(strpos($_POST['wati_msg'],"epay") !== false ){
+                
+                $buttonComponent = [
+                    'type' => 'button',
+                    'sub_type' => 'url',
+                    'index' => '0',
+                    'parameters' => [
+                        ['type' => 'text','text' => $msg_button."?epay=".$epayData]
+                    ]
+                ];
+                array_push($messages['whatsappTemplate']['components'],$buttonComponent);
+            }else{
+                foreach (explode(',',$msg_button) as $key => $value) {
+                    $temp = [
+                        'type' => 'button',
+                        'sub_type' => 'url',
+                        'index' => $key,
+                        'parameters' => [
+                            ['type' => 'text','text' => $value]
+                        ]
+                    ];
+                    array_push($messages['whatsappTemplate']['components'],$temp);
+                }
+            }
+        }
         
         $data['messages'] = [$messages];
 
