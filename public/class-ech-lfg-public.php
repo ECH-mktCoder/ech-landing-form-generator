@@ -339,6 +339,7 @@ class Ech_Lfg_Public
 		$msg_header = htmlspecialchars(str_replace(' ', '', $paraArr['msg_header']));
 		$msg_body = htmlspecialchars(str_replace(' ', '', $paraArr['msg_body']));
 		$msg_button = htmlspecialchars(str_replace(' ', '', $paraArr['msg_button']));
+		$msg_send_api="";
 		if ( $wati_send == 1 ) {
 			$msg_send_api = get_option( 'ech_lfg_msg_api' );
 			if(empty($msg_send_api)){
