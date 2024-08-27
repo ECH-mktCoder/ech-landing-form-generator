@@ -116,6 +116,7 @@ class Ech_Lfg_Public
 			'form_type' => '0',				// Choose form type field. 0 = false, 1 = true
 			'has_textarea' => '0',				// has textarea field. 0 = false, 1 = true
 			'textarea_label' => '其他專業諮詢',	 // textarea label
+			'extra_radio_remark'=> null, // extra single choice questions
 			'has_hdyhau' => '0',				// has "How did you hear about us" field. 0 = false, 1 = true
 			'hdyhau_label' =>$this->form_echolang(['How did you hear about us ?','從何得知?','从何得知？']),
 			'hdyhau_item' => null,				// "How did you hear about us" items
@@ -330,6 +331,10 @@ class Ech_Lfg_Public
 		$paraArr['hdyhau_item'] = array_map('trim', str_getcsv($paraArr['hdyhau_item'], ','));
 
 		$paraArr['seminar_date'] = array_map('trim', str_getcsv($paraArr['seminar_date'], ','));
+
+		if($paraArr['extra_radio_remark']){
+			$extra_radio_remark = array_map('trim', str_getcsv($paraArr['extra_radio_remark'], ','));
+		}
 
 		$quota_required = htmlspecialchars(str_replace(' ', '', $paraArr['quota_required']));
 
@@ -786,7 +791,29 @@ class Ech_Lfg_Public
 			$output .= '
 			</div> <!-- form_row -->';
 			//**** (END) Item Options
+			if(!empty($extra_radio_remark)){
+				for ($i=0; $i < count($extra_radio_remark); $i++) { 
+					$radio_ary =  array_map('trim', str_getcsv($extra_radio_remark[$i], '|'));
+					$question = $radio_ary[0];
+					$radio_item_1 = $radio_ary[1];
+					$radio_item_2 = $radio_ary[2];
 
+					$output .= '
+					<div class="form_row" data-ech-field="extra_radio_remark">
+						<div class="radio_question">'.$question.'</div>
+						<div>
+							<input type="radio" class="extra_radio_remark" id="extra_radio_remark_'.$i.'_1" name="extra_radio_remark_'.$i.'" value="'.$radio_item_1.'" checked>
+							<label for="extra_radio_remark_'.$i.'_1">'.$radio_item_1.'</label>
+						</div>
+						<div>
+							<input type="radio" class="extra_radio_remark" id="extra_radio_remark_'.$i.'_2" name="extra_radio_remark_'.$i.'" value="'.$radio_item_2.'">
+							<label for="extra_radio_remark_'.$i.'_2">'.$radio_item_2.'</label>
+						</div>
+
+					</div>';
+
+				}
+			}
 
 
 

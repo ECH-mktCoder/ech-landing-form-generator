@@ -39,6 +39,7 @@ Attribute | Description
 `textarea_label` (String) | Textarea placeholder. Default is "其他專業諮詢" 
 `has_hdyhau` (INT) | Has "How did you hear about us" field. 0 = false, 1 = true. Default is 0. 
 `hdyhau_item` (Strings) | "How did you hear about us" items. Use comma to separate. Eg. `"Facebook, Google"` 
+`extra_radio_remark` (Strings) | Extra single choice question. Use comma to separate question. Use `\|` to separate two answers. Eg. `"是否恒健牙科現有客戶? \| 是 \| 否, 是否已參加企業牙科保健計劃? \| 是 \| 否"` 
 `seminar` (INT) | Has Seminar field. 0 = false, 1 = true. Default is 0.
 `seminar_date` (Strings) | Seminar Session items. Use comma to separate item. Use `\|` to separate Shop code and Date. Eg. `"HK09 \| 2023-10-14-11:00, NT04 \| 2023-10-07 15:00-16:00 \| SMILE 微笑矯視講座 (旺角)"` 
 `has_participant` (INT) | Heath Talk participant. 0 = false, 1 = true. Default is 0
