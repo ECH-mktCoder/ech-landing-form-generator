@@ -541,35 +541,35 @@
 			jQuery(".ech_lfg_form").each(function () {
 				let seminar = jQuery(this).data("seminar");
 				if (seminar) {
-					let today = new Date();
-					today.setHours(0, 0, 0, 0); // Set time to midnight
-
 					let thisSeminar = jQuery(this).find("select[name='select_seminar']");
 					let seminarOption = jQuery(this).find("select[name='select_seminar']").clone();
 					jQuery(this).find("select[name='select_seminar'] > option[data-shop]").remove();
 					let shop = jQuery(this).find("input[name='shop']:checked,select[name='shop'] option:selected").val();
-					seminarSetOption(today, thisSeminar, shop, seminarOption);
+					seminarSetOption(thisSeminar, shop, seminarOption);
 					jQuery(this).find("select[name='shop'],input[name='shop']").on('change', function () {
 						shop = jQuery(this).val();
-						seminarSetOption(today, thisSeminar, shop, seminarOption);
+						seminarSetOption(thisSeminar, shop, seminarOption);
 					});
 				}
 			});
 		}
 	}
-	function seminarSetOption(today, thisSeminar, shop, seminarOption) {
+
+	function seminarSetOption(thisSeminar, shop, seminarOption) {
 		if (shop != "") {
 			let options = jQuery(seminarOption).find("option[data-shop=" + shop + "]").clone();
 			jQuery(thisSeminar).find("option[data-shop]").remove();
 			jQuery(thisSeminar).append(options);
+			let now = new Date(); // 取得此時此刻
 			jQuery(options).each(function () {
 				let optionValue = jQuery(this).val();
-				let dateParts = optionValue.split("-");
-				let year = parseInt(dateParts[0]);
-				let month = parseInt(dateParts[1]) - 1; // 月份在JavaScript中是從始的，所以需要減1
-				let day = parseInt(dateParts[2]);
-				let optionDate = new Date(year, month, day, 0,);
-				if (optionDate > today) {
+				// eg.2024-09-20 15:00-16:00
+				let timeRange = optionValue.split(" ")[1]; // 分割日期與時間
+				let startTime = timeRange.split("-")[0];   // 分割時間範圍，取 15:00
+				let dateString = optionValue.split(" ")[0]; // 提取日期部分 2024-09-20
+				let dateTimeString = dateString + " " + startTime; // 合併為 "2024-09-20 15:00"
+				let optionDate = new Date(dateTimeString); // 將其轉換為 Date 物件
+				if (optionDate > now) {
 					jQuery(this).prop("disabled", false);
 				}
 			});
