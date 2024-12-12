@@ -111,6 +111,7 @@ class Ech_Lfg_Admin {
 		// Register all settings for general setting page
 		register_setting( 'lfg_gen_settings', 'ech_lfg_apply_test_msp');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_brand_name');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_accept_pll');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_submitBtn_color');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_submitBtn_hoverColor');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_submitBtn_text_color');

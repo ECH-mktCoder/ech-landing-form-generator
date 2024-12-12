@@ -46,12 +46,27 @@ class Ech_Lfg_Fb_Capi_Public
 		$user_ln = $_POST['user_ln'];
 		$fbp = $_POST['fbp'];
 		$fbc = $_POST['fbc'];
+		$accept_pll = $_POST['accept_pll'];
+		
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
 		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 			$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 		} else {
 			$user_ip = $_SERVER['REMOTE_ADDR'];
+		}
+		$user_data = [
+			"client_ip_address" => $user_ip,
+			"client_user_agent" => $user_agent,
+			"fbp" => $fbp,
+			"fbc" => $fbc
+	];
+
+		if ($accept_pll) {
+			$user_data['em'] = [hash('sha256', $user_email)];
+			$user_data['ph'] = [hash('sha256', $user_phone)];
+			$user_data['fn'] = [hash('sha256', $user_fn)];
+			$user_data['ln'] = [hash('sha256', $user_ln)];
 		}
 
 		$param_data1 = '{
@@ -62,16 +77,7 @@ class Ech_Lfg_Fb_Capi_Public
 														"event_time": '.time().',
 														"action_source": "website",
 														"event_source_url": "'.$current_page.'",
-														"user_data": {
-																"client_ip_address": "'.$user_ip.'",
-																"client_user_agent": "'.$user_agent.'",
-																"em": ["'.hash('sha256', $user_email).'"],
-																"ph": ["'.hash('sha256', $user_phone).'"],
-																"fn": ["'.hash('sha256', $user_fn).'"],
-																"ln": ["'.hash('sha256', $user_ln).'"],
-																"fbp": "'.$fbp.'",
-																"fbc": "'.$fbc.'"
-														}
+														"user_data": ' . json_encode($user_data) . '
 												}
 										]
 								}'; //param_data1
@@ -89,16 +95,7 @@ class Ech_Lfg_Fb_Capi_Public
 									"currency": "HKD",
 									"value": "0"
 								},
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'",
-										"em": ["'.hash('sha256', $user_email).'"],
-										"ph": ["'.hash('sha256', $user_phone).'"],
-										"fn": ["'.hash('sha256', $user_fn).'"],
-										"ln": ["'.hash('sha256', $user_ln).'"],
-										"fbp": "'.$fbp.'",
-										"fbc": "'.$fbc.'"
-								}
+								"user_data": ' . json_encode($user_data) . '
 						}
 				]
 		}'; //param_data2
@@ -110,16 +107,7 @@ class Ech_Lfg_Fb_Capi_Public
 								"event_time": '.time().',
 								"action_source": "website",
 								"event_source_url": "'.$current_page.'",
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'",
-										"em": ["'.hash('sha256', $user_email).'"],
-										"ph": ["'.hash('sha256', $user_phone).'"],
-										"fn": ["'.hash('sha256', $user_fn).'"],
-										"ln": ["'.hash('sha256', $user_ln).'"],
-										"fbp": "'.$fbp.'",
-										"fbc": "'.$fbc.'"
-								}
+								"user_data": ' . json_encode($user_data) . '
 						}
 				]
 		}'; //param_data3

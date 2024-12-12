@@ -366,6 +366,7 @@ class Ech_Lfg_Public
 		}
 		// FB Capi 
 		$fbcapi_send = htmlspecialchars(str_replace(' ', '', $paraArr['fbcapi_send']));
+		$accept_pll = get_option( 'ech_lfg_accept_pll' );
 		if($fbcapi_send){
 			$get_pixelId = get_option( 'ech_lfg_pixel_id' );
 			$get_fbAccessToken = get_option( 'ech_lfg_fb_access_token' );
@@ -516,7 +517,7 @@ class Ech_Lfg_Public
 
 
 		$output .= '
-		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" has_participant="' . $has_participant . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-msg-send-api="'.$msg_send_api.'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-msg-header="'.$msg_header.'" data-msg-body="'.$msg_body.'" data-msg-button="'.$msg_button.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
+		<form class="ech_lfg_form" id="ech_lfg_form" action="" method="post" data-limited-no="' . $item_limited_num . '" data-r="' . $r . '" data-c-token="' . $c_token . '" data-shop-label="' . $shop_label . '" data-shop-count="' . $shop_count . '" data-ajaxurl="' . get_admin_url(null, 'admin-ajax.php') . '" data-ip="' . $ip . '" data-url="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" has_participant="' . $has_participant . '" data-has-textarea="' . $has_textarea . '" data-has-select-dr="' . $has_dr . '" data-item-label="' . $item_label . '" data-item-required="' . $item_required . '" data-tks-para="' . $tks_para . '" data-brand="' . $brand . '" data-has-gender="' . $has_gender . '" data-has-age="' . $has_age . '" data-has-hdyhau="' . $has_hdyhau . '" data-apply-recapt="'.get_option('ech_lfg_apply_recapt').'" data-recapt-site-key="'. get_option('ech_lfg_recapt_site_key') .'" data-recapt-score="'.get_option('ech_lfg_recapt_score').'" data-msg-send-api="'.$msg_send_api.'" data-wati-send="'. $wati_send .'" data-wati-msg="'.$wati_msg.'" data-msg-header="'.$msg_header.'" data-msg-body="'.$msg_body.'" data-msg-button="'.$msg_button.'" data-epay-refcode="LPE_'.trim($brand).$rand.time().'" data-fbcapi-send="'. $fbcapi_send .'" data-accept-pll="'. $accept_pll .'" data-seminar="'.$seminar.'" data-email-send="'.$email_send.'" data-email-receiver="'.$email_receiver.'" >
 			<div class="form_row lfg_formMsg"></div>
 			<div class="form_row" data-ech-field="hidden">
 				<input type="hidden" name="booking_time" value="">

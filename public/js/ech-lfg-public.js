@@ -496,17 +496,22 @@
 
 	function lfg_FBCapiSend(thisForm, _phone, _email, _website_url, _user_ip) {
 
-		var ajaxurl = jQuery(thisForm).data("ajaxurl");
-		const event_id = new Date().getTime(),
-			currnetUrl = window.location.href,
-			website_url_no_para = location.origin + location.pathname,
-			fbp = getCookieValue('_fbp');
-		let fbc = getCookieValue('_fbc');
+		const ajaxurl = jQuery(thisForm).data("ajaxurl"),
+					accpetPll = jQuery(thisForm).data("accept-pll"),
+					currnetUrl = window.location.href,
+					website_url_no_para = location.origin + location.pathname,
+					fbp = getCookieValue('_fbp');
+		let event_id = new Date().getTime(),
+				fbc = getCookieValue('_fbc');
 		if (fbc == null) {
-			let urlParams = new URLSearchParams(currnetUrl);
+			const urlParams = new URLSearchParams(currnetUrl);
 			fbc = urlParams.get('fbclid');
 		}
-		var fb_data = {
+		if(!accpetPll){
+			event_id = '_withoutPII' + event_id;
+		}
+		
+		const fb_data = {
 			'action': 'lfg_FBCapi',
 			'website_url': website_url_no_para,
 			'user_ip': _user_ip,
@@ -518,7 +523,9 @@
 			'event_id': event_id,
 			'fbp': fbp,
 			'fbc': fbc,
+			'accept_pll': accpetPll
 		};
+
 		fbq('track', 'Lead', {}, { eventID: 'Lead' + event_id });
 		fbq('track', 'Purchase', { value: 0, currency: 'HKD' }, { eventID: 'Purchase' + event_id });
 		fbq('track', 'CompleteRegistration', {}, { eventID: 'CompleteRegistration' + event_id });

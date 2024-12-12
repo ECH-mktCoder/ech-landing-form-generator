@@ -55,6 +55,21 @@
                 <label>Brand Name : </label>
                 <input type="text" name="ech_lfg_brand_name" value="<?= get_option( 'ech_lfg_brand_name' )?>" id="ech_lfg_brand_name" pattern="[ A-Za-z0-9]{1,}">
             </div>
+            
+            <div class="form_row">
+                <?php 
+                    $getAcceptPll = get_option( 'ech_lfg_accept_pll' );
+                    if(empty($getAcceptPll)) {
+                        add_option( 'ech_lfg_accept_pll', 1 );
+                        $getAcceptPll = get_option( 'ech_lfg_accept_pll' );
+                    }
+                ?>
+                <label>接收PII : </label>
+                <select name="ech_lfg_accept_pll" id="">
+                    <option value="1" <?= ($getAcceptPll == "1") ? 'selected' : '' ?>>ON</option>
+                    <option value="0" <?= ($getAcceptPll == "0") ? 'selected' : '' ?>> OFF</option>
+                </select>
+            </div>
 
 
             <h2>Global Styling</h2>
