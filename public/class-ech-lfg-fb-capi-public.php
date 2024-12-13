@@ -55,12 +55,13 @@ class Ech_Lfg_Fb_Capi_Public
 		} else {
 			$user_ip = $_SERVER['REMOTE_ADDR'];
 		}
+
 		$user_data = [
 			"client_ip_address" => $user_ip,
 			"client_user_agent" => $user_agent,
 			"fbp" => $fbp,
 			"fbc" => $fbc
-	];
+		];
 
 		if ($accept_pll) {
 			$user_data['em'] = [hash('sha256', $user_email)];
@@ -69,61 +70,44 @@ class Ech_Lfg_Fb_Capi_Public
 			$user_data['ln'] = [hash('sha256', $user_ln)];
 		}
 
-		$param_data1 = '{
-										"data": [
-												{
-														"event_id": "Lead'.$event_id.'",
-														"event_name": "Lead",
-														"event_time": '.time().',
-														"action_source": "website",
-														"event_source_url": "'.$current_page.'",
-														"user_data": ' . json_encode($user_data) . '
-												}
-										]
-								}'; //param_data1
+		$param_datas = [
+			'Lead' => [
+				"event_id" => "Lead{$event_id}",
+				"event_name" => "Lead",
+				"event_time" => time(),
+				"action_source" => "website",
+				"event_source_url" => $current_page,
+				"user_data" => $user_data
+			],
+			'Purchase' => [
+				"event_id" => "Purchase{$event_id}",
+				"event_name" => "Purchase",
+				"event_time" => time(),
+				"action_source" => "website",
+				"event_source_url" => $current_page,
+				"custom_data" => [
+					"content_name" => "lead",
+					"currency" => "HKD",
+					"value" => 0
+				],
+				"user_data" => $user_data
+			],
+			'CompleteRegistration' => [
+				"event_id" => "CompleteRegistration{$event_id}",
+				"event_name" => "CompleteRegistration",
+				"event_time" => time(),
+				"action_source" => "website",
+				"event_source_url" => $current_page,
+				"user_data" => $user_data
+			]
+		];
 
-		$param_data2 = '{
-				"data": [
-						{
-								"event_id": "Purchase'.$event_id.'",
-								"event_name": "Purchase",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"custom_data":{
-									"content_name": "lead",
-									"currency": "HKD",
-									"value": "0"
-								},
-								"user_data": ' . json_encode($user_data) . '
-						}
-				]
-		}'; //param_data2
-		$param_data3 = '{
-			"data": [
-					{
-								"event_id": "CompleteRegistration'.$event_id.'",
-								"event_name": "CompleteRegistration",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"user_data": ' . json_encode($user_data) . '
-						}
-				]
-		}'; //param_data3
 		if(!empty($user_phone)) {
-			$lead	= $this->fb_curl($param_data1);
-			$purchase	= $this->fb_curl($param_data2);
-			$completeRegistration	= $this->fb_curl($param_data3);
-
-			$result_ary = array(
-				'lead' => json_decode($lead),
-				'purchase' => json_decode($purchase),
-				'completeRegistration' => json_decode($completeRegistration)
-			);
-
-			$result = json_encode($result_ary);
-			echo $result;
+			$results = [];
+      foreach ($param_datas as $key => $data) {
+          $results[$key] = json_decode($this->fb_curl(json_encode(['data' => [$data]])));
+      }
+			echo json_encode($results);
 
 		} else {
 			echo '0';
