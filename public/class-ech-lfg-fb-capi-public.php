@@ -88,7 +88,7 @@ class Ech_Lfg_Fb_Capi_Public
 				"custom_data" => [
 					"content_name" => "lead",
 					"currency" => "HKD",
-					"value" => 0
+					"value" => 0.00
 				],
 				"user_data" => $user_data
 			],

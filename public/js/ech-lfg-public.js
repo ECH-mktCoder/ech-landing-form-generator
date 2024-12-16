@@ -527,7 +527,7 @@
 		};
 
 		fbq('track', 'Lead', {}, { eventID: 'Lead' + event_id });
-		fbq('track', 'Purchase', { value: 0, currency: 'HKD' }, { eventID: 'Purchase' + event_id });
+		fbq('track', 'Purchase', { value: 0.00, currency: 'HKD' }, { eventID: 'Purchase' + event_id });
 		fbq('track', 'CompleteRegistration', {}, { eventID: 'CompleteRegistration' + event_id });
 
 		jQuery.post(ajaxurl, fb_data, function (rs) {
