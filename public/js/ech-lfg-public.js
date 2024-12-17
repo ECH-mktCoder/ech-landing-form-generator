@@ -507,9 +507,7 @@
 			const urlParams = new URLSearchParams(currnetUrl);
 			fbc = urlParams.get('fbclid');
 		}
-		if(!accpetPll){
-			event_id = '_withoutPII' + event_id;
-		}
+		
 		
 		const fb_data = {
 			'action': 'lfg_FBCapi',
@@ -525,10 +523,15 @@
 			'fbc': fbc,
 			'accept_pll': accpetPll
 		};
-
-		fbq('track', 'Lead', {}, { eventID: 'Lead' + event_id });
-		fbq('track', 'Purchase', { value: 0.00, currency: 'HKD' }, { eventID: 'Purchase' + event_id });
-		fbq('track', 'CompleteRegistration', {}, { eventID: 'CompleteRegistration' + event_id });
+		if(accpetPll){
+			fbq('track', 'Lead', {}, { eventID: 'Lead' + event_id });
+			fbq('track', 'Purchase', { value: 0.00, currency: 'HKD' }, { eventID: 'Purchase' + event_id });
+			fbq('track', 'CompleteRegistration', {}, { eventID: 'CompleteRegistration' + event_id });
+		}else{
+			fbq('trackCustom', 'Lead_withoutPII', {}, { eventID: 'Lead_withoutPII' + event_id });
+			fbq('trackCustom', 'Purchase_withoutPII', { value: 0.00, currency: 'HKD' }, { eventID: 'Purchase_withoutPII' + event_id });
+			fbq('trackCustom', 'CompleteRegistration_withoutPII', {}, { eventID: 'CompleteRegistration_withoutPII' + event_id });
+		}
 
 		jQuery.post(ajaxurl, fb_data, function (rs) {
 			let result = JSON.parse(rs);

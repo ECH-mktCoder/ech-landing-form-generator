@@ -57,14 +57,15 @@ class Ech_Lfg_Fb_Capi_Public
 		}
 
 		$user_data = [
+			"em" => hash('sha256', $user_email),
 			"client_ip_address" => $user_ip,
 			"client_user_agent" => $user_agent,
 			"fbp" => $fbp,
 			"fbc" => $fbc
 		];
-
+		$withoutPII_str='_withoutPII';
 		if ($accept_pll) {
-			$user_data['em'] = [hash('sha256', $user_email)];
+			$withoutPII_str = '';
 			$user_data['ph'] = [hash('sha256', $user_phone)];
 			$user_data['fn'] = [hash('sha256', $user_fn)];
 			$user_data['ln'] = [hash('sha256', $user_ln)];
@@ -72,16 +73,16 @@ class Ech_Lfg_Fb_Capi_Public
 
 		$param_datas = [
 			'Lead' => [
-				"event_id" => "Lead{$event_id}",
-				"event_name" => "Lead",
+				"event_id" => "Lead".$withoutPII_str.$event_id,
+				"event_name" => "Lead".$withoutPII_str,
 				"event_time" => time(),
 				"action_source" => "website",
 				"event_source_url" => $current_page,
 				"user_data" => $user_data
 			],
 			'Purchase' => [
-				"event_id" => "Purchase{$event_id}",
-				"event_name" => "Purchase",
+				"event_id" => "Purchase".$withoutPII_str.$event_id,
+				"event_name" => "Purchase".$withoutPII_str,
 				"event_time" => time(),
 				"action_source" => "website",
 				"event_source_url" => $current_page,
@@ -93,8 +94,8 @@ class Ech_Lfg_Fb_Capi_Public
 				"user_data" => $user_data
 			],
 			'CompleteRegistration' => [
-				"event_id" => "CompleteRegistration{$event_id}",
-				"event_name" => "CompleteRegistration",
+				"event_id" => "CompleteRegistration".$withoutPII_str.$event_id,
+				"event_name" => "CompleteRegistration".$withoutPII_str,
 				"event_time" => time(),
 				"action_source" => "website",
 				"event_source_url" => $current_page,
@@ -111,6 +112,7 @@ class Ech_Lfg_Fb_Capi_Public
 
 		} else {
 			echo '0';
+			
 		}  
 		
 		wp_die();
