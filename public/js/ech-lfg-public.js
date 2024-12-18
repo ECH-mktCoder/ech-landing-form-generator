@@ -540,7 +540,7 @@
 				if (event.hasOwnProperty('events_received')) {
 					console.log(eventName + ': ' + event.events_received);
 				} else {
-					console(event);
+					console.log(event);
 				}
 			});
 		});
