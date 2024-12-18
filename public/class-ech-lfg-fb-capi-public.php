@@ -63,7 +63,7 @@ class Ech_Lfg_Fb_Capi_Public
 			"fbp" => $fbp,
 			"fbc" => $fbc
 		];
-		$withoutPII_str='_withoutPII';
+		$withoutPII_str='WithoutPII';
 		if ($accept_pll) {
 			$withoutPII_str = '';
 			$user_data['ph'] = [hash('sha256', $user_phone)];

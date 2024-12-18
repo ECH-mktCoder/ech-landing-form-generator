@@ -528,9 +528,9 @@
 			fbq('track', 'Purchase', { value: 0.00, currency: 'HKD' }, { eventID: 'Purchase' + event_id });
 			fbq('track', 'CompleteRegistration', {}, { eventID: 'CompleteRegistration' + event_id });
 		}else{
-			fbq('trackCustom', 'Lead_withoutPII', {}, { eventID: 'Lead_withoutPII' + event_id });
-			fbq('trackCustom', 'Purchase_withoutPII', { value: 0.00, currency: 'HKD' }, { eventID: 'Purchase_withoutPII' + event_id });
-			fbq('trackCustom', 'CompleteRegistration_withoutPII', {}, { eventID: 'CompleteRegistration_withoutPII' + event_id });
+			fbq('trackCustom', 'LeadWithoutPII', {}, { eventID: 'LeadWithoutPII' + event_id });
+			fbq('trackCustom', 'PurchaseWithoutPII', { value: 0.00, currency: 'HKD' }, { eventID: 'PurchaseWithoutPII' + event_id });
+			fbq('trackCustom', 'CompleteRegistrationWithoutPII', {}, { eventID: 'CompleteRegistrationWithoutPII' + event_id });
 		}
 
 		jQuery.post(ajaxurl, fb_data, function (rs) {
