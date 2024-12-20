@@ -66,9 +66,9 @@ class Ech_Lfg_Fb_Capi_Public
 		$withoutPII_str='WithoutPII';
 		if ($accept_pll) {
 			$withoutPII_str = '';
-			$user_data['ph'] = [hash('sha256', $user_phone)];
-			$user_data['fn'] = [hash('sha256', $user_fn)];
-			$user_data['ln'] = [hash('sha256', $user_ln)];
+			$user_data['ph'] = hash('sha256', $user_phone);
+			$user_data['fn'] = hash('sha256', $user_fn);
+			$user_data['ln'] = hash('sha256', $user_ln);
 		}
 
 		$param_datas = [
