@@ -72,16 +72,16 @@ class Ech_Lfg_Fb_Capi_Public
 		}
 
 		$param_datas = [
-			'Lead' => [
-				"event_id" => "Lead".$withoutPII_str.$event_id,
+			'Lead'.$withoutPII_str => [
+				"event_id" => "Lead".$event_id,
 				"event_name" => "Lead".$withoutPII_str,
 				"event_time" => time(),
 				"action_source" => "website",
 				"event_source_url" => $current_page,
 				"user_data" => $user_data
 			],
-			'Purchase' => [
-				"event_id" => "Purchase".$withoutPII_str.$event_id,
+			'Purchase'.$withoutPII_str => [
+				"event_id" => "Purchase".$event_id,
 				"event_name" => "Purchase".$withoutPII_str,
 				"event_time" => time(),
 				"action_source" => "website",
@@ -93,8 +93,8 @@ class Ech_Lfg_Fb_Capi_Public
 				],
 				"user_data" => $user_data
 			],
-			'CompleteRegistration' => [
-				"event_id" => "CompleteRegistration".$withoutPII_str.$event_id,
+			'CompleteRegistration'.$withoutPII_str => [
+				"event_id" => "CompleteRegistration".$event_id,
 				"event_name" => "CompleteRegistration".$withoutPII_str,
 				"event_time" => time(),
 				"action_source" => "website",
