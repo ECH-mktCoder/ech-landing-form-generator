@@ -104,6 +104,11 @@
                 </select>
             </div>
             
+            <h2>Epay Settings</h2>
+            <div class="form_row">
+                <label>Secret Key: </label>
+                <input type="text" name="ech_lfg_epay_secret_key" value="<?= htmlspecialchars(get_option( 'ech_lfg_epay_secret_key' ))?>" id="" />
+            </div>
             <h2>Wati Settings</h2>
             <div class="form_row">
                 <label>Wati Key: </label>
