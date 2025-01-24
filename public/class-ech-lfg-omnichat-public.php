@@ -49,8 +49,9 @@ class Ech_Lfg_Omnichat_Public
                         "website_url" => $_POST['website_url'],
                         "epay_refcode" => $_POST['epayRefCode']
                     );
-        $epayData = urlencode(json_encode($epayData, JSON_UNESCAPED_SLASHES));
-        
+        // $epayData = urlencode(json_encode($epayData, JSON_UNESCAPED_SLASHES));
+        $epayData = $this->encrypted_epay($epayData);
+
         $data['trackId'] = $_POST['wati_msg'];
         $data['platform'] = "whatsapp";
         $data['channelId'] = get_option( 'ech_lfg_brand_whatsapp' );
@@ -221,6 +222,18 @@ class Ech_Lfg_Omnichat_Public
         wp_die();
     }
 
+    private function encrypted_epay($epayData){
+        $secretKey = get_option( 'ech_lfg_epay_secret_key' );
+
+        $jsonString = json_encode($epayData);
+        $compressedData = gzcompress($jsonString);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-gcm'));
+        $tag = null;
+        $encryptedData = openssl_encrypt($compressedData, 'aes-256-gcm', $secretKey, 0, $iv, $tag);
+        $encryptedPayload = base64_encode($encryptedData . "::" . $iv . "::" . $tag);
+
+        return $encryptedPayload;
+    }
     private function lfg_omnichat_curl($api_link, $dataArr = null) {
         $ch = curl_init();
 
