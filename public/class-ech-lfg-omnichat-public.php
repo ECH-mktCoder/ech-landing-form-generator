@@ -227,10 +227,9 @@ class Ech_Lfg_Omnichat_Public
 
         $jsonString = json_encode($epayData);
         $compressedData = gzcompress($jsonString);
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-gcm'));
-        $tag = null;
-        $encryptedData = openssl_encrypt($compressedData, 'aes-256-gcm', $secretKey, 0, $iv, $tag);
-        $encryptedPayload = base64_encode($encryptedData . "::" . $iv . "::" . $tag);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        $encryptedData = openssl_encrypt($compressedData, 'aes-256-cbc', $secretKey, 0, $iv);
+        $encryptedPayload = base64_encode($encryptedData . "::" . base64_encode($iv));
 
         return $encryptedPayload;
     }
