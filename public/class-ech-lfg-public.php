@@ -401,11 +401,6 @@ class Ech_Lfg_Public
 
 
 		$ip = $_SERVER['REMOTE_ADDR'];
-		// if ($ip = "::1") {
-		// 	$ip = "127.0.0.1";
-		// } // for locolhost xampp
-
-
 
 
 
@@ -916,7 +911,7 @@ class Ech_Lfg_Public
 
 		if (get_option('ech_lfg_apply_test_msp') == "1") {
 			// connect to DEV MSP API
-			$result	= $this->lfg_curl('https://msp-dev.echealthcare.com/api/third_party_service/Offical/submitEnquiryForm', $crData, true);
+			$result	= $this->lfg_curl('https://msp-dev.echealthcare.com:8002/api/third_party_service/Offical/submitEnquiryForm', $crData, true);
 		} else {
 			// connect to LIVE MSP API
 			$result	= $this->lfg_curl('https://msp.prohaba.com:8003/api/third_party_service/Offical/submitEnquiryForm', $crData, true);
