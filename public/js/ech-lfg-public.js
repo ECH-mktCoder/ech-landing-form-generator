@@ -3,6 +3,10 @@
 
 
 	$(function () {
+
+		const privacyPolicyURL = jQuery('a.ech-pp-url').attr('href');
+		jQuery('a[data-btn="ech-pp-url"]').attr('href',privacyPolicyURL);
+		
 		seminarCheckDate();
 		/*********** Select form type ***********/
 		jQuery('input[type=radio][name=lfg_form_type]').on('change', function () {

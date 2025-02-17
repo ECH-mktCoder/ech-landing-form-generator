@@ -55,11 +55,21 @@
                 <label>Brand Name : </label>
                 <input type="text" name="ech_lfg_brand_name" value="<?= get_option( 'ech_lfg_brand_name' )?>" id="ech_lfg_brand_name" pattern="[ A-Za-z0-9]{1,}">
             </div>
-            
+            <div class="form_row">
+                <label>Privacy Policy URL : </label>
+                <h3 style="color:red;">Add data-btn="ech-pp-url" to another <code>&lt;a&gt;</code> element to replace the privacy policy URL</h3>
+                <?php 
+                    $privacyPolicyUrl = get_option( 'ech_lfg_privacy_policy' );
+                    if(empty($privacyPolicyUrl) || !$privacyPolicyUrl ) {
+                        add_option( 'ech_lfg_privacy_policy', 'https://www.echealthcare.com/zh/privacy-policy/' );
+                    }
+                ?>
+                <input type="text" name="ech_lfg_privacy_policy" value="<?= get_option( 'ech_lfg_privacy_policy' )?>" id="ech_lfg_privacy_policy">
+            </div>
             <div class="form_row">
                 <?php 
                     $getAcceptPll = get_option( 'ech_lfg_accept_pll' );
-                    if(empty($getAcceptPll)) {
+                    if(empty($getAcceptPll) || !$getAcceptPll) {
                         add_option( 'ech_lfg_accept_pll', 1 );
                         $getAcceptPll = get_option( 'ech_lfg_accept_pll' );
                     }

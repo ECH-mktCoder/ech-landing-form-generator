@@ -847,11 +847,11 @@ class Ech_Lfg_Public
 			//**** (END) HOW DID YOU HEAR ABOUT US
 
 
-
+			$privacyPolicyUrl = get_option( 'ech_lfg_privacy_policy' );
 			$output .= ' 
 			<div class="form_row" data-ech-field="info_remark">
 				<div class="redWord">本中心將與您聯絡確認詳情，方為確實是次預約。</div>
-				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a href="https://echealthcare.com/zh/privacy-policy"   target="_blank">私隱政策聲明</a>。</label>
+				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隱政策聲明</a>。</label>
 				<div><small> *必需填寫</small></div>
 			</div>';
 
