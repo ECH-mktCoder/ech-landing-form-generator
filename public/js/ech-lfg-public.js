@@ -378,13 +378,23 @@
 			_msg_header = '',
 			_msg_body = '',
 			_msg_button = '';
-		if (_msgSendApi == "wati") {
-			_action = 'lfg_WatiSendMsg';
-		} else {
-			_action = 'lfg_OmnichatSendMsg';
-			_msg_header = jQuery(thisForm).data("msg-header");
-			_msg_body = jQuery(thisForm).data("msg-body");
-			_msg_button = jQuery(thisForm).data("msg-button");
+		switch (_msgSendApi) {
+			case 'wati':
+				_action = 'lfg_WatiSendMsg';
+				break;
+			
+			case 'omnichat':
+				_action = 'lfg_OmnichatSendMsg';
+				_msg_header = jQuery(thisForm).data("msg-header");
+				_msg_body = jQuery(thisForm).data("msg-body");
+				_msg_button = jQuery(thisForm).data("msg-button");
+				break;
+			case 'sleekflow':
+				_action = 'lfg_SleekflowSendMsg';
+				_msg_header = jQuery(thisForm).data("msg-header");
+				_msg_body = jQuery(thisForm).data("msg-body");
+				_msg_button = jQuery(thisForm).data("msg-button");
+				break;
 		}
 		var watiData = {
 			'action': _action,
@@ -408,18 +418,29 @@
 			// console.log(wati_msg);
 			var watiObj = JSON.parse(wati_msg);
 			// console.log(watiObj);
-			if (_msgSendApi == 'wati') {
-				if (watiObj.result) {
-					console.log('wtsapp msg sent');
-				} else {
-					console.log('wati send error');
-				}
-			} else if (_msgSendApi == 'omnichat') {
-				if (watiObj.content.messageId) {
-					console.log('wtsapp msg sent');
-				} else {
-					console.log('wati send error');
-				}
+			switch (_msgSendApi) {
+				case 'wati':
+					if (watiObj.result) {
+						console.log('wtsapp msg sent');
+					} else {
+						console.log('wati send error');
+					}
+					break;
+				
+				case 'omnichat':
+					if (watiObj.content.messageId) {
+						console.log('wtsapp msg sent');
+					} else {
+						console.log('wati send error');
+					}
+					break;
+				case 'sleekflow':
+					if (watiObj) {
+						console.log(watiObj);
+					} else {
+						console.log(watiObj);
+					}
+					break;
 			}
 
 		}).fail(function (xhr, status, error) {

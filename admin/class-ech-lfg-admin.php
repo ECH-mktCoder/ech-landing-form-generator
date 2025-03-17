@@ -120,6 +120,7 @@ class Ech_Lfg_Admin {
 		register_setting( 'lfg_gen_settings', 'ech_lfg_epay_secret_key');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_brand_whatsapp');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_omnichat_token');
+		register_setting( 'lfg_gen_settings', 'ech_lfg_sleekflow_token');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_wati_key');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_wati_api_domain');
 		register_setting( 'lfg_gen_settings', 'ech_lfg_pixel_id');
