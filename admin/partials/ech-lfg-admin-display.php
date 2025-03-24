@@ -111,9 +111,13 @@
                     <option value="">請選擇</option>
                     <option value="wati" <?= (get_option( 'ech_lfg_msg_api' ) == "wati") ? 'selected' : '' ?>>Wati</option>
                     <option value="omnichat" <?= (get_option( 'ech_lfg_msg_api' ) == "omnichat") ? 'selected' : '' ?>>Omnichat</option>
+                    <option value="sleekflow" <?= (get_option( 'ech_lfg_msg_api' ) == "sleekflow") ? 'selected' : '' ?>>SleekFlow</option>
                 </select>
             </div>
-            
+            <div class="form_row">
+                <label>Brand Whatsapp Number: </label>
+                <input type="text" name="ech_lfg_brand_whatsapp" value="<?= htmlspecialchars(get_option( 'ech_lfg_brand_whatsapp' ))?>" id="" />
+            </div>
             <h2>Epay Settings</h2>
             <div class="form_row">
                 <label>Secret Key: </label>
@@ -132,14 +136,16 @@
 
             <h2>Omnichat Settings</h2>
             <div class="form_row">
-                <label>Brand Whatsapp Number: </label>
-                <input type="text" name="ech_lfg_brand_whatsapp" value="<?= htmlspecialchars(get_option( 'ech_lfg_brand_whatsapp' ))?>" id="" />
-            </div>
-            <div class="form_row">
                 <label>Omnichat Token: </label>
                 <input type="text" name="ech_lfg_omnichat_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_omnichat_token' ))?>" id="" />
             </div>
 
+            <h2>SleekFlow Settings</h2>
+            <div class="form_row">
+                <label>SleekFlow Token: </label>
+                <input type="text" name="ech_lfg_sleekflow_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_sleekflow_token' ))?>" id="" />
+            </div>
+            
             <h2>FB Capi Settings</h2>
             <div class="form_row">
                 <label>Pixel id: </label>
