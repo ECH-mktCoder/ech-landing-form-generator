@@ -39,13 +39,12 @@ class Ech_Lfg_Sleekflow_Public
         $data = array();
         $objectKey = $_POST['wati_msg'];
         $phone = preg_replace('/\D/', '', $_POST['phone']);
-        $email = $_POST['email'];
 
         $customer_id = $this->get_sleekflow_contact_id($phone);
 
         if(!$customer_id){
 
-            $customer_id = create_sleekflow_contact($phone, $email);
+            $customer_id = create_sleekflow_contact($phone);
 
             if (is_array($customer_id) && isset($customer_id['error'])) {
                 echo json_encode([
@@ -121,11 +120,10 @@ class Ech_Lfg_Sleekflow_Public
         return null;
     }
 
-    private function create_sleekflow_contact($phone, $email) {
+    private function create_sleekflow_contact($phone) {
         $ch = curl_init();
         $data = json_encode([
             'phoneNumber' => $phone,
-            'email' => $email
         ]);
     
         curl_setopt($ch, CURLOPT_URL, 'https://api.sleekflow.io/api/contact/addOrUpdate');
