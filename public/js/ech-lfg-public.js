@@ -435,10 +435,10 @@
 					}
 					break;
 				case 'sleekflow':
-					if (watiObj) {
-						console.log(watiObj);
+					if (watiObj && watiObj.primaryPropertyValue) {
+						console.log('wtsapp msg sent');
 					} else {
-						console.log(watiObj);
+						console.error("SleekFlow 訊息發送失敗:", watiObj.api_response);
 					}
 					break;
 			}

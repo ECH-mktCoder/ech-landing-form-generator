@@ -196,8 +196,8 @@ class Ech_Lfg_Public
 		} else {
 			$has_dr_bool = false;
 		}
-		$paraArr['dr'] = array_map('trim', str_getcsv($paraArr['dr'], ','));
-		$paraArr['dr_code'] = array_map('trim', str_getcsv($paraArr['dr_code'], ','));
+		$paraArr['dr'] = !empty($paraArr['dr']) ? array_map('trim', str_getcsv($paraArr['dr'], ',')) : [];
+		$paraArr['dr_code'] = !empty($paraArr['dr_code']) ? array_map('trim', str_getcsv($paraArr['dr_code'], ',')) : [];
 
 
 
@@ -315,8 +315,9 @@ class Ech_Lfg_Public
 		} else {
 			$has_age_bool = false;
 		}
-		$paraArr['age_option'] = array_map('trim', str_getcsv($paraArr['age_option'], ','));
-		$paraArr['age_code'] = array_map('trim', str_getcsv($paraArr['age_code'], ','));
+		$paraArr['age_option'] = !empty($paraArr['age_option']) ? array_map('trim', str_getcsv($paraArr['age_option'], ',')) : [];
+		$paraArr['age_code'] = !empty($paraArr['age_code']) ? array_map('trim', str_getcsv($paraArr['age_code'], ',')) : [];
+
 		if (count($paraArr['age_option']) != count($paraArr['age_code'])) {
 			return '<div class="code_error">shortcode error - age_option and age_code must be corresponding to each other</div>';
 		}
@@ -328,9 +329,10 @@ class Ech_Lfg_Public
 		}
 		$hdyhau_label = htmlspecialchars(str_replace(' ', '', $paraArr['hdyhau_label']));
 
-		$paraArr['hdyhau_item'] = array_map('trim', str_getcsv($paraArr['hdyhau_item'], ','));
+		$paraArr['hdyhau_item'] = !empty($paraArr['hdyhau_item']) ? array_map('trim', str_getcsv($paraArr['hdyhau_item'], ',')) : [];
 
-		$paraArr['seminar_date'] = array_map('trim', str_getcsv($paraArr['seminar_date'], ','));
+		$paraArr['seminar_date'] = !empty($paraArr['seminar_date']) ? array_map('trim', str_getcsv($paraArr['seminar_date'], ',')) : [];
+
 
 		if($paraArr['extra_radio_remark']){
 			$extra_radio_remark = array_map('trim', str_getcsv($paraArr['extra_radio_remark'], ','));
@@ -340,10 +342,10 @@ class Ech_Lfg_Public
 
 		// Wati 
 		$wati_send = htmlspecialchars(str_replace(' ', '', $paraArr['wati_send']));
-		$wati_msg = htmlspecialchars(str_replace(' ', '', $paraArr['wati_msg']));
-		$msg_header = htmlspecialchars(str_replace(' ', '', $paraArr['msg_header']));
-		$msg_body = htmlspecialchars(str_replace(' ', '', $paraArr['msg_body']));
-		$msg_button = htmlspecialchars(str_replace(' ', '', $paraArr['msg_button']));
+		$wati_msg = htmlspecialchars(str_replace(' ', '', $paraArr['wati_msg'] ?? ''));
+		$msg_header = htmlspecialchars(str_replace(' ', '', $paraArr['msg_header'] ?? ''));
+		$msg_body = htmlspecialchars(str_replace(' ', '', $paraArr['msg_body'] ?? ''));
+		$msg_button = htmlspecialchars(str_replace(' ', '', $paraArr['msg_button'] ?? ''));
 		$msg_send_api="";
 		if ( $wati_send == 1 ) {
 			$msg_send_api = get_option( 'ech_lfg_msg_api' );
@@ -401,9 +403,6 @@ class Ech_Lfg_Public
 
 
 		$ip = $_SERVER['REMOTE_ADDR'];
-		// if ($ip = "::1") {
-		// 	$ip = "127.0.0.1";
-		// } // for locolhost xampp
 
 
 
