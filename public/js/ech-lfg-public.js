@@ -377,7 +377,9 @@
 		let _action = '',
 			_msg_header = '',
 			_msg_body = '',
-			_msg_button = '';
+			_msg_button = '',
+			_first_name = jQuery(thisForm).find("input[name='first_name']").val(),
+			_last_name = jQuery(thisForm).find("input[name='last_name']").val();
 		switch (_msgSendApi) {
 			case 'wati':
 				_action = 'lfg_WatiSendMsg';
@@ -400,6 +402,8 @@
 			'action': _action,
 			'wati_msg': _watiMsg,
 			'name': _name,
+			'first_name': _first_name,
+			'last_name': _last_name,
 			'phone': _phone,
 			'email': _email,
 			'booking_date': _booking_date,
@@ -435,10 +439,10 @@
 					}
 					break;
 				case 'sleekflow':
-					if (watiObj && watiObj.primaryPropertyValue) {
+					if (watiObj && watiObj.status === "Sending") {
 						console.log('wtsapp msg sent');
 					} else {
-						console.error("SleekFlow 訊息發送失敗:", watiObj.api_response);
+						console.error("SleekFlow 訊息發送失敗:", watiObj);
 					}
 					break;
 			}
