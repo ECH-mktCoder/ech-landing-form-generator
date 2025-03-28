@@ -44,14 +44,15 @@ class Ech_Lfg_Sleekflow_Public
 
         if(!$customer_id){
 
-            $customer_id = create_sleekflow_contact($phone);
+            $customer_id = $this->create_sleekflow_contact($phone);
 
             if (is_array($customer_id) && isset($customer_id['error'])) {
                 echo json_encode([
                     'success' => false,
                     'message' => '無法建立 SleekFlow 聯絡人',
                     'error' => $customer_id['error'],
-                    'api_response' => $customer_id['response'] ?? null
+                    'api_response' => $customer_id['response'] ?? null,
+                    'data' => $customer_id['data']
                 ]);
                 wp_die();
             }
@@ -122,10 +123,12 @@ class Ech_Lfg_Sleekflow_Public
 
     private function create_sleekflow_contact($phone) {
         $ch = curl_init();
-        $data = json_encode([
-            'phoneNumber' => $phone,
-        ]);
-    
+        $data = [
+            [
+                "phoneNumber" => $phone
+            ]
+        ];
+        
         curl_setopt($ch, CURLOPT_URL, 'https://api.sleekflow.io/api/contact/addOrUpdate');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -134,18 +137,18 @@ class Ech_Lfg_Sleekflow_Public
         $headers[] = 'Content-Type: application/json';
         $headers[] = 'X-Sleekflow-Api-Key: '. get_option( 'ech_lfg_sleekflow_token' );        
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     
         $response = curl_exec($ch);
         curl_close($ch);
         
-        $data = json_decode($response, true);
-        if (!empty($data) && isset($data[0]['id'])) {
-            return $data[0]['id'];
+        $result = json_decode($response, true);
+        if (!empty($result) && isset($result[0]['id'])) {
+            return $result[0]['id'];
         } else {
-            return ['error' => 'Failed to create or update contact', 'response' => $response];
+            return ['error' => 'Failed to create or update contact', 'response' => $response,'data' => $data];
         }
 
     }
-
+    
 }
