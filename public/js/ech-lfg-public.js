@@ -420,7 +420,7 @@
 
 		jQuery.post(ajaxurl, watiData, function (wati_msg) {
 			// console.log(wati_msg);
-			var watiObj = JSON.parse(wati_msg);
+			const watiObj = JSON.parse(wati_msg);
 			// console.log(watiObj);
 			switch (_msgSendApi) {
 				case 'wati':
@@ -439,10 +439,17 @@
 					}
 					break;
 				case 'sleekflow':
-					if (watiObj && watiObj.status === "Sending") {
+					const sendMsg = JSON.parse(watiObj.sendMsg);
+					const createCustomObjects = JSON.parse(watiObj.createCustomObjects);
+					if (sendMsg.status === "Sending") {
 						console.log('wtsapp msg sent');
 					} else {
-						console.error("SleekFlow 訊息發送失敗:", watiObj);
+						console.error("SleekFlow 訊息發送失敗:", sendMsg);
+					}
+					if (createCustomObjects.primaryPropertyValue) {
+						console.log('Created Custom Objects');
+					} else {
+						console.error("SleekFlow Create Custom Objects 失敗:", createCustomObjects);
 					}
 					break;
 			}

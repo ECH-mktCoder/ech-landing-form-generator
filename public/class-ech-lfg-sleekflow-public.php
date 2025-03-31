@@ -61,6 +61,16 @@ class Ech_Lfg_Sleekflow_Public
                 wp_die();
             }
         }
+        $custom_object = [
+            // 'primaryPropertyValue' => null,
+            'propertyValues' => [
+                'client_name' => $_POST['name'],
+                'booking_location' => $_POST['booking_location'],
+                'booking_item' => $_POST['booking_item']
+            ],
+            'referencedUserProfileId' => $customer_id
+        ];
+        $create_custom_objects = $this->lfg_sleekflow_customObjects_curl('api_primecare_lead_form_submission', $custom_object);
 
         $data = array();
         $data['channel'] = "whatsappcloudapi";
@@ -185,7 +195,8 @@ class Ech_Lfg_Sleekflow_Public
         ];
 
         $result	= $this->lfg_sleekflow_curl("https://api.sleekflow.io/api/message/send/json", $data);
-        echo $result;
+        // echo $result;
+        echo json_encode(['sendMsg' => $result, 'createCustomObjects' => $create_custom_objects]);
         wp_die();
     }
     private function encrypted_epay($epayData){
