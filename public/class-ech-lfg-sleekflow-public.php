@@ -38,7 +38,8 @@ class Ech_Lfg_Sleekflow_Public
     public function lfg_SleekflowSendMsg() {
         $phone = preg_replace('/\D/', '', $_POST['phone']);
         $customer_id = $this->get_sleekflow_contact_id($phone);
-        
+        $object_key = explode('|',$_POST['wati_msg'])[0];
+        $wati_msg = explode('|',$_POST['wati_msg'])[1];
         if(!$customer_id){
 
             $customer_data = [
@@ -70,7 +71,7 @@ class Ech_Lfg_Sleekflow_Public
             ],
             'referencedUserProfileId' => $customer_id
         ];
-        $create_custom_objects = $this->lfg_sleekflow_customObjects_curl('api_primecare_lead_form_submission', $custom_object);
+        $create_custom_objects = $this->lfg_sleekflow_customObjects_curl($object_key, $custom_object);
 
         $data = array();
         $data['channel'] = "whatsappcloudapi";
@@ -122,7 +123,7 @@ class Ech_Lfg_Sleekflow_Public
                 array_push($bodyComponent['parameters'],$temp);
             }
         }else{
-            if(strpos($_POST['wati_msg'],"epay") !== false ){
+            if(strpos($wati_msg,"epay") !== false ){
                 $bodyComponent = [
                     'type' => 'body',
                     'parameters' => [
@@ -147,7 +148,7 @@ class Ech_Lfg_Sleekflow_Public
         $msg_button = '';
         if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
             $msg_button = $_POST['msg_button'];
-            if(strpos($_POST['wati_msg'],"epay") !== false ){
+            if(strpos($wati_msg,"epay") !== false ){
 
                 $epayData = array(
                     "username" => $_POST['name'], 
@@ -188,7 +189,7 @@ class Ech_Lfg_Sleekflow_Public
 
         $data['extendedMessage'] = [
             'WhatsappCloudApiTemplateMessageObject' => [
-                'templateName' => $_POST['wati_msg'],
+                'templateName' => $wati_msg,
                 'language'=> 'zh_HK',
                 'components' => $components
             ]

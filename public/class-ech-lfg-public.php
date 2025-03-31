@@ -239,12 +239,6 @@ class Ech_Lfg_Public
 			$has_participant_bool = false;
 		}
 
-		if ($paraArr['wati_send'] == 1 && $paraArr['wati_msg'] == null) {
-			return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
-		}
-
-
-
 		$default_r = htmlspecialchars(str_replace(' ', '', $paraArr['default_r']));
 		$default_r_code = htmlspecialchars(str_replace(' ', '', $paraArr['default_r_code']));
 		$get_tks_para = htmlspecialchars(str_replace(' ', '', $paraArr['tks_para']));
@@ -348,6 +342,11 @@ class Ech_Lfg_Public
 		$msg_button = htmlspecialchars(str_replace(' ', '', $paraArr['msg_button'] ?? ''));
 		$msg_send_api="";
 		if ( $wati_send == 1 ) {
+
+			if ($wati_msg == null) {
+				return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
+			}
+
 			$msg_send_api = get_option( 'ech_lfg_msg_api' );
 			if(empty($msg_send_api)){
 				return '<div class="code_error">Sending Message Api error - Sending Message Api Should be choose. Please setup in dashboard. </div>';
@@ -363,6 +362,17 @@ class Ech_Lfg_Public
 				$get_omnichat_token = get_option( 'ech_lfg_omnichat_token' );
 				if ( empty($get_brandWtsNo) || empty($get_omnichat_token) ) {
 					return '<div class="code_error">Omnichat error - Brand Whatsapp Number or Omnichat Token are empty. Please setup in dashboard. </div>';
+				}
+			}elseif($msg_send_api == 'sleekflow'){
+				$wati_msg_ary = array_filter(array_map('trim', array_map('strtolower', str_getcsv($wati_msg, '|'))));
+				if(count($wati_msg_ary) != 2){
+					return '<div class="code_error">wati_msg error - Sleekflow objectKey or Wati API are empty.</div>';
+				}
+				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );	
+				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );
+				$get_sleekflow_token = get_option( 'ech_lfg_sleekflow_token' );
+				if ( empty($get_brandWtsNo) || empty($get_sleekflow_token) ) {
+					return '<div class="code_error">SleekFlow error - Brand Whatsapp Number or SleekFlow Token are empty. Please setup in dashboard. </div>';
 				}
 			}
 		}
