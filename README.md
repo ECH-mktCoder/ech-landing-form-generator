@@ -48,7 +48,7 @@ Attribute | Description
 `brand` (String) | This will override the global setting "brand name" value which is set in the dashboard. 
 `tks_para` (String) | URL parameter needs to pass to thank you page, usually product/treatment name. It is used for traffic tracking. Eg. `https://xxx.com/thanks?prod=TKS_PARA_VALUE`
 `wati_send` (INT) | Enable or disable the WATI auto send Whatsapp msg function. 0 = disable, 1 = enable. Default is 0.
-`wati_msg` (String) | Insert wati msg template name (provided by marketers)
+`wati_msg` (String) | Insert wati msg template name (provided by marketers). If the Msg send API is SleekFlow, the wati_msg should be formatted as `objectKey \| whatsappTemplateName`.
 `msg_header` (String) | wati msg template header parameters, if template header setup image, video, document, the field is required. Eg. `image \| https://nymg.com.hk/wp-content/uploads/2024/04/NYMG.jpg`
 `msg_body` (String) | wati msg template body parameters, if special ranking is required, the field is required. Eg. `name, booking_location, booking_item`
 `msg_button` (String) | wati msg template button parameters, if template button setup, the field is required. Eg. `https://nymg.com.hk/epay-landing/`, `https://example.com, https://example2.com`

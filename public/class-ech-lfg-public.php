@@ -906,21 +906,21 @@ class Ech_Lfg_Public
 	public function lfg_formToMSP() {
 
 		$crData = array();
-		$crData['token'] = $_POST['token'];
-		$crData['source'] = $_POST['source'];
-		$crData['name'] = $_POST['name'];
-		$crData['user_ip'] = $_SERVER['REMOTE_ADDR'];
-		$crData['website_name'] = $_POST['website_name'];
-		$crData['website_url'] = $_POST['website_url'];
-		$crData['enquiry_item'] = $_POST['enquiry_item'];
-		$crData['tel_prefix'] =	$_POST['tel_prefix'];
-		$crData['tel'] = $_POST['tel'];
-		$crData['email'] = $_POST['email'];
-		$crData['age_group'] =	$_POST['age_group'];
-		$crData['shop_area_code'] = $_POST['shop_area_code'];
-		$crData['booking_date'] = $_POST['booking_date'];
-		$crData['booking_time'] = $_POST['booking_time'];
-		$crData['remarks'] = $_POST['remarks'];
+		$crData['token'] = $_POST['token'] ?? '';
+		$crData['source'] = $_POST['source'] ?? '';
+		$crData['name'] = $_POST['name'] ?? '';
+		$crData['user_ip'] = $_POST['user_ip'] ?? '';
+		$crData['website_name'] = $_POST['website_name'] ?? '';
+		$crData['website_url'] = $_POST['website_url'] ?? '';
+		$crData['enquiry_item'] = $_POST['enquiry_item'] ?? '';
+		$crData['tel_prefix'] =	$_POST['tel_prefix'] ?? '';
+		$crData['tel'] = $_POST['tel'] ?? '';
+		$crData['email'] = $_POST['email'] ?? '';
+		$crData['age_group'] =	$_POST['age_group'] ?? '';
+		$crData['shop_area_code'] = $_POST['shop_area_code'] ?? '';
+		$crData['booking_date'] = $_POST['booking_date'] ?? '';
+		$crData['booking_time'] = $_POST['booking_time'] ?? '';
+		$crData['remarks'] = $_POST['remarks'] ?? '';
 		
 
 		if (get_option('ech_lfg_apply_test_msp') == "1") {
