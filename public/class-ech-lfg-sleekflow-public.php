@@ -65,6 +65,7 @@ class Ech_Lfg_Sleekflow_Public
         $custom_object = [
             // 'primaryPropertyValue' => null,
             'propertyValues' => [
+                'brand' => get_option( 'ech_lfg_brand_name' ),
                 'client_name' => $_POST['name'],
                 'booking_location' => $_POST['booking_location'],
                 'booking_item' => $_POST['booking_item']
