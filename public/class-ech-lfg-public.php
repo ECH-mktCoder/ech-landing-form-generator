@@ -413,11 +413,8 @@ class Ech_Lfg_Public
 
 
 		$ip = $_SERVER['REMOTE_ADDR'];
-<<<<<<< HEAD
-=======
 
 
->>>>>>> dev
 
 
 
@@ -859,11 +856,11 @@ class Ech_Lfg_Public
 			//**** (END) HOW DID YOU HEAR ABOUT US
 
 
-			$privacyPolicyUrl = get_option( 'ech_lfg_privacy_policy' );
+
 			$output .= ' 
 			<div class="form_row" data-ech-field="info_remark">
 				<div class="redWord">本中心將與您聯絡確認詳情，方為確實是次預約。</div>
-				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隱政策聲明</a>。</label>
+				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a href="https://echealthcare.com/zh/privacy-policy"   target="_blank">私隱政策聲明</a>。</label>
 				<div><small> *必需填寫</small></div>
 			</div>';
 
@@ -928,7 +925,7 @@ class Ech_Lfg_Public
 
 		if (get_option('ech_lfg_apply_test_msp') == "1") {
 			// connect to DEV MSP API
-			$result	= $this->lfg_curl('https://msp-dev.echealthcare.com:8002/api/third_party_service/Offical/submitEnquiryForm', $crData, true);
+			$result	= $this->lfg_curl('https://msp-dev.echealthcare.com/api/third_party_service/Offical/submitEnquiryForm', $crData, true);
 		} else {
 			// connect to LIVE MSP API
 			$result	= $this->lfg_curl('https://msp.prohaba.com:8003/api/third_party_service/Offical/submitEnquiryForm', $crData, true);
