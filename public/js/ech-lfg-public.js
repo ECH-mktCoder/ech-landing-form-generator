@@ -381,7 +381,9 @@
 		let _action = '',
 			_msg_header = '',
 			_msg_body = '',
-			_msg_button = '';
+			_msg_button = '',
+			_first_name = jQuery(thisForm).find("input[name='first_name']").val(),
+			_last_name = jQuery(thisForm).find("input[name='last_name']").val();
 		switch (_msgSendApi) {
 			case 'wati':
 				_action = 'lfg_WatiSendMsg';
@@ -404,6 +406,8 @@
 			'action': _action,
 			'wati_msg': _watiMsg,
 			'name': _name,
+			'first_name': _first_name,
+			'last_name': _last_name,
 			'phone': _phone,
 			'email': _email,
 			'booking_date': _booking_date,
@@ -420,7 +424,7 @@
 
 		jQuery.post(ajaxurl, watiData, function (wati_msg) {
 			// console.log(wati_msg);
-			var watiObj = JSON.parse(wati_msg);
+			const watiObj = JSON.parse(wati_msg);
 			// console.log(watiObj);
 			switch (_msgSendApi) {
 				case 'wati':
@@ -439,10 +443,17 @@
 					}
 					break;
 				case 'sleekflow':
-					if (watiObj) {
-						console.log(watiObj);
+					const sendMsg = JSON.parse(watiObj.sendMsg);
+					const createCustomObjects = JSON.parse(watiObj.createCustomObjects);
+					if (sendMsg.status === "Sending") {
+						console.log('wtsapp msg sent');
 					} else {
-						console.log(watiObj);
+						console.error("SleekFlow 訊息發送失敗:", sendMsg);
+					}
+					if (createCustomObjects.primaryPropertyValue) {
+						console.log('Created Custom Objects');
+					} else {
+						console.error("SleekFlow Create Custom Objects 失敗:", createCustomObjects);
 					}
 					break;
 			}

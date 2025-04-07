@@ -196,8 +196,8 @@ class Ech_Lfg_Public
 		} else {
 			$has_dr_bool = false;
 		}
-		$paraArr['dr'] = array_map('trim', str_getcsv($paraArr['dr'], ','));
-		$paraArr['dr_code'] = array_map('trim', str_getcsv($paraArr['dr_code'], ','));
+		$paraArr['dr'] = !empty($paraArr['dr']) ? array_map('trim', str_getcsv($paraArr['dr'], ',')) : [];
+		$paraArr['dr_code'] = !empty($paraArr['dr_code']) ? array_map('trim', str_getcsv($paraArr['dr_code'], ',')) : [];
 
 
 
@@ -238,12 +238,6 @@ class Ech_Lfg_Public
 		} else {
 			$has_participant_bool = false;
 		}
-
-		if ($paraArr['wati_send'] == 1 && $paraArr['wati_msg'] == null) {
-			return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
-		}
-
-
 
 		$default_r = htmlspecialchars(str_replace(' ', '', $paraArr['default_r']));
 		$default_r_code = htmlspecialchars(str_replace(' ', '', $paraArr['default_r_code']));
@@ -315,8 +309,9 @@ class Ech_Lfg_Public
 		} else {
 			$has_age_bool = false;
 		}
-		$paraArr['age_option'] = array_map('trim', str_getcsv($paraArr['age_option'], ','));
-		$paraArr['age_code'] = array_map('trim', str_getcsv($paraArr['age_code'], ','));
+		$paraArr['age_option'] = !empty($paraArr['age_option']) ? array_map('trim', str_getcsv($paraArr['age_option'], ',')) : [];
+		$paraArr['age_code'] = !empty($paraArr['age_code']) ? array_map('trim', str_getcsv($paraArr['age_code'], ',')) : [];
+
 		if (count($paraArr['age_option']) != count($paraArr['age_code'])) {
 			return '<div class="code_error">shortcode error - age_option and age_code must be corresponding to each other</div>';
 		}
@@ -328,9 +323,10 @@ class Ech_Lfg_Public
 		}
 		$hdyhau_label = htmlspecialchars(str_replace(' ', '', $paraArr['hdyhau_label']));
 
-		$paraArr['hdyhau_item'] = array_map('trim', str_getcsv($paraArr['hdyhau_item'], ','));
+		$paraArr['hdyhau_item'] = !empty($paraArr['hdyhau_item']) ? array_map('trim', str_getcsv($paraArr['hdyhau_item'], ',')) : [];
 
-		$paraArr['seminar_date'] = array_map('trim', str_getcsv($paraArr['seminar_date'], ','));
+		$paraArr['seminar_date'] = !empty($paraArr['seminar_date']) ? array_map('trim', str_getcsv($paraArr['seminar_date'], ',')) : [];
+
 
 		if($paraArr['extra_radio_remark']){
 			$extra_radio_remark = array_map('trim', str_getcsv($paraArr['extra_radio_remark'], ','));
@@ -340,12 +336,17 @@ class Ech_Lfg_Public
 
 		// Wati 
 		$wati_send = htmlspecialchars(str_replace(' ', '', $paraArr['wati_send']));
-		$wati_msg = htmlspecialchars(str_replace(' ', '', $paraArr['wati_msg']));
-		$msg_header = htmlspecialchars(str_replace(' ', '', $paraArr['msg_header']));
-		$msg_body = htmlspecialchars(str_replace(' ', '', $paraArr['msg_body']));
-		$msg_button = htmlspecialchars(str_replace(' ', '', $paraArr['msg_button']));
+		$wati_msg = htmlspecialchars(str_replace(' ', '', $paraArr['wati_msg'] ?? ''));
+		$msg_header = htmlspecialchars(str_replace(' ', '', $paraArr['msg_header'] ?? ''));
+		$msg_body = htmlspecialchars(str_replace(' ', '', $paraArr['msg_body'] ?? ''));
+		$msg_button = htmlspecialchars(str_replace(' ', '', $paraArr['msg_button'] ?? ''));
 		$msg_send_api="";
 		if ( $wati_send == 1 ) {
+
+			if ($wati_msg == null) {
+				return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
+			}
+
 			$msg_send_api = get_option( 'ech_lfg_msg_api' );
 			if(empty($msg_send_api)){
 				return '<div class="code_error">Sending Message Api error - Sending Message Api Should be choose. Please setup in dashboard. </div>';
@@ -361,6 +362,17 @@ class Ech_Lfg_Public
 				$get_omnichat_token = get_option( 'ech_lfg_omnichat_token' );
 				if ( empty($get_brandWtsNo) || empty($get_omnichat_token) ) {
 					return '<div class="code_error">Omnichat error - Brand Whatsapp Number or Omnichat Token are empty. Please setup in dashboard. </div>';
+				}
+			}elseif($msg_send_api == 'sleekflow'){
+				$wati_msg_ary = array_filter(array_map('trim', array_map('strtolower', str_getcsv($wati_msg, '|'))));
+				if(count($wati_msg_ary) != 2){
+					return '<div class="code_error">wati_msg error - Sleekflow objectKey or Wati API are empty.</div>';
+				}
+				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );	
+				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );
+				$get_sleekflow_token = get_option( 'ech_lfg_sleekflow_token' );
+				if ( empty($get_brandWtsNo) || empty($get_sleekflow_token) ) {
+					return '<div class="code_error">SleekFlow error - Brand Whatsapp Number or SleekFlow Token are empty. Please setup in dashboard. </div>';
 				}
 			}
 		}
@@ -401,6 +413,11 @@ class Ech_Lfg_Public
 
 
 		$ip = $_SERVER['REMOTE_ADDR'];
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> dev
 
 
 
@@ -892,21 +909,21 @@ class Ech_Lfg_Public
 	public function lfg_formToMSP() {
 
 		$crData = array();
-		$crData['token'] = $_POST['token'];
-		$crData['source'] = $_POST['source'];
-		$crData['name'] = $_POST['name'];
-		$crData['user_ip'] = $_SERVER['REMOTE_ADDR'];
-		$crData['website_name'] = $_POST['website_name'];
-		$crData['website_url'] = $_POST['website_url'];
-		$crData['enquiry_item'] = $_POST['enquiry_item'];
-		$crData['tel_prefix'] =	$_POST['tel_prefix'];
-		$crData['tel'] = $_POST['tel'];
-		$crData['email'] = $_POST['email'];
-		$crData['age_group'] =	$_POST['age_group'];
-		$crData['shop_area_code'] = $_POST['shop_area_code'];
-		$crData['booking_date'] = $_POST['booking_date'];
-		$crData['booking_time'] = $_POST['booking_time'];
-		$crData['remarks'] = $_POST['remarks'];
+		$crData['token'] = $_POST['token'] ?? '';
+		$crData['source'] = $_POST['source'] ?? '';
+		$crData['name'] = $_POST['name'] ?? '';
+		$crData['user_ip'] = $_POST['user_ip'] ?? '';
+		$crData['website_name'] = $_POST['website_name'] ?? '';
+		$crData['website_url'] = $_POST['website_url'] ?? '';
+		$crData['enquiry_item'] = $_POST['enquiry_item'] ?? '';
+		$crData['tel_prefix'] =	$_POST['tel_prefix'] ?? '';
+		$crData['tel'] = $_POST['tel'] ?? '';
+		$crData['email'] = $_POST['email'] ?? '';
+		$crData['age_group'] =	$_POST['age_group'] ?? '';
+		$crData['shop_area_code'] = $_POST['shop_area_code'] ?? '';
+		$crData['booking_date'] = $_POST['booking_date'] ?? '';
+		$crData['booking_time'] = $_POST['booking_time'] ?? '';
+		$crData['remarks'] = $_POST['remarks'] ?? '';
 		
 
 		if (get_option('ech_lfg_apply_test_msp') == "1") {
