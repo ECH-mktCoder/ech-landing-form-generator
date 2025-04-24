@@ -39,6 +39,16 @@ class Ech_Lfg_Activator {
 		if(empty($getApplyRecapt) || !$getApplyRecapt ) {
 			add_option( 'ech_lfg_apply_recapt', 0 );
 		}
+
+		$privacyPolicyUrl = get_option( 'ech_lfg_privacy_policy' );   
+		if(empty($privacyPolicyUrl) || !$privacyPolicyUrl ) {
+			add_option( 'ech_lfg_privacy_policy', 'https://www.echealthcare.com/zh/privacy-policy/' );
+		}
+
+		$getAcceptPll = get_option( 'ech_lfg_accept_pll' );   
+		if(empty($getAcceptPll)) {
+			add_option( 'ech_lfg_accept_pll', 1);
+		}
 	}
 
 }
