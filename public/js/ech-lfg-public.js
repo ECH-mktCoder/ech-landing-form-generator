@@ -563,7 +563,7 @@
 		sessionStorage.setItem("fb_phone", fb_data.user_phone);
 		sessionStorage.setItem("fb_fn", fb_data.user_fn);
 		sessionStorage.setItem("fb_ln", fb_data.user_ln);
-		if(accpetPll){
+		if(parseInt(accpetPll)){
 			fbq('track', 'Lead', {}, { eventID: 'Lead' + event_id });
 			fbq('track', 'Purchase', { value: 0.00, currency: 'HKD' }, { eventID: 'Purchase' + event_id });
 			fbq('track', 'CompleteRegistration', {}, { eventID: 'CompleteRegistration' + event_id });
