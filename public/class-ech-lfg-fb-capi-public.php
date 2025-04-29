@@ -47,6 +47,7 @@ class Ech_Lfg_Fb_Capi_Public
 		$fbp = $_POST['fbp'];
 		$fbc = $_POST['fbc'];
 		$accept_pll = $_POST['accept_pll'];
+		$external_id = $_POST['external_id'];
 		
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -61,7 +62,8 @@ class Ech_Lfg_Fb_Capi_Public
 			"client_ip_address" => $user_ip,
 			"client_user_agent" => $user_agent,
 			"fbp" => $fbp,
-			"fbc" => $fbc
+			"fbc" => $fbc,
+			"external_id" => $external_id,
 		];
 		$withoutPII_str='WithoutPII';
 		if (intval($accept_pll)) {
