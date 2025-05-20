@@ -124,6 +124,7 @@ class Ech_Lfg {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-wati-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-omnichat-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-sleekflow-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-kommo-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-fb-capi-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ech-lfg-email-public.php';
 
@@ -183,6 +184,7 @@ class Ech_Lfg {
 		$lfg_wati_public = new Ech_Lfg_Wati_Public( $this->get_plugin_name(), $this->get_version() );
 		$lfg_omnichat_public = new Ech_Lfg_Omnichat_Public( $this->get_plugin_name(), $this->get_version() );
 		$lfg_sleekflow_public = new Ech_Lfg_Sleekflow_Public( $this->get_plugin_name(), $this->get_version() );
+		$lfg_kommo_public = new Ech_Lfg_Kommo_Public( $this->get_plugin_name(), $this->get_version() );
 		$lfg_fb_capi_public = new Ech_Lfg_Fb_Capi_Public( $this->get_plugin_name(), $this->get_version() );
 		$lfg_email_public = new Ech_Lfg_Email_Public( $this->get_plugin_name(), $this->get_version() );
 
@@ -211,6 +213,10 @@ class Ech_Lfg {
 		// ^^^ register SleekFlow functions
 		$this->loader->add_action( 'wp_ajax_lfg_SleekflowSendMsg', $lfg_sleekflow_public, 'lfg_SleekflowSendMsg' );
 		$this->loader->add_action( 'wp_ajax_nopriv_lfg_SleekflowSendMsg', $lfg_sleekflow_public, 'lfg_SleekflowSendMsg' );
+
+		// ^^^ register Kommo functions
+		$this->loader->add_action( 'wp_ajax_lfg_KommoSendMsg', $lfg_kommo_public, 'lfg_KommoSendMsg' );
+		$this->loader->add_action( 'wp_ajax_nopriv_lfg_KommoSendMsg', $lfg_kommo_public, 'lfg_KommoSendMsg' );
 
 		// ^^^ register FB Lead CAPI
 		$this->loader->add_action( 'wp_ajax_lfg_FBCapi', $lfg_fb_capi_public, 'lfg_FBCapi' );

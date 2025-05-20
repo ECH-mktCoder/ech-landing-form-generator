@@ -294,7 +294,7 @@
 					var _wati_msg = jQuery(thisForm).data("wati-msg");
 					var _send_api = jQuery(thisForm).data("msg-send-api");
 					// Wati Send
-					lfg_watiSendMsg(thisForm, _send_api, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, text_booking_item, text_booking_location, _website_url);
+					lfg_watiSendMsg(thisForm, _send_api, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, text_booking_item, text_booking_location, _website_url, _remarks);
 				} // if wati enabled 
 				// *********************** (end) WATI msg ***********************
 
@@ -374,7 +374,7 @@
 	}
 
 
-	function lfg_watiSendMsg(thisForm, _msgSendApi, _watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url) {
+	function lfg_watiSendMsg(thisForm, _msgSendApi, _watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url, _remarks) {
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		var _epayRefCode = jQuery(thisForm).data("epay-refcode");
@@ -383,7 +383,8 @@
 			_msg_body = '',
 			_msg_button = '',
 			_first_name = jQuery(thisForm).find("input[name='first_name']").val(),
-			_last_name = jQuery(thisForm).find("input[name='last_name']").val();
+			_last_name = jQuery(thisForm).find("input[name='last_name']").val(),
+			_team_code = jQuery(thisForm).data("r");
 		switch (_msgSendApi) {
 			case 'wati':
 				_action = 'lfg_WatiSendMsg';
@@ -401,8 +402,11 @@
 				_msg_body = jQuery(thisForm).data("msg-body");
 				_msg_button = jQuery(thisForm).data("msg-button");
 				break;
+			case 'kommo':
+				_action = 'lfg_KommoSendMsg';
+				break;
 		}
-		var watiData = {
+		const watiData = {
 			'action': _action,
 			'wati_msg': _watiMsg,
 			'name': _name,
@@ -418,7 +422,9 @@
 			'epayRefCode': _epayRefCode,
 			'msg_header': _msg_header,
 			'msg_body': _msg_body,
-			'msg_button': _msg_button
+			'msg_button': _msg_button,
+			'team_code': _team_code,
+			'remarks': _remarks
 		};
 		//console.log(watiData);
 
@@ -454,6 +460,13 @@
 						console.log('Created Custom Objects');
 					} else {
 						console.error("SleekFlow Create Custom Objects 失敗:", createCustomObjects);
+					}
+					break;
+				case 'kommo':
+					if (watiObj.result) {
+						console.log('wtsapp msg sent');
+					} else {
+						console.log(watiObj.message);
 					}
 					break;
 			}

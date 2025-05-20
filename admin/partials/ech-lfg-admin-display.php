@@ -32,18 +32,18 @@
 
     <div class="form_container">
         <form method="post" id="lfg_gen_settings_form">
-        <?php 
-            settings_fields( 'lfg_gen_settings' );
-            do_settings_sections( 'lfg_gen_settings' );
-        ?>
+        <?php
+            settings_fields('lfg_gen_settings');
+do_settings_sections('lfg_gen_settings');
+?>
             <h2>General</h2>
             <div class="form_row">
-                <?php 
-                    $getApplyTestMSP = get_option( 'ech_lfg_apply_test_msp' );
-                    if(empty($getApplyTestMSP) || !$getApplyTestMSP ) {
-                        add_option( 'ech_lfg_apply_test_msp', 0 );
-                    }
-                ?>
+                <?php
+            $getApplyTestMSP = get_option('ech_lfg_apply_test_msp');
+if (empty($getApplyTestMSP) || !$getApplyTestMSP) {
+    add_option('ech_lfg_apply_test_msp', 0);
+}
+?>
                 <label>Connect to <strong>testing</strong> MSP API : </label>
                 <select name="ech_lfg_apply_test_msp" id="">
                     <option value="0" <?= ($getApplyTestMSP == "0") ? 'selected' : '' ?>> No </option>
@@ -53,27 +53,27 @@
 
             <div class="form_row">
                 <label>Brand Name : </label>
-                <input type="text" name="ech_lfg_brand_name" value="<?= get_option( 'ech_lfg_brand_name' )?>" id="ech_lfg_brand_name" pattern="[ A-Za-z0-9]{1,}">
+                <input type="text" name="ech_lfg_brand_name" value="<?= get_option('ech_lfg_brand_name')?>" id="ech_lfg_brand_name" pattern="[ A-Za-z0-9]{1,}">
             </div>
             <div class="form_row">
                 <label>Privacy Policy URL : </label>
                 <h3 style="color:red;">Add data-btn="ech-pp-url" to another <code>&lt;a&gt;</code> element to replace the privacy policy URL</h3>
-                <?php 
-                    $privacyPolicyUrl = get_option( 'ech_lfg_privacy_policy' );
-                    if(empty($privacyPolicyUrl) || !$privacyPolicyUrl ) {
-                        add_option( 'ech_lfg_privacy_policy', 'https://www.echealthcare.com/zh/privacy-policy/' );
-                    }
-                ?>
-                <input type="text" name="ech_lfg_privacy_policy" value="<?= get_option( 'ech_lfg_privacy_policy' )?>" id="ech_lfg_privacy_policy">
+                <?php
+    $privacyPolicyUrl = get_option('ech_lfg_privacy_policy');
+if (empty($privacyPolicyUrl) || !$privacyPolicyUrl) {
+    add_option('ech_lfg_privacy_policy', 'https://www.echealthcare.com/zh/privacy-policy/');
+}
+?>
+                <input type="text" name="ech_lfg_privacy_policy" value="<?= get_option('ech_lfg_privacy_policy')?>" id="ech_lfg_privacy_policy">
             </div>
             <div class="form_row">
-                <?php 
-                    $getAcceptPll = get_option( 'ech_lfg_accept_pll' );
-                    if(empty($getAcceptPll) || !$getAcceptPll) {
-                        add_option( 'ech_lfg_accept_pll', 1 );
-                        $getAcceptPll = get_option( 'ech_lfg_accept_pll' );
-                    }
-                ?>
+                <?php
+    $getAcceptPll = get_option('ech_lfg_accept_pll');
+if (empty($getAcceptPll) || !$getAcceptPll) {
+    add_option('ech_lfg_accept_pll', 1);
+    $getAcceptPll = get_option('ech_lfg_accept_pll');
+}
+?>
                 <label>接收PII : </label>
                 <select name="ech_lfg_accept_pll" id="">
                     <option value="1" <?= ($getAcceptPll == "1") ? 'selected' : '' ?>>ON</option>
@@ -87,95 +87,106 @@
             <h3>Submit button general color</h3>
             <div class="form_row">
                 <label>Submit Button Color (HEX code only): </label>
-                <input type="text" name="ech_lfg_submitBtn_color" value="<?= htmlspecialchars(get_option( 'ech_lfg_submitBtn_color' ))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}" id="ech_lfg_submitBtn_color">
+                <input type="text" name="ech_lfg_submitBtn_color" value="<?= htmlspecialchars(get_option('ech_lfg_submitBtn_color'))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}" id="ech_lfg_submitBtn_color">
             </div>
             <div class="form_row">
                 <label>Submit Button Text Color (HEX code only): </label>
-                <input type="text" name="ech_lfg_submitBtn_text_color" value="<?= htmlspecialchars(get_option( 'ech_lfg_submitBtn_text_color' ))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}">
+                <input type="text" name="ech_lfg_submitBtn_text_color" value="<?= htmlspecialchars(get_option('ech_lfg_submitBtn_text_color'))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}">
             </div>        
             
 
             <h3>Submit button hover color</h3>
             <div class="form_row">
                 <label>Submit Button Hover Color (HEX code only): </label>
-                <input type="text" name="ech_lfg_submitBtn_hoverColor" value="<?= htmlspecialchars(get_option( 'ech_lfg_submitBtn_hoverColor' ))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}">
+                <input type="text" name="ech_lfg_submitBtn_hoverColor" value="<?= htmlspecialchars(get_option('ech_lfg_submitBtn_hoverColor'))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}">
             </div>
             <div class="form_row">
                 <label>Submit Button Text Hover Color (HEX code only): </label>
-                <input type="text" name="ech_lfg_submitBtn_text_hoverColor" value="<?= htmlspecialchars(get_option( 'ech_lfg_submitBtn_text_hoverColor' ))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}">
+                <input type="text" name="ech_lfg_submitBtn_text_hoverColor" value="<?= htmlspecialchars(get_option('ech_lfg_submitBtn_text_hoverColor'))?>" id="" pattern="^(#)[A-Za-z0-9]{3,6}">
             </div>
 
             <h2>Sending Message Api</h2>
             <div class="form-row">
                 <select name="ech_lfg_msg_api">
                     <option value="">請選擇</option>
-                    <option value="wati" <?= (get_option( 'ech_lfg_msg_api' ) == "wati") ? 'selected' : '' ?>>Wati</option>
-                    <option value="omnichat" <?= (get_option( 'ech_lfg_msg_api' ) == "omnichat") ? 'selected' : '' ?>>Omnichat</option>
-                    <option value="sleekflow" <?= (get_option( 'ech_lfg_msg_api' ) == "sleekflow") ? 'selected' : '' ?>>SleekFlow</option>
+                    <option value="wati" <?= (get_option('ech_lfg_msg_api') == "wati") ? 'selected' : '' ?>>Wati</option>
+                    <option value="omnichat" <?= (get_option('ech_lfg_msg_api') == "omnichat") ? 'selected' : '' ?>>Omnichat</option>
+                    <option value="sleekflow" <?= (get_option('ech_lfg_msg_api') == "sleekflow") ? 'selected' : '' ?>>SleekFlow</option>
+                    <option value="kommo" <?= (get_option('ech_lfg_msg_api') == "kommo") ? 'selected' : '' ?>>Kommo</option>
                 </select>
             </div>
             <div class="form_row">
                 <label>Brand Whatsapp Number: </label>
-                <input type="text" name="ech_lfg_brand_whatsapp" value="<?= htmlspecialchars(get_option( 'ech_lfg_brand_whatsapp' ))?>" id="" />
+                <input type="text" name="ech_lfg_brand_whatsapp" value="<?= htmlspecialchars(get_option('ech_lfg_brand_whatsapp'))?>" id="" />
             </div>
             <h2>Epay Settings</h2>
             <div class="form_row">
                 <label>Secret Key: </label>
-                <input type="text" name="ech_lfg_epay_secret_key" value="<?= htmlspecialchars(get_option( 'ech_lfg_epay_secret_key' ))?>" id="" />
+                <input type="text" name="ech_lfg_epay_secret_key" value="<?= htmlspecialchars(get_option('ech_lfg_epay_secret_key'))?>" id="" />
             </div>
             <h2>Wati Settings</h2>
             <div class="form_row">
                 <label>Wati Key: </label>
-                <input type="text" name="ech_lfg_wati_key" value="<?= htmlspecialchars(get_option( 'ech_lfg_wati_key' ))?>" id="" />
+                <input type="text" name="ech_lfg_wati_key" value="<?= htmlspecialchars(get_option('ech_lfg_wati_key'))?>" id="" />
             </div>
 
             <div class="form_row">
                 <label>Wati API domain: </label>
-                <input type="text" name="ech_lfg_wati_api_domain" value="<?= htmlspecialchars(get_option( 'ech_lfg_wati_api_domain' ))?>" id="" />
+                <input type="text" name="ech_lfg_wati_api_domain" value="<?= htmlspecialchars(get_option('ech_lfg_wati_api_domain'))?>" id="" />
             </div>
 
             <h2>Omnichat Settings</h2>
             <div class="form_row">
                 <label>Omnichat Token: </label>
-                <input type="text" name="ech_lfg_omnichat_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_omnichat_token' ))?>" id="" />
+                <input type="text" name="ech_lfg_omnichat_token" value="<?= htmlspecialchars(get_option('ech_lfg_omnichat_token'))?>" id="" />
             </div>
 
             <h2>SleekFlow Settings</h2>
             <div class="form_row">
                 <label>SleekFlow Token: </label>
-                <input type="text" name="ech_lfg_sleekflow_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_sleekflow_token' ))?>" id="" />
+                <input type="text" name="ech_lfg_sleekflow_token" value="<?= htmlspecialchars(get_option('ech_lfg_sleekflow_token'))?>" id="" />
+            </div>
+
+            <h2>Kommo Settings</h2>
+            <div class="form_row">
+                <label>Kommo Token: </label>
+                <input type="text" name="ech_lfg_kommo_token" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_token'))?>" id="" />
+            </div>
+            <div class="form_row">
+                <label>Kommo Pipeline ID: </label>
+                <input type="number" name="ech_lfg_kommo_pipeline_id" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_pipeline_id'))?>" id="" />
             </div>
             
             <h2>FB Capi Settings</h2>
             <div class="form_row">
                 <label>Pixel id: </label>
-                <input type="text" name="ech_lfg_pixel_id" value="<?= htmlspecialchars(get_option( 'ech_lfg_pixel_id' ))?>" id="" />
+                <input type="text" name="ech_lfg_pixel_id" value="<?= htmlspecialchars(get_option('ech_lfg_pixel_id'))?>" id="" />
             </div>
 
             <div class="form_row">
                 <label>FB Access Token: </label>
-                <input type="text" name="ech_lfg_fb_access_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_fb_access_token' ))?>" id="" />
+                <input type="text" name="ech_lfg_fb_access_token" value="<?= htmlspecialchars(get_option('ech_lfg_fb_access_token'))?>" id="" />
             </div>
 
             <h2>Form Note Settings</h2>
             <div class="form_row">
                 <label>Phone: </label>
-                <input type="text" name="ech_lfg_note_phone" value="<?= htmlspecialchars(get_option( 'ech_lfg_note_phone' ))?>" id="" />
+                <input type="text" name="ech_lfg_note_phone" value="<?= htmlspecialchars(get_option('ech_lfg_note_phone'))?>" id="" />
             </div>
 
             <div class="form_row">
                 <label>Whatsapp Link: </label>
-                <input type="text" name="ech_lfg_note_whatapps_link" value="<?= htmlspecialchars(get_option( 'ech_lfg_note_whatapps_link' ))?>" id="" />
+                <input type="text" name="ech_lfg_note_whatapps_link" value="<?= htmlspecialchars(get_option('ech_lfg_note_whatapps_link'))?>" id="" />
             </div>
 
             <h2>Email Receiver Settings</h2>
             <div class="form_row">
                 <label>Admin Contact Email: </label>
-                <input type="text" name="ech_lfg_admin_contact_email" value="<?= htmlspecialchars(get_option( 'ech_lfg_admin_contact_email' ))?>" id="" />
+                <input type="text" name="ech_lfg_admin_contact_email" value="<?= htmlspecialchars(get_option('ech_lfg_admin_contact_email'))?>" id="" />
             </div>
             <div class="form_row">
                 <label>Email Receiver (use comma to separate) : </label>
-                <input type="text" name="ech_lfg_email_receiver" value="<?= htmlspecialchars(get_option( 'ech_lfg_email_receiver' ))?>" id="" />
+                <input type="text" name="ech_lfg_email_receiver" value="<?= htmlspecialchars(get_option('ech_lfg_email_receiver'))?>" id="" />
             </div>
 
             
@@ -187,4 +198,3 @@
         <div class="statusMsg"></div>
     </div> <!-- form_container -->
 </div>
-

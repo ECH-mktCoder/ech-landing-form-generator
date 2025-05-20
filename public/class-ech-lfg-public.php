@@ -343,14 +343,16 @@ class Ech_Lfg_Public
 		$msg_send_api="";
 		if ( $wati_send == 1 ) {
 
-			if ($wati_msg == null) {
-				return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
-			}
-
 			$msg_send_api = get_option( 'ech_lfg_msg_api' );
 			if(empty($msg_send_api)){
 				return '<div class="code_error">Sending Message Api error - Sending Message Api Should be choose. Please setup in dashboard. </div>';
 			}
+
+			if ($wati_msg == null && $msg_send_api != 'kommo') {
+				error_log($msg_send_api);
+				return '<div class="code_error">wati_send error - wati_send enabled, wati_msg cannot be empty</div>';
+			}
+			
 			if($msg_send_api == 'wati'){
 				$get_watiKey = get_option( 'ech_lfg_wati_key' );
 				$get_watiAPI = get_option( 'ech_lfg_wati_api_domain' );
@@ -369,10 +371,16 @@ class Ech_Lfg_Public
 					return '<div class="code_error">wati_msg error - Sleekflow objectKey or Wati API are empty.</div>';
 				}
 				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );	
-				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );
 				$get_sleekflow_token = get_option( 'ech_lfg_sleekflow_token' );
 				if ( empty($get_brandWtsNo) || empty($get_sleekflow_token) ) {
 					return '<div class="code_error">SleekFlow error - Brand Whatsapp Number or SleekFlow Token are empty. Please setup in dashboard. </div>';
+				}
+			}elseif($msg_send_api == 'kommo'){
+				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );	
+				$get_kommo_token = get_option( 'ech_lfg_kommo_token' );
+				$get_kommo_pipeline_id = get_option( 'ech_lfg_kommo_pipeline_id' );
+				if ( empty($get_brandWtsNo) || empty($get_kommo_token) || empty($get_kommo_pipeline_id) ) {
+					return '<div class="code_error">Kommo error - Brand Whatsapp Number or Kommo Token or Kommo Pipeline ID are empty. Please setup in dashboard. </div>';
 				}
 			}
 		}
