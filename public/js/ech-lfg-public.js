@@ -379,9 +379,9 @@
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		var _epayRefCode = jQuery(thisForm).data("epay-refcode");
 		let _action = '',
-			_msg_header = '',
-			_msg_body = '',
-			_msg_button = '',
+			_msg_header = jQuery(thisForm).data("msg-header"),
+			_msg_body = jQuery(thisForm).data("msg-body"),
+			_msg_button = jQuery(thisForm).data("msg-button"),
 			_first_name = jQuery(thisForm).find("input[name='first_name']").val(),
 			_last_name = jQuery(thisForm).find("input[name='last_name']").val(),
 			_team_code = jQuery(thisForm).data("r");
@@ -389,18 +389,11 @@
 			case 'wati':
 				_action = 'lfg_WatiSendMsg';
 				break;
-			
 			case 'omnichat':
 				_action = 'lfg_OmnichatSendMsg';
-				_msg_header = jQuery(thisForm).data("msg-header");
-				_msg_body = jQuery(thisForm).data("msg-body");
-				_msg_button = jQuery(thisForm).data("msg-button");
 				break;
 			case 'sleekflow':
 				_action = 'lfg_SleekflowSendMsg';
-				_msg_header = jQuery(thisForm).data("msg-header");
-				_msg_body = jQuery(thisForm).data("msg-body");
-				_msg_button = jQuery(thisForm).data("msg-button");
 				break;
 			case 'kommo':
 				_action = 'lfg_KommoSendMsg';

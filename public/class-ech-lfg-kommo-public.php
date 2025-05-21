@@ -82,6 +82,27 @@ class Ech_Lfg_Kommo_Public
             'remarks' => $_POST['remarks'],
             'website_url' => $_POST['website_url'],
         ];
+        $msg_button = '';
+        if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
+            $msg_button = $_POST['msg_button'];
+            if(!empty($_POST['wati_msg']) && strpos($_POST['wati_msg'],"epay") !== false ){
+                $epayData = array(
+                    "username" => $_POST['name'], 
+                    "phone" => $phone, 
+                    "email" => $_POST['email'], 
+                    "booking_date" => $_POST['booking_date'],
+                    "booking_time" => $_POST['booking_time'],
+                    "booking_item" => $_POST['booking_item'],
+                    "booking_location"=>$_POST['booking_location'],    
+                    "website_url" => $_POST['website_url'],
+                    "epay_refcode" => $_POST['epayRefCode']
+                );
+                $epayData = $this->encrypted_epay($epayData);
+                $lead_data['epay_url'] = $msg_button.'?epay='.$epayData;
+            }else{
+                $lead_data['epay_url'] = $msg_button;
+            }
+        }
         $create_lead = $this->create_lead($contact_id, $lead_data);
         if (isset($create_lead['error']) && $create_lead['error'] === true) {
             echo json_encode([
@@ -91,7 +112,7 @@ class Ech_Lfg_Kommo_Public
             ]);
             wp_die(); // 停止執行
         }
-        echo json_encode(['result' => $create_lead]);
+        echo json_encode(['result' => $create_lead,'lead_data' => $lead_data,'post'=>$_POST]);
         wp_die();
 
     }
@@ -261,6 +282,16 @@ class Ech_Lfg_Kommo_Public
                 ['value' => $lead_data['website_url']],
             ],
         ];
+
+        if(!empty($lead_data['epay_url'])){
+            $custom_fields[] = [
+                'field_code' => 'LF_EPAY_URL',
+                'values' => [
+                    ['value' => $lead_data['epay_url']],
+                ],
+            ];
+        }
+
         $hk_time = new DateTime("now", new DateTimeZone("Asia/Hong_Kong"));
         $lead_data = [[
             "name" => "Lead Form - " . $hk_time->format("Y-m-d H:i:s"),
@@ -345,6 +376,18 @@ class Ech_Lfg_Kommo_Public
         curl_close($ch);
 
         return $result;
+    }
+
+    private function encrypted_epay($epayData){
+        $secretKey = get_option( 'ech_lfg_epay_secret_key' );
+
+        $jsonString = json_encode($epayData);
+        $compressedData = gzcompress($jsonString);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        $encryptedData = openssl_encrypt($compressedData, 'aes-256-cbc', $secretKey, 0, $iv);
+        $encryptedPayload = base64_encode($encryptedData . "::" . base64_encode($iv));
+
+        return $encryptedPayload;
     }
 
     private function get_kommo_entity_custom_fields($entity)
@@ -443,6 +486,12 @@ class Ech_Lfg_Kommo_Public
                 'type' => 'url',
                 'name' => 'Website URL',
                 'code' => 'LF_WEBSITE_URL',
+                'group_id' => 'leads_30151747629892',
+            ],
+            [
+                'type' => 'url',
+                'name' => 'Epay URL',
+                'code' => 'LF_EPAY_URL',
                 'group_id' => 'leads_30151747629892',
             ],
         ];
