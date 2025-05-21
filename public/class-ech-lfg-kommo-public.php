@@ -261,9 +261,9 @@ class Ech_Lfg_Kommo_Public
                 ['value' => $lead_data['website_url']],
             ],
         ];
-
+        $hk_time = new DateTime("now", new DateTimeZone("Asia/Hong_Kong"));
         $lead_data = [[
-            "name" => "Lead Form - " . date("Y-m-d H:i:s"),
+            "name" => "Lead Form - " . $hk_time->format("Y-m-d H:i:s"),
             "pipeline_id" => intval(get_option('ech_lfg_kommo_pipeline_id')),
             "_embedded" => [
                 "contacts" => [
