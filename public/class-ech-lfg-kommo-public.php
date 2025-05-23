@@ -81,28 +81,27 @@ class Ech_Lfg_Kommo_Public
             'booking_location' => $_POST['booking_location'],
             'remarks' => $_POST['remarks'],
             'website_url' => $_POST['website_url'],
+            'msg_template' => $_POST['wati_msg'],
         ];
-        $msg_button = '';
-        if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
-            $msg_button = $_POST['msg_button'];
-            if(!empty($_POST['wati_msg']) && strpos($_POST['wati_msg'],"epay") !== false ){
-                $epayData = array(
-                    "username" => $_POST['name'], 
-                    "phone" => $phone, 
-                    "email" => $_POST['email'], 
-                    "booking_date" => $_POST['booking_date'],
-                    "booking_time" => $_POST['booking_time'],
-                    "booking_item" => $_POST['booking_item'],
-                    "booking_location"=>$_POST['booking_location'],    
-                    "website_url" => $_POST['website_url'],
-                    "epay_refcode" => $_POST['epayRefCode']
-                );
-                $epayData = $this->encrypted_epay($epayData);
-                $lead_data['epay_url'] = $msg_button.'?epay='.$epayData;
-            }else{
-                $lead_data['epay_url'] = $msg_button;
-            }
+
+        if(!empty($_POST['wati_msg']) && stripos($_POST['wati_msg'],"epay") !== false ){
+            $epayData = array(
+                "username" => $_POST['name'], 
+                "phone" => $phone, 
+                "email" => $_POST['email'], 
+                "booking_date" => $_POST['booking_date'],
+                "booking_time" => $_POST['booking_time'],
+                "booking_item" => $_POST['booking_item'],
+                "booking_location"=>$_POST['booking_location'],    
+                "website_url" => $_POST['website_url'],
+                "epay_refcode" => $_POST['epayRefCode']
+            );
+            $epayData = $this->encrypted_epay($epayData);
+            $lead_data['epay_url'] = $_POST['msg_button'].'?epay='.$epayData;
+        }else{
+            $lead_data['epay_url'] = $_POST['msg_button'];
         }
+        
         $create_lead = $this->create_lead($contact_id, $lead_data);
         if (isset($create_lead['error']) && $create_lead['error'] === true) {
             echo json_encode([
@@ -110,7 +109,7 @@ class Ech_Lfg_Kommo_Public
                 'message' => $create_lead['message'],
                 'details' => $create_lead['kommo_response'],
             ]);
-            wp_die(); // 停止執行
+            wp_die();
         }
         echo json_encode(['result' => $create_lead,'lead_data' => $lead_data,'post'=>$_POST]);
         wp_die();
@@ -291,6 +290,13 @@ class Ech_Lfg_Kommo_Public
                 ],
             ];
         }
+
+        $custom_fields[] = [
+            'field_code' => 'LF_MSG_TEMPLATE',
+            'values' => [
+                ['value' => $lead_data['msg_template']],
+            ],
+        ];
 
         $hk_time = new DateTime("now", new DateTimeZone("Asia/Hong_Kong"));
         $lead_data = [[
