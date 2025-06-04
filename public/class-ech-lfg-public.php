@@ -379,8 +379,9 @@ class Ech_Lfg_Public
 				$get_brandWtsNo = get_option( 'ech_lfg_brand_whatsapp' );	
 				$get_kommo_token = get_option( 'ech_lfg_kommo_token' );
 				$get_kommo_pipeline_id = get_option( 'ech_lfg_kommo_pipeline_id' );
-				if ( empty($get_brandWtsNo) || empty($get_kommo_token) || empty($get_kommo_pipeline_id) ) {
-					return '<div class="code_error">Kommo error - Brand Whatsapp Number or Kommo Token or Kommo Pipeline ID are empty. Please setup in dashboard. </div>';
+				$get_kommo_status_id = get_option( 'ech_lfg_kommo_status_id' );
+				if ( empty($get_brandWtsNo) || empty($get_kommo_token) || empty($get_kommo_pipeline_id) || empty($get_kommo_status_id)) {
+					return '<div class="code_error">Kommo error - Brand Whatsapp Number or Kommo Token or Kommo Pipeline ID or Status ID are empty. Please setup in dashboard. </div>';
 				}
 			}
 		}

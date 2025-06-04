@@ -302,6 +302,7 @@ class Ech_Lfg_Kommo_Public
         $lead_data = [[
             "name" => "Lead Form - " . $hk_time->format("Y-m-d H:i:s"),
             "pipeline_id" => intval(get_option('ech_lfg_kommo_pipeline_id')),
+            "status_id" => intval(get_option('ech_lfg_kommo_status_id')),
             "_embedded" => [
                 "contacts" => [
                     ["id" => $contact_id],

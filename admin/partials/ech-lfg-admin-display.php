@@ -156,6 +156,10 @@ if (empty($getAcceptPll) || !$getAcceptPll) {
                 <label>Kommo Pipeline ID: </label>
                 <input type="number" name="ech_lfg_kommo_pipeline_id" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_pipeline_id'))?>" id="" />
             </div>
+            <div class="form_row">
+                <label>Kommo Status ID: </label>
+                <input type="number" name="ech_lfg_kommo_status_id" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_status_id'))?>" id="" />
+            </div>
             
             <h2>FB Capi Settings</h2>
             <div class="form_row">
