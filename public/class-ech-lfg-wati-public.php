@@ -52,9 +52,15 @@ class Ech_Lfg_Wati_Public
         
         //$epayData = urlencode(serialize($epayData));
         //$epayData = urlencode(json_encode($epayData, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
-        $epayData = urlencode(json_encode($epayData, JSON_UNESCAPED_SLASHES));
+        // $epayData = urlencode(json_encode($epayData, JSON_UNESCAPED_SLASHES));
+        $epayData = $this->encrypted_epay($epayData);
+
 
         $data['template_name'] = $_POST['wati_msg'];
+        $epayParam = '';
+        if(strpos($data['template_name'],"epay") !== false ){
+            $epayParam = $epayData;
+        }
         $data['broadcast_name'] = "string";
         $data['parameters'] = array( 
                                 [ "name" => "name", "value" => $_POST['name'] ], 
@@ -70,7 +76,7 @@ class Ech_Lfg_Wati_Public
                             );
 
         $result	= $this->lfg_wati_curl("/api/v1/sendTemplateMessage?whatsappNumber=".$_POST['phone'], $data);
-        echo $result;
+        echo json_encode(['result' => $result,'epayParam' => $epayParam]);
         wp_die();
     }
 
@@ -121,6 +127,18 @@ class Ech_Lfg_Wati_Public
 
         return $result;
 	}
+
+    private function encrypted_epay($epayData){
+        $secretKey = get_option( 'ech_lfg_epay_secret_key' );
+
+        $jsonString = json_encode($epayData);
+        $compressedData = gzcompress($jsonString);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        $encryptedData = openssl_encrypt($compressedData, 'aes-256-cbc', $secretKey, 0, $iv);
+        $encryptedPayload = base64_encode($encryptedData . "::" . base64_encode($iv));
+
+        return $encryptedPayload;
+    }
 
 
 

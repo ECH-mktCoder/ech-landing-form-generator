@@ -83,7 +83,7 @@ class Ech_Lfg_Kommo_Public
             'website_url' => $_POST['website_url'],
             'msg_template' => $_POST['wati_msg'],
         ];
-
+        $epayParam = '';
         if(!empty($_POST['wati_msg']) && stripos($_POST['wati_msg'],"epay") !== false ){
             $epayData = array(
                 "username" => $_POST['name'], 
@@ -97,6 +97,7 @@ class Ech_Lfg_Kommo_Public
                 "epay_refcode" => $_POST['epayRefCode']
             );
             $epayData = $this->encrypted_epay($epayData);
+            $epayParam = $epayData;
             $lead_data['epay_url'] = $_POST['msg_button'].'?epay='.$epayData;
         }else{
             $lead_data['epay_url'] = $_POST['msg_button'];
@@ -111,7 +112,7 @@ class Ech_Lfg_Kommo_Public
             ]);
             wp_die();
         }
-        echo json_encode(['result' => $create_lead,'lead_data' => $lead_data,'post'=>$_POST]);
+        echo json_encode(['result' => $create_lead,'epayParam' => $epayParam,'lead_data' => $lead_data,'post'=>$_POST]);
         wp_die();
 
     }

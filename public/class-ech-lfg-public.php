@@ -765,8 +765,9 @@ class Ech_Lfg_Public
 
 
 			//**** Item Options
+			$styleStr = (count($paraArr['item']) == 1)?'style="display:none;"':'';
 			$output .= '
-			<div class="form_row" data-ech-field="item">';
+			<div class="form_row" data-ech-field="item" '.$styleStr.'>';
 
 				if (count($paraArr['item']) == 1) {
 					$output .= '<div>' . $item_label . '</div>';

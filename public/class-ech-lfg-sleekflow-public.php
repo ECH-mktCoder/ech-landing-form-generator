@@ -147,6 +147,7 @@ class Ech_Lfg_Sleekflow_Public
         array_push($components,$bodyComponent);
 
         $msg_button = '';
+        $epayParam = '';
         if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
             $msg_button = $_POST['msg_button'];
             if(strpos($wati_msg,"epay") !== false ){
@@ -163,7 +164,7 @@ class Ech_Lfg_Sleekflow_Public
                     "epay_refcode" => $_POST['epayRefCode']
                 );
                 $epayData = $this->encrypted_epay($epayData);
-
+                $epayParam = $epayData;
                 $buttonComponent = [
                     'type' => 'button',
                     'sub_type' => 'URL',
@@ -198,7 +199,7 @@ class Ech_Lfg_Sleekflow_Public
 
         $result	= $this->lfg_sleekflow_curl("https://api.sleekflow.io/api/message/send/json", $data);
         // echo $result;
-        echo json_encode(['sendMsg' => $result, 'createCustomObjects' => $create_custom_objects]);
+        echo json_encode(['result' => $result,'epayParam' => $epayParam, 'createCustomObjects' => $create_custom_objects]);
         wp_die();
     }
     private function encrypted_epay($epayData){

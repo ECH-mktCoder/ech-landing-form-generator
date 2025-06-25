@@ -187,10 +187,11 @@ class Ech_Lfg_Omnichat_Public
         array_push($messages['whatsappTemplate']['components'],$bodyComponent);
 
         $msg_button = '';
+        $epayParam = '';
         if(isset($_POST['msg_button']) && !empty($_POST['msg_button'])){
             $msg_button = $_POST['msg_button'];
             if(strpos($_POST['wati_msg'],"epay") !== false ){
-                
+                $epayParam = $epayData;
                 $buttonComponent = [
                     'type' => 'button',
                     'sub_type' => 'url',
@@ -218,7 +219,7 @@ class Ech_Lfg_Omnichat_Public
         $data['messages'] = [$messages];
 
         $result	= $this->lfg_omnichat_curl("https://open-api.omnichat.ai/v1/direct-messages", $data);
-        echo $result;
+        echo json_encode(['result' => $result,'epayParam' => $epayParam]);
         wp_die();
     }
 

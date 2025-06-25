@@ -42,7 +42,7 @@
 		/*********** (END) Checkbox limitation ***********/
 
 		/*********** Datepicker & Timepicker ***********/
-		jQuery('.lfg_timepicker').timepicker({ 'minTime': '11:00am', 'maxTime': '7:30pm' });
+		jQuery('.lfg_timepicker').timepicker({ minTime: '11:00am', maxTime: '7:30pm',step: 15 });
 		jQuery(".lfg_datepicker").datepicker({
 			beforeShowDay: nosunday,
 			dateFormat: 'yy-mm-dd',
@@ -286,20 +286,6 @@
 					text_booking_location = jQuery(thisForm).find("select[name='shop'] option:selected").text();
 				}
 
-				// *********************** WATI msg ***********************
-				// check if wati pay is enabled
-				var wati_send = jQuery(thisForm).data("wati-send");
-				if (wati_send == 1) {
-					console.log('wati enabled');
-					var _wati_msg = jQuery(thisForm).data("wati-msg");
-					var _send_api = jQuery(thisForm).data("msg-send-api");
-					// Wati Send
-					lfg_watiSendMsg(thisForm, _send_api, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, text_booking_item, text_booking_location, _website_url, _remarks);
-				} // if wati enabled 
-				// *********************** (end) WATI msg ***********************
-
-
-
 				// *********************** FB CAPI ***********************
 				var fbcapi_send = jQuery(thisForm).data("fbcapi-send");
 				if (fbcapi_send) {
@@ -358,11 +344,39 @@
 				// *********************** (end) Email Send ***********************
 
 
-				// redirect to landing thank you page
-				if (tks_para != null) {
-					window.location.replace(origin + '/thanks?prod=' + tks_para);
-				} else {
-					window.location.replace(origin + '/thanks');
+				// *********************** WATI msg ***********************
+				// check if wati pay is enabled
+				var wati_send = jQuery(thisForm).data("wati-send");
+				if (wati_send == 1) {
+					console.log('wati enabled');
+					var _wati_msg = jQuery(thisForm).data("wati-msg");
+					var _send_api = jQuery(thisForm).data("msg-send-api");
+					// Wati Send
+					lfg_watiSendMsg(thisForm, _send_api, _wati_msg, _name, _phone, _email, _booking_date, _booking_time, text_booking_item, text_booking_location, _website_url, _remarks, function (epayParam) {
+						let url = origin + '/thanks';
+						const epayData = epayParam;
+						const params = [];
+						if (epayParam) {
+							params.push('epay=' + epayData);
+						}
+
+						if (tks_para) {
+							params.push('prod=' + tks_para);
+						}
+
+						if (params.length > 0) {
+							url += '?' + params.join('&');
+						}
+						window.location.replace(url);
+					});
+
+				}else {
+					// redirect to landing thank you page
+						if (tks_para != null) {
+							window.location.replace(origin + '/thanks?prod=' + tks_para);
+						} else {
+							window.location.replace(origin + '/thanks');
+						}
 				}
 
 			} else {
@@ -374,7 +388,7 @@
 	}
 
 
-	function lfg_watiSendMsg(thisForm, _msgSendApi, _watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url, _remarks) {
+	function lfg_watiSendMsg(thisForm, _msgSendApi, _watiMsg, _name, _phone, _email, _booking_date, _booking_time, _booking_item, _booking_location, _website_url, _remarks, callback) {
 
 		var ajaxurl = jQuery(thisForm).data("ajaxurl");
 		var _epayRefCode = jQuery(thisForm).data("epay-refcode");
@@ -425,9 +439,12 @@
 			// console.log(wati_msg);
 			const watiObj = JSON.parse(wati_msg);
 			// console.log(watiObj);
+			let epayData = '';
+
 			switch (_msgSendApi) {
 				case 'wati':
 					if (watiObj.result) {
+						epayData = watiObj.epayParam;
 						console.log('wtsapp msg sent');
 					} else {
 						console.log('wati send error');
@@ -435,16 +452,20 @@
 					break;
 				
 				case 'omnichat':
-					if (watiObj.content.messageId) {
+					const result = JSON.parse(watiObj.result);
+					
+					if (result.content.messageId) {
+						epayData = watiObj.epayParam;
 						console.log('wtsapp msg sent');
 					} else {
 						console.log('wati send error');
 					}
 					break;
 				case 'sleekflow':
-					const sendMsg = JSON.parse(watiObj.sendMsg);
+					const sendMsg = JSON.parse(watiObj.result);
 					const createCustomObjects = JSON.parse(watiObj.createCustomObjects);
 					if (sendMsg.status === "Sending") {
+						epayData = watiObj.epayParam;
 						console.log('wtsapp msg sent');
 					} else {
 						console.error("SleekFlow 訊息發送失敗:", sendMsg);
@@ -457,11 +478,16 @@
 					break;
 				case 'kommo':
 					if (watiObj.result) {
+						epayData = watiObj.epayParam;
 						console.log('wtsapp msg sent');
 					} else {
 						console.log(watiObj.message);
 					}
 					break;
+			}
+
+			if (typeof callback === 'function') {
+				callback(epayData);
 			}
 
 		}).fail(function (xhr, status, error) {
