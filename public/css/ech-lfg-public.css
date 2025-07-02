@@ -44,10 +44,9 @@
 
 div[data-ech-field="last_name"],
 div[data-ech-field="first_name"],
-div[data-ech-field="telPrefix"],
 div[data-ech-field="tel"],
 div[data-ech-field="email"]{
-    flex-basis: calc( (100% - 40px) / 5);
+    flex-basis: calc( (100% - 30px) / 4);
 }
 div[data-ech-field="booking_date"],
 div[data-ech-field="booking_time"]{
@@ -194,6 +193,10 @@ small {
         flex-basis: 100% !important;
     }
     .lfg_formMsg { font-size: 15px; line-height: 23px; }
+
+    div.form_row[data-ech-field="last_name"], div.form_row[data-ech-field="first_name"]{
+        flex-basis: calc( 50% - 5px) !important;
+    }
 }
 
 
