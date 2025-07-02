@@ -100,10 +100,13 @@ small {
 }
 #submitBtn:hover { background: #629ac7; }
 
-.ui-datepicker td span, .ui-datepicker td a {
+.ech_lfg_form .ui-datepicker td span, .ui-datepicker td a {
     font-size: inherit;
 }
-
+.ech_lfg_form .ui-timepicker-wrapper {
+    width: 300px;
+    max-height: 60vh;
+}
 
 /*** checkbox dropdown list ***/
 .lfg_checkbox_dropdown {

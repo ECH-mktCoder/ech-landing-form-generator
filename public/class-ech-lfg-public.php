@@ -606,7 +606,7 @@ class Ech_Lfg_Public
 			$output .= '
 			<div class="form_row" data-ech-field="telPrefix" style="display:none;">
 				<select  class="form-control" name="telPrefix" id="tel_prefix" style="width: 100%;" required >
-					<option disabled="" selected="" value="">*請選擇</option>
+					<option disabled="" value="">*請選擇</option>
 					<option value="+852" selected>+852</option>
 					<option value="+853">+853</option>
 					<option value="+86">+86</option> 
