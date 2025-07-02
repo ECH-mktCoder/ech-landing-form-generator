@@ -676,10 +676,10 @@ class Ech_Lfg_Public
 			<div class="form_row" data-ech-field="shop">';
 				if ($shop_count <= 3) {
 					// radio
-					$output .= '<div>' . $shop_label . '</div>';
 					if ($shop_count == 1) {
-						$output .= '<label class="radio_label"><input type="radio" value="' . $paraArr['shop_code'][0] . '" data-shop-text-value="' . $paraArr['shop'][0] . '" name="shop" checked onclick="return false;">' . $paraArr['shop'][0] . '</label>';
+						$output .= '<label class="radio_label" style="display: none;"><input type="radio" value="' . $paraArr['shop_code'][0] . '" data-shop-text-value="' . $paraArr['shop'][0] . '" name="shop" checked onclick="return false;">' . $paraArr['shop'][0] . '</label>';
 					} else {
+						$output .= '<div>' . $shop_label . '</div>';
 						for ($i = 0; $i < $shop_count; $i++) {
 							$output .= '<label class="radio_label"><input type="radio" value="' . $paraArr['shop_code'][$i] . '" name="shop" data-shop-text-value="' . $paraArr['shop'][$i] . '" required>' . $paraArr['shop'][$i] . '</label>';
 						}
