@@ -103,7 +103,7 @@ class Ech_Lfg_Public
 			'booking_date_required' => '1',			// booking_date_required. 0 = false, 1 = true
 			'item' => null,						// item checkbox
 			'item_code' => null,				// item MSP token
-			'item_label' => '*查詢項目',		 // item label
+			'item_label' => $this->form_echolang(['*Select Item','*查詢項目','*查询项目']),		 // item label
 			'item_required' => '1',		 // item_required. 0 = false, 1 = true
 			'is_item_limited' => '0',			// are the items limited. 0 = false, 1 = true
 			'item_limited_num' => '1',			// No. of options can the user choose
@@ -112,10 +112,10 @@ class Ech_Lfg_Public
 			'dr_code' => null,					// Doctor code
 			'shop' => null,						// shop
 			'shop_code' => null,				// shop MSP token
-			'shop_label' => '*請選擇診所',		 // shop label
+			'shop_label' => $this->form_echolang(['*Select Shop','*請選擇診所','*请选择诊所']),		 // shop label
 			'form_type' => '0',				// Choose form type field. 0 = false, 1 = true
 			'has_textarea' => '0',				// has textarea field. 0 = false, 1 = true
-			'textarea_label' => '其他專業諮詢',	 // textarea label
+			'textarea_label' => $this->form_echolang(['Other professional consultation','其他專業諮詢','其他专业咨询']),	 // textarea label
 			'extra_radio_remark'=> null, // extra single choice questions
 			'has_hdyhau' => '0',				// has "How did you hear about us" field. 0 = false, 1 = true
 			'hdyhau_label' =>$this->form_echolang(['How did you hear about us ?','從何得知?','从何得知？']),
@@ -124,7 +124,7 @@ class Ech_Lfg_Public
 			'seminar_date'=> null,   //Health Talk Time Option
 			'has_participant'=>'0',  //Health Talk participant field
 			'quota_required'=> '0',              //booking quota field. 0 = false, 1 = true
-			'submit_label'=> '提交', //submit button label
+			'submit_label'=> $this->form_echolang(['Submit','提交','提交']), //submit button label
 			'brand' => $getBrandName,			// for MSP, website name value
 			'tks_para' => null,					// parameters need to pass to thank you page
 			// Wati data
@@ -559,7 +559,7 @@ class Ech_Lfg_Public
 			if ($last_name_required_bool) {
 				$output .='
 				<div class="form_row" data-ech-field="last_name">
-					<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="*姓氏" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40" required >
+					<input type="text" name="last_name" id="last_name"  class="form-control"  placeholder="'.$this->form_echolang(['*Last Name','*姓氏','*姓氏']).'" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}"  size="40" required >
 				</div>
 				';
 			} else {
@@ -571,7 +571,7 @@ class Ech_Lfg_Public
 			}
 			$output .= '
 			<div class="form_row" data-ech-field="first_name">
-				<input type="text" name="first_name" id="first_name" class="form-control" placeholder="*名字" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}" size="40" required >
+				<input type="text" name="first_name" id="first_name" class="form-control" placeholder="'.$this->form_echolang(['*First Name','*名字','*名字']).'" pattern="[ A-Za-z\u3000\u3400-\u4DBF\u4E00-\u9FFF]{1,}" size="40" required >
 			</div>
 			';
 			//**** Gender
@@ -579,9 +579,9 @@ class Ech_Lfg_Public
 				$output .= '
 				<div class="form_row" data-ech-field="gender">
 					<select  class="form-control" name="gender" id="gender" style="width: 100%;" >
-						<option disabled="" selected="" value="">*性別</option>
-						<option value="male">男性</option>
-						<option value="female">女性</option>
+						<option disabled="" selected="" value="">'.$this->form_echolang(['*Gender','*性別','*性别']).'</option>
+						<option value="male">'.$this->form_echolang(['Male','男性','男性']).'</option>
+						<option value="female">'.$this->form_echolang(['Female','女性','女性']).'</option>
 					</select>
 				</div>';
 			}
@@ -592,7 +592,7 @@ class Ech_Lfg_Public
 				$output .= '
 				<div class="form_row" data-ech-field="age">
 					<select  class="form-control" name="age" id="age" style="width: 100%;" >
-						<option disabled="" selected="" value="">*年齡</option>';
+						<option disabled="" selected="" value="">'.$this->form_echolang(['Age','年齡','年龄']).'</option>';
 						for ($i = 0; $i < count($paraArr['age_option']); $i++) {
 							$output .= '<option value="' . $paraArr['age_code'][$i] . '">' . $paraArr['age_option'][$i] . '</option>';
 						}
@@ -617,7 +617,7 @@ class Ech_Lfg_Public
 			//**** Tel
 			$output .= '
 			<div class="form_row" data-ech-field="tel">
-				<input type="text" name="tel" placeholder="*電話"  class="form-control" size="30" id="tel" pattern="[0-9]{8,11}" required >
+				<input type="text" name="tel" placeholder="'.$this->form_echolang(['*Phone','*電話','*电话']).'"  class="form-control" size="30" id="tel" pattern="[0-9]{8,11}" required >
 			</div>';
 			//**** (END) Tel
 			
@@ -625,9 +625,9 @@ class Ech_Lfg_Public
 			$output .= '
 			<div class="form_row" data-ech-field="email">';
 				if ($email_required_bool) {
-					$output .= '<input type="email" name="email" id="email" placeholder="*電郵" class="form-control" size="40" required>';
+					$output .= '<input type="email" name="email" id="email" placeholder="'.$this->form_echolang(['*Email','*電郵','*电邮']).'" class="form-control" size="40" required>';
 				} else {
-					$output .= '<input type="email" name="email" id="email" placeholder="電郵" class="form-control" size="40" >';
+					$output .= '<input type="email" name="email" id="email" placeholder="'.$this->form_echolang(['Email','電郵','电邮']).'" class="form-control" size="40" >';
 				}
 			$output .= '
 			</div>';
@@ -641,7 +641,7 @@ class Ech_Lfg_Public
 				$output .= '
 				<div class="form_row" data-ech-field="select_dr">
 					<select  class="form-control" name="select_dr" id="select_dr" style="width: 100%;" required >
-						<option disabled="" selected="" value="">*請選擇醫生</option>';
+						<option disabled="" selected="" value="">'.$this->form_echolang(['*Select Doctor','*請選擇醫生','*请选择医生']).'</option>';
 						for ($i = 0; $i < count($paraArr['dr']); $i++) {
 							$output .= '<option value="' . $paraArr['dr_code'][$i] . '">' . $paraArr['dr'][$i] . '</option>';
 						}
@@ -655,18 +655,18 @@ class Ech_Lfg_Public
 			if ($booking_date_required_bool) {
 				$output .= '
 				<div class="form_row" data-ech-field="booking_date">
-					<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40" required>
+					<input type="text" placeholder="'.$this->form_echolang(['*Booking Date','*預約日期','*预约日期']).'" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40" required>
 				</div>
 				<div class="form_row" data-ech-field="booking_time">
-						<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40" required="">
+						<input type="text" placeholder="'.$this->form_echolang(['*Booking Time','*預約時間','*预约时间']).'" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40" required="">
 				</div>';
 			}else{
 				$output .= '
 				<div class="form_row" data-ech-field="booking_date" style="display:none">
-					<input type="text" placeholder="*預約日期" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40">
+					<input type="text" placeholder="'.$this->form_echolang(['*Booking Date','*預約日期','*预约日期']).'" class="form-control lfg_datepicker" name="booking_date" autocomplete="off" value="" size="40">
 				</div>
 				<div class="form_row" data-ech-field="booking_time" style="display:none">
-						<input type="text" placeholder="*預約時間" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40">
+						<input type="text" placeholder="'.$this->form_echolang(['*Booking Time','*預約時間','*预约时间']).'" id="booking_time" class="form-control lfg_timepicker ui-timepicker-input" name="booking_time" autocomplete="off" value="" size="40">
 				</div>';
 			}
 
@@ -869,9 +869,9 @@ class Ech_Lfg_Public
 			$privacyPolicyUrl = get_option( 'ech_lfg_privacy_policy' );
 			$output .= ' 
 			<div class="form_row" data-ech-field="info_remark">
-				<div class="redWord">本中心將與您聯絡確認詳情，方為確實是次預約。</div>
-				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > * 本人已閱讀並同意有關 <a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隱政策聲明</a>。</label>
-				<div><small> *必需填寫</small></div>
+				<div class="redWord">'.$this->form_echolang(['Our center will contact you to confirm the details before confirming the reservation.','本中心將與您聯絡確認詳情，方為確實是次預約。','本中心将与您联络确认详情，方为确实是次预约。']).'</div>
+				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > '.$this->form_echolang(['* I have read and agreed with the terms and conditions of <a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">Privacy Policy.</a>','*本人已閱讀並同意有關<a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隱政策聲明</a>','*本人已阅读并同意有关<a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隐政策声明</a>']).'。</label>
+				<div><small>'.$this->form_echolang(['*Required','*必需填寫','*必需填写']).'</small></div>
 			</div>';
 
 			if($note_required){
@@ -884,7 +884,7 @@ class Ech_Lfg_Public
 
 			$output .= '
 			<div class="form_row" data-ech-btn="submit">
-					<button type="submit" value="提交" id= "submitBtn" >' . $submit_label . '</button>
+					<button type="submit" id= "submitBtn" >' . $submit_label . '</button>
 			</div><!-- form_row -->';
 
 			if($quota_required == '1'){
