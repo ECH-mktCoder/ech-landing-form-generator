@@ -90,7 +90,7 @@ class Ech_Lfg_Public
 		}
 
 		$paraArr = shortcode_atts(array(
-			'default_r'	=> 't200',				// default r
+			'default_r'	=> 'T1494',				// default r
 			'default_r_code' => null,			// default r token
 			'r' => null,						// tcode	
 			'r_code' => null,					// tcode token
