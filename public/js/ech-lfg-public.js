@@ -1,7 +1,8 @@
+const pageEnterTimestamp = Math.floor(Date.now() / 1000);
+const urlParams = new URLSearchParams(window.location.search);
+const fbclid = urlParams.get('fbclid');
 (function ($) {
 	'use strict';
-
-
 	$(function () {
 
 		const privacyPolicyURL = jQuery('a.ech-pp-url').attr('href');
@@ -573,10 +574,8 @@
 		let event_id = new Date().getTime(),
 				fbc = getCookieValue('_fbc');
 		if (fbc == null) {
-			const urlParams = new URLSearchParams(currnetUrl);
-			const fbclid = urlParams.get('fbclid');
 			if (fbclid) {
-				fbc = 'fb.1.' + Math.floor(Date.now() / 1000) + '.' + fbclid;
+				fbc = 'fb.1.' + pageEnterTimestamp + '.' + fbclid;
 			}
 		}
 		
