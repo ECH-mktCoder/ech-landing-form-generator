@@ -574,7 +574,10 @@
 				fbc = getCookieValue('_fbc');
 		if (fbc == null) {
 			const urlParams = new URLSearchParams(currnetUrl);
-			fbc = urlParams.get('fbclid');
+			const fbclid = urlParams.get('fbclid');
+			if (fbclid) {
+				fbc = 'fb.1.' + Math.floor(Date.now() / 1000) + '.' + fbclid;
+			}
 		}
 		
 		
