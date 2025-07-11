@@ -1,6 +1,6 @@
-const pageEnterTimestamp = Math.floor(Date.now() / 1000);
-const urlParams = new URLSearchParams(window.location.search);
-const fbclid = urlParams.get('fbclid');
+const pageEnterTime = Math.floor(Date.now() / 1000);
+const pageUrlParams = new URLSearchParams(window.location.search);
+const urlFBclid = pageUrlParams.get('fbclid');
 (function ($) {
 	'use strict';
 	$(function () {
@@ -574,8 +574,8 @@ const fbclid = urlParams.get('fbclid');
 		let event_id = new Date().getTime(),
 				fbc = getCookieValue('_fbc');
 		if (fbc == null) {
-			if (fbclid) {
-				fbc = 'fb.1.' + pageEnterTimestamp + '.' + fbclid;
+			if (urlFBclid) {
+				fbc = 'fb.1.' + pageEnterTime + '.' + urlFBclid;
 			}
 		}
 		
