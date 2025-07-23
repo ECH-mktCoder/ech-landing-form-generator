@@ -452,8 +452,7 @@ const pageEnterTime = Math.floor(Date.now() / 1000);
 				
 				case 'omnichat':
 					const result = JSON.parse(watiObj.result);
-					
-					if (result.content.messageId) {
+					if (result.content && result.content.messageId) {
 						epayData = watiObj.epayParam;
 						console.log('wtsapp msg sent');
 					} else {
