@@ -244,7 +244,28 @@ const pageEnterTime = Math.floor(Date.now() / 1000);
 
 
 	function lfg_dataSendToMSP(thisForm, _token, _source, _name, _user_ip, _website_name, _website_url, items, _tel_prefix, _tel, _email, _age_group, _shop_area_code, _booking_date, _booking_time, _remarks, ajaxurl, tks_para) {
-		var data = {
+		const fbcapi_send = jQuery(thisForm).data("fbcapi-send");
+		let fbp ='',
+				fbc = '',
+				external_id ='';
+		if(fbcapi_send == "1") {
+			const currnetUrl = window.location.href;
+			fbp = getCookieValue('_fbp');
+			external_id = getCookieValue('_fbuuid')
+			fbc = getCookieValue('_fbc');
+
+			if (fbc == null) {
+				const urlParams = new URLSearchParams(currnetUrl);
+				const fbclid = urlParams.get('fbclid');
+				if (fbclid) {
+					fbc = 'fb.1.' + pageEnterTime + '.' + fbc;
+				}
+			}
+			if(_remarks !=""){
+				_remarks += ' | FB Click ID:' + fbc + ' | Browser ID:' + fbp + ' | External ID:' + external_id;
+			}
+		}
+		const data = {
 			'action': 'lfg_formToMSP',
 			'token': _token,
 			'source': _source,
@@ -260,7 +281,7 @@ const pageEnterTime = Math.floor(Date.now() / 1000);
 			'shop_area_code': _shop_area_code,
 			'booking_date': _booking_date,
 			'booking_time': _booking_time,
-			'remarks': _remarks
+			'remarks': _remarks,
 		};
 		currentTime('post to msp');
 		jQuery.post(ajaxurl, data, function (msg) {
@@ -286,9 +307,8 @@ const pageEnterTime = Math.floor(Date.now() / 1000);
 				}
 
 				// *********************** FB CAPI ***********************
-				var fbcapi_send = jQuery(thisForm).data("fbcapi-send");
 				if (fbcapi_send) {
-					lfg_FBCapiSend(thisForm, _phone, _email, _website_url, _user_ip);
+					lfg_FBCapiSend(thisForm, _phone, _email, _website_url, _user_ip, fbp, fbc, external_id);
 				}
 				// *********************** (end) FB CAPI ***********************
 
@@ -560,25 +580,13 @@ const pageEnterTime = Math.floor(Date.now() / 1000);
 
 
 
-	function lfg_FBCapiSend(thisForm, _phone, _email, _website_url, _user_ip) {
+	function lfg_FBCapiSend(thisForm, _phone, _email, _website_url, _user_ip, fbp, fbc, external_id) {
 
 		const ajaxurl = jQuery(thisForm).data("ajaxurl"),
 					accpetPll = jQuery(thisForm).data("accept-pll"),
-					currnetUrl = window.location.href,
-					website_url_no_para = location.origin + location.pathname,
-					fbp = getCookieValue('_fbp'),
-					external_id = getCookieValue('_fbuuid');
-		let event_id = new Date().getTime(),
-				fbc = getCookieValue('_fbc');
-		if (fbc == null) {
-			const urlParams = new URLSearchParams(currnetUrl);
-			const fbclid = urlParams.get('fbclid');
-			if (fbclid) {
-				fbc = 'fb.1.' + pageEnterTime + '.' + fbclid;
-			}
-		}
-		
-		
+					website_url_no_para = location.origin + location.pathname;
+		let event_id = new Date().getTime();
+
 		const fb_data = {
 			'action': 'lfg_FBCapi',
 			'website_url': website_url_no_para,
