@@ -13,6 +13,7 @@
 /***************** MAIN FORM *****************/
 .ech_lfg_form {
     display: flex;
+    scroll-margin-top: 70px;
     flex-wrap: wrap;
     gap: 10px;
 }

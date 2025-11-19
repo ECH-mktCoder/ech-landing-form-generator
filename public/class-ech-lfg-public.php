@@ -870,7 +870,7 @@ class Ech_Lfg_Public
 			$output .= ' 
 			<div class="form_row" data-ech-field="info_remark">
 				<div class="redWord">'.$this->form_echolang(['Our center will contact you to confirm the details before confirming the reservation.','本中心將與您聯絡確認詳情，方為確實是次預約。','本中心将与您联络确认详情，方为确实是次预约。']).'</div>
-				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > '.$this->form_echolang(['* I have read and agreed with the terms and conditions of <a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">Privacy Policy.</a>','*本人已閱讀並同意有關<a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隱政策聲明</a>','*本人已阅读并同意有关<a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隐政策声明</a>']).'。</label>
+				<label><input type="checkbox" class="agree"  value="agreed_policy" name="info_remark[]" checked required > '.$this->form_echolang(['* I have read and agreed with the terms and conditions of <a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">Privacy Policy.</a>','*本人已閱讀並同意有關<a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隱政策聲明。</a>','*本人已阅读并同意有关<a class="ech-pp-url" href="'.$privacyPolicyUrl.'" target="_blank">私隐政策声明。</a>']).'</label>
 				<div><small>'.$this->form_echolang(['*Required','*必需填寫','*必需填写']).'</small></div>
 			</div>';
 
