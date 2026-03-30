@@ -149,6 +149,10 @@ if (empty($getAcceptPll) || !$getAcceptPll) {
 
             <h2>Kommo Settings</h2>
             <div class="form_row">
+                <label>Kommo API Subdomain: </label>
+                <input type="text" name="ech_lfg_kommo_subdomain" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_subdomain'))?>" id="" />
+            </div>
+            <div class="form_row">
                 <label>Kommo Token: </label>
                 <input type="text" name="ech_lfg_kommo_token" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_token'))?>" id="" />
             </div>
@@ -157,7 +161,11 @@ if (empty($getAcceptPll) || !$getAcceptPll) {
                 <input type="number" name="ech_lfg_kommo_pipeline_id" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_pipeline_id'))?>" id="" />
             </div>
             <div class="form_row">
-                <label>Kommo Status ID: </label>
+                <label>Kommo Lead Fields Group ID: </label>
+                <input type="text" name="ech_lfg_kommo_lead_fields_group_id" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_lead_fields_group_id'))?>" id="" />
+            </div>
+            <div class="form_row">
+                <label>Kommo Status ID(Landing Page Stage): </label>
                 <input type="number" name="ech_lfg_kommo_status_id" value="<?= htmlspecialchars(get_option('ech_lfg_kommo_status_id'))?>" id="" />
             </div>
             
@@ -202,3 +210,9 @@ if (empty($getAcceptPll) || !$getAcceptPll) {
         <div class="statusMsg"></div>
     </div> <!-- form_container -->
 </div>
+
+<?php
+//create kommo leads custom fields
+// $kommo = new Ech_Lfg( $this->plugin_name, $this->version );
+// $kommo_public = new Ech_Lfg_Kommo_Public($kommo->get_plugin_name(), $kommo->get_version());
+// $result = $kommo_public->create_kommo_leads_custom_fields();

@@ -21,7 +21,7 @@
     text-decoration: underline !important;
 }
 .ech_lfg_form ::placeholder, select, select option, select option:checked {
-    font-family: 'YuanTi', sans-serif;
+    /* font-family: 'YuanTi', sans-serif; */
     font-size: 17px;
     line-height: 18px;
 }
@@ -86,15 +86,15 @@ textarea {
 
 small {
     display: block;
-    font-family: 'YuanTi', sans-serif;
+    /* font-family: 'YuanTi', sans-serif; */
     font-size: 13px;
     color: #727171;
 }
 
 .ech_lfg_form #submitBtn {
-    background: #0170B9;
+    background: var(--e-global-color-primary);
     color: #fff;
-    font-family: 'YuanTi', sans-serif;
+    /* font-family: 'YuanTi', sans-serif; */
     width: 100%;
     font-size: 17px;
     padding: 10px 0px;
@@ -125,7 +125,7 @@ small {
     border-radius: 2px;
     background: #fafafa;
     padding:.75em .2em .75em 1em;
-    font-family: 'YuanTi', sans-serif;
+    /* font-family: 'YuanTi', sans-serif; */
     font-size: 17px;
 }
 

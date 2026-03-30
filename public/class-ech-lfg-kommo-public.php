@@ -22,15 +22,6 @@ class Ech_Lfg_Kommo_Public
     private $version;
 
     /**
-     * The subdomain of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $subdomain    The current subdomain of this plugin.
-     */
-    private $subdomain = 'csisc';
-
-    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -42,6 +33,15 @@ class Ech_Lfg_Kommo_Public
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+
+        $this->epay_secret_key = get_option( 'ech_lfg_epay_secret_key' );
+
+        $this->subdomain = get_option('ech_lfg_kommo_subdomain');
+        $this->token = get_option('ech_lfg_kommo_token');
+
+        $this->pipeline_id = get_option('ech_lfg_kommo_pipeline_id');
+        $this->status_id = get_option('ech_lfg_kommo_status_id');
+        $this->group_id = get_option('ech_lfg_kommo_lead_fields_group_id');
     }
 
     public function lfg_KommoSendMsg()
@@ -302,8 +302,8 @@ class Ech_Lfg_Kommo_Public
         $hk_time = new DateTime("now", new DateTimeZone("Asia/Hong_Kong"));
         $lead_data = [[
             "name" => "Lead Form - " . $hk_time->format("Y-m-d H:i:s"),
-            "pipeline_id" => intval(get_option('ech_lfg_kommo_pipeline_id')),
-            "status_id" => intval(get_option('ech_lfg_kommo_status_id')),
+            "pipeline_id" => intval($this->pipeline_id),
+            "status_id" => intval($this->status_id),
             "_embedded" => [
                 "contacts" => [
                     ["id" => $contact_id],
@@ -372,7 +372,7 @@ class Ech_Lfg_Kommo_Public
         $headers = [];
         $headers[] = 'Accept: application/json';
         $headers[] = 'Content-Type: application/json';
-        $headers[] = 'authorization: Bearer ' . get_option('ech_lfg_kommo_token');
+        $headers[] = 'authorization: Bearer ' . $this->token;
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataArr));
@@ -387,7 +387,7 @@ class Ech_Lfg_Kommo_Public
     }
 
     private function encrypted_epay($epayData){
-        $secretKey = get_option( 'ech_lfg_epay_secret_key' );
+        $secretKey = $this->$epay_secret_key;
 
         $jsonString = json_encode($epayData);
         $compressedData = gzcompress($jsonString);
@@ -445,62 +445,62 @@ class Ech_Lfg_Kommo_Public
                 'type' => 'text',
                 'name' => 'Name',
                 'code' => 'LF_NAME',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'text',
                 'name' => 'Email',
                 'code' => 'LF_EAMIL',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'text',
                 'name' => 'Phone',
                 'code' => 'LF_PHONE',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'text',
                 'name' => 'Channel',
                 'code' => 'LF_CHANNEL',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
                 'is_api_only' => true,
             ],
             [
                 'type' => 'textarea',
                 'name' => 'Enquiry item',
                 'code' => 'LF_BOOKING_ITEM',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'date_time',
                 'name' => 'Booking Date & Time',
                 'code' => 'LF_BOOKING_DATE_TIME',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'text',
                 'name' => 'Booking Location',
                 'code' => 'LF_BOOKING_LOCATION',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'text',
                 'name' => 'Remarks',
                 'code' => 'LF_REMARKS',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'url',
                 'name' => 'Website URL',
                 'code' => 'LF_WEBSITE_URL',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
             [
                 'type' => 'url',
                 'name' => 'Epay URL',
                 'code' => 'LF_EPAY_URL',
-                'group_id' => 'leads_30151747629892',
+                'group_id' => $this->group_id,
             ],
         ];
         $update_response = json_decode($this->lfg_kommo_curl($custom_fields_api, $data, 'POST'), true);
